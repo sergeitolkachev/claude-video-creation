@@ -16,6 +16,15 @@ episodes/*/anchors/*
 episodes/*/stills/*
 episodes/*/approved/*
 episodes/*/takes/*
+episodes/*/audio/*
 episodes/*/audio/*/*
 episodes/*/out/*
 !episodes/*/**/.gitkeep
+
+# Channel art. Regenerated from config/brand.yaml.
+brand/*
+!brand/approved/
+brand/approved/*
+!brand/out/
+brand/out/*
+!brand/**/.gitkeep

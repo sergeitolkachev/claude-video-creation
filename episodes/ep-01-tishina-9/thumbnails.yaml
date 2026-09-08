@@ -1,0 +1,73 @@
+# Thumbnail variants for A/B. Three plates, three different promises — the
+# test is worthless if all three sell the same thing with the text moved
+# around. A: a number that cannot be true. B: the view, scale and isolation.
+# C: a person, and the fact that he stopped transmitting.
+#
+# Plates are approved stills. Nothing is generated for a thumbnail: the frame
+# is already in the episode, and a thumbnail showing something the episode
+# does not contain is the one thing that reliably kills a channel's watch
+# time.
+#
+# Every character is burned in by scripts/build_thumbs.py. Positions are
+# fractions of the frame so they hold if the export size changes.
+
+episode: ep-01-tishina-9
+slug: "FC9-LOG-041 // The Tishina-9 Relay"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the number, shown as if the screen is displaying it. In the episode
+  # the delay figure lives in a title card and never on the CRT, because a
+  # number composited onto a screen being pushed into has to be tracked frame
+  # by frame. A still has no such problem, and in-world beats a caption.
+  - id: a-number
+    plate: 4.3
+    crop: {zoom: 0.86, bias_y: 0.42}
+    # The tube is switched down so the phosphor has something to read against.
+    dim: {x0: 0.10, y0: 0.03, x1: 0.72, y1: 0.72, strength: 0.62, feather: 0.20}
+    blocks:
+      - lines: ["11.60"]
+        size: 168
+        tracking: 6
+        x: 0.41
+        y: 0.24
+        anchor: centre
+        color: [176, 232, 190]      # phosphor, not paper — it is on the glass
+        glow: 26
+      - lines: ["SECONDS OF DELAY"]
+        size: 34
+        tracking: 12
+        x: 0.41
+        y: 0.50
+        anchor: centre
+        color: [176, 232, 190]
+        glow: 14
+
+  # B — the view. No figure, no explanation, the smallest possible subject in
+  # the largest possible black. The number is stated flat, the way the log
+  # states it.
+  - id: b-window
+    plate: 4.1
+    crop: {zoom: 0.92, bias_y: 0.45}
+    blocks:
+      - lines: ["DELAY", "11.60 S"]
+        size: 78
+        tracking: 10
+        x: 0.06
+        y: 0.60
+        anchor: left
+        scrim: true
+
+  # C — the person. The only variant with a human in it, which is the whole
+  # point of running it against the other two.
+  - id: c-operator
+    plate: 5.7
+    crop: {zoom: 0.95, bias_y: 0.5}
+    blocks:
+      - lines: ["LAST", "TRANSMISSION"]
+        size: 84
+        tracking: 8
+        x: 0.05
+        y: 0.14
+        anchor: left
+        scrim: true

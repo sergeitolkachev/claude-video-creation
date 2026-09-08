@@ -30,15 +30,21 @@ def main(ep):
 
     # 2. Every shot has a model, unless it is not generated at all.
     for s in shots:
-        if s.get("source") == "ffmpeg":
+        if s.get("source", "").startswith("ffmpeg"):
             if "generate_seconds" in s:
-                fail.append(f"{s['id']}: source ffmpeg but has generate_seconds")
+                fail.append(f"{s['id']}: {s['source']} but has generate_seconds")
         elif "model" not in s:
             fail.append(f"{s['id']}: no model")
 
-    # 3. No shot exceeds its tier's clip limits.
+    # 3. Every ffmpeg_still shot must have the approved still it is built from.
     for s in shots:
-        if s.get("source") == "ffmpeg": continue
+        if s.get("source") == "ffmpeg_still":
+            if not (ep / "approved" / f"{s['id']}.jpg").exists():
+                fail.append(f"{s['id']}: ffmpeg_still with no approved still")
+
+    # 4. No shot exceeds its tier's clip limits.
+    for s in shots:
+        if s.get("source", "").startswith("ffmpeg"): continue
         tier = cfg["video"][s["model"]]
         g, d = s["generate_seconds"], tier["duration_seconds"]
         if tier.get("has_seed") is False or s["model"] == "workhorse":
@@ -53,7 +59,7 @@ def main(ep):
         if r and r > 1.3: fail.append(f"{s['id']}: retime {r} exceeds 1.3x")
         if r and abs(s["timeline_seconds"] / s["generate_seconds"] - r) > 0.01:
             fail.append(f"{s['id']}: retime {r} disagrees with the durations")
-        if not r and s.get("source") != "ffmpeg":
+        if not r and not s.get("source", "").startswith("ffmpeg"):
             if s["timeline_seconds"] > s["generate_seconds"]:
                 fail.append(f"{s['id']}: timeline longer than generated, no retime declared")
 

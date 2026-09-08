@@ -1,0 +1,64 @@
+# Burned-in titles. Times are absolute seconds on the 250 s timeline.
+# Scene starts: 1=0  2=22  3=65  4=110  5=165  6=230
+#
+# The delay figure lives in the title card, not on the CRT. The script always
+# specified it that way, and it keeps the screens clean plates — a number
+# composited onto a screen that is being pushed into would have to be tracked
+# frame by frame, and it would buy nothing the card does not already do.
+
+cards:
+  - id: log-041
+    at: 1.0
+    hold: 6.0
+    lines: ["LOG 041 / TISHINA-9", "DELAY: 1.31 S — NOMINAL"]
+
+  - id: log-043
+    at: 23.0
+    hold: 5.0
+    lines: ["LOG 043 / DELAY: 1.44 S"]
+
+  - id: log-044
+    at: 66.0
+    hold: 5.0
+    lines: ["LOG 044 / DELAY: 1.59 S"]
+
+  # Scene 4 changes three times inside the frame, no cut between them.
+  - id: log-045
+    at: 111.0
+    hold: 4.0
+    lines: ["LOG 045 / DELAY: 2.10 S"]
+  - id: log-046
+    at: 118.9
+    hold: 4.0
+    lines: ["LOG 046 / DELAY: 4.02 S"]
+  - id: log-047
+    at: 126.4
+    hold: 5.0
+    lines: ["LOG 047 / DELAY: 11.60 S"]
+
+  - id: log-051
+    at: 166.0
+    hold: 6.0
+    lines: ["LOG 051 / DELAY: 00:04:17"]
+
+  # Close.
+  - id: close-1
+    at: 240.0
+    hold: 6.0
+    size: 30
+    pos: centre
+    alpha: 235
+    lines:
+      - "TRANSMISSION ENDS AT LOG 051."
+      - "STATION \"TISHINA-9\" (SILENCE-9) WAS NEVER HEARD FROM AGAIN."
+      - ""
+      - "THE CAUSE OF THE DELAY DISCREPANCY WAS NEVER ESTABLISHED."
+  - id: close-2
+    at: 246.0
+    hold: 4.0
+    size: 30
+    pos: centre
+    alpha: 235
+    lines:
+      - "LOG 052 REACHED THE ARCHIVE ELEVEN YEARS LATER."
+      - "CONTENTS NOT DECODED."

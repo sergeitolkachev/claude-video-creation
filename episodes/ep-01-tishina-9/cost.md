@@ -89,3 +89,23 @@ problem, not a model problem.
 | 2026-09-08 | 4 — stills | scene 6, 4 generations | $0.16 | $5.28 |
 | 2026-09-08 | 4 — stills | 4.3 reworked to a clean plate, 2 | $0.08 | $5.36 |
 | 2026-09-08 | 4 — stills | **stage 4 closed — 29/29 approved** | — | $5.36 |
+| 2026-09-08 | 6 — takes | 2.1 probe, camera_fixed ignored | $0.34 | $5.70 |
+| 2026-09-08 | 6 — takes | 2.1 retry, explicit locked-off wording, worse | $0.34 | $6.04 |
+| 2026-09-08 | 6 — takes | 2.1 Kling probe, 10 s | $0.70 | $6.74 |
+| 2026-09-08 | 6 — takes | duplicate Kling submit, cancelled locally after the API accepted it — assume billed | $0.70 | $7.44 |
+| 2026-09-08 | 6 — takes | 2.1 built in ffmpeg from the approved still | $0.00 | $7.44 |
+| 2026-09-08 | 6 — takes | 2.5 Seedance drift probe | $0.34 | $7.78 |
+| 2026-09-08 | 6 — takes | **16 locked-off shots built in ffmpeg** | $0.00 | $7.78 |
+| 2026-09-08 | 6 — takes | 2.5/3.6/4.6 moved to Kling; Seedance dropped from the episode | — | $7.78 |
+| 2026-09-08 | 6 — takes | scene 2: 2.2 and 2.5 on Kling | $1.40 | $9.18 |
+| 2026-09-08 | 6 — takes | scenes 1/3/4: 1.2, 3.1, 3.2, 3.6, 4.3, 4.5, 4.6 | $4.90 | $14.08 |
+| 2026-09-08 | 6 — takes | scene 5: 5.2, 5.3, 5.5 | $2.10 | $16.18 |
+| 2026-09-08 | 6 — takes | 5.7 first submit — poll hung on a socket with no timeout, request id lost with the unflushed log; assume billed | $0.70 | $16.88 |
+| 2026-09-08 | 6 — takes | 5.7 resubmitted after the script was fixed | $0.70 | $17.58 |
+| 2026-09-08 | 6 — takes | 6.1 built in ffmpeg, blink keyframed | $0.00 | $17.58 |
+| 2026-09-08 | 6 — takes | 4.3 rebuilt locally with a controlled drift | $0.00 | $17.58 |
+| 2026-09-08 | 6 — takes | 5.1 moved to Kling — a frozen hand read as a freeze-frame | $0.70 | $18.28 |
+| 2026-09-08 | 6 — takes | **stage 6 closed — 30/30 shots, 250.00 s** | — | $18.28 |
+| 2026-09-08 | 7 — audio | narration 24 paragraphs x3 takes, hum, relay, drone | $0.00 | $18.28 |
+| 2026-09-08 | 8 — post | grade, grain, titles, screen readouts | $0.00 | $18.28 |
+| 2026-09-08 | 8 — post | **master rendered — 279 MB, 1920x1080, 250.00 s** | — | $18.28 |

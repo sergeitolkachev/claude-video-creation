@@ -41,6 +41,34 @@ aspect: "16:9"
 # closed for you — "small circular porthole" was read as small in the frame,
 # and the porthole came back too far away to hold a crescent of Earth.
 
+# Appended to every image-to-video prompt. The approved still already carries
+# the subject, the light and the framing — the video prompt's only job is to
+# say what moves, and to say firmly that almost nothing does. Left unsaid,
+# these models invent camera pushes, drifting debris and figures walking in.
+# Two tails, because a shot that must not move and a shot that must move
+# slowly need opposite instructions. Pass 1 used one tail for both — it said
+# "the movement is extremely slow", which told a locked-off corridor shot
+# that it was supposed to be moving, and it dollied forward eight metres.
+# Seedance is out of this episode. It will not hold a frame — asked for a
+# locked-off shot it dollied eight metres, and a firmer instruction made it
+# worse. Asked for a slow drift on 2.5 it pushed in and pulled back again, and
+# grew a hinged bolted rim onto the porthole halfway through, then removed it.
+# It does not hold geometry in either mode. Kling holds both; the locked-off
+# shots are built locally, and everything that moves goes through Kling.
+
+motion_tail_static: &motion_tail_static >
+  The camera does not move at all. This is a locked-off tripod shot: the
+  framing at the last frame is identical to the framing at the first. No
+  dolly, no push in, no pull back, no pan, no tilt, no drift, no parallax.
+  Only light and small details change. Nobody enters the frame, no new
+  objects appear, no water or wet reflections appear on any surface.
+
+motion_tail_moving: &motion_tail_moving >
+  The movement is extremely slow, continuous and even, and covers only a very
+  short distance across the whole shot. Nothing else in the frame moves. No
+  cuts, no speed changes, no zoom snaps. Nobody enters the frame, no new
+  objects appear, no water or wet reflections appear on any surface.
+
 exterior_spine: &exterior_spine >
   Footage from an external hull camera: monochrome, low contrast, a hard black
   vacuum with scattered faint stars. Nothing of the station is in the frame —
@@ -148,8 +176,7 @@ shots:
   - id: "1.1"
     scene: 1
     timeline_seconds: 6
-    generate_seconds: 6
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -161,22 +188,21 @@ shots:
   - id: "1.2"
     scene: 1
     timeline_seconds: 8
-    generate_seconds: 10        # workhorse tier only accepts 5 or 10
-    trim_to: 8
-    model: workhorse
+    source: ffmpeg_still     # the readout is composited, so the motion must be known
+    local_motion: push
     motion: very slow push in
     anchors: [A2-crt-console]
     prompt: >
       Close view of an analog readout on a scratched CRT screen, blank glowing
       panel with no legible digits, dark room, macro lens, shallow focus, very
       slow push in
+    screen_text: {label: "DELAY", value: "1.31 S"}
     note: Must match 4.3. Same plate, two points in the story.
 
   - id: "1.3"
     scene: 1
     timeline_seconds: 8
-    generate_seconds: 8
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A3-porthole]
     prompt: >
@@ -188,8 +214,7 @@ shots:
   - id: "2.1"
     scene: 2
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A4-corridor]
     prompt: >
@@ -213,8 +238,7 @@ shots:
   - id: "2.3"
     scene: 2
     timeline_seconds: 8
-    generate_seconds: 8
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     exterior: true          # text-to-image, no interior reference
@@ -233,8 +257,7 @@ shots:
   - id: "2.4"
     scene: 2
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -244,8 +267,9 @@ shots:
   - id: "2.5"
     scene: 2
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    generate_seconds: 10       # Kling does 5 or 10 only
+    trim_to: 7
+    model: workhorse
     motion: slow drift
     anchors: [A3-porthole]
     prompt: >
@@ -255,8 +279,7 @@ shots:
   - id: "2.6"
     scene: 2
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -295,8 +318,7 @@ shots:
   - id: "3.3"
     scene: 3
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     note: >
@@ -315,8 +337,7 @@ shots:
   - id: "3.4"
     scene: 3
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     prompt: >
@@ -326,8 +347,7 @@ shots:
   - id: "3.5"
     scene: 3
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -337,8 +357,9 @@ shots:
   - id: "3.6"
     scene: 3
     timeline_seconds: 7
-    generate_seconds: 7
-    model: filler
+    generate_seconds: 10       # Kling does 5 or 10 only
+    trim_to: 7
+    model: workhorse
     motion: very slow drift
     anchors: [A1-control-room]
     prompt: >
@@ -350,8 +371,7 @@ shots:
   - id: "4.1"
     scene: 4
     timeline_seconds: 9
-    generate_seconds: 9
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     ref_shot: "1.3"          # the approved plate, not the anchor
@@ -363,8 +383,7 @@ shots:
   - id: "4.2"
     scene: 4
     timeline_seconds: 8
-    generate_seconds: 8
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -374,13 +393,19 @@ shots:
   - id: "4.3"
     scene: 4
     timeline_seconds: 9
-    generate_seconds: 10
-    trim_to: 9
-    model: workhorse
+    source: ffmpeg_still     # Kling trucked the monitor out of frame
+    local_motion: drift
+    screen_text: {label: "DELAY", value: "11.60 S"}
     motion: slow drift
     anchors: []
     ref_shot: "1.2"          # the approved plate, not the anchor
     note: >
+      Built locally, not generated. Kling read "slow drift" as a lateral truck
+      and carried the monitor to the right edge by second ten — unusable for a
+      plate that has "DELAY: 11.60 S" composited onto it, and it broke the
+      pairing with 1.2, which pushes straight in. Locally the travel is a
+      number we choose, and the plate is byte-identical to 1.2's.
+
       A clean plate on purpose: "DELAY: 11.60 S" is composited here in post,
       and 1.2 carries the same plate with 1.31 s on it. Pass 1 read
       "readout showing a number" as an invitation and drew an oscilloscope
@@ -397,8 +422,7 @@ shots:
   - id: "4.4"
     scene: 4
     timeline_seconds: 10
-    generate_seconds: 10
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     prompt: >
@@ -420,8 +444,9 @@ shots:
   - id: "4.6"
     scene: 4
     timeline_seconds: 9
-    generate_seconds: 9
-    model: filler
+    generate_seconds: 10       # Kling does 5 or 10 only
+    trim_to: 9
+    model: workhorse
     motion: slow drift
     anchors: [A4-corridor]
     prompt: >
@@ -432,15 +457,26 @@ shots:
   - id: "5.1"
     scene: 5
     timeline_seconds: 8
-    generate_seconds: 10
     trim_to: 8
     model: workhorse
+    generate_seconds: 10       # Kling does 5 or 10 only
+    trim_to: 8
     motion: static
     anchors: [A1-control-room]
     prompt: >
       Hand hovering over a large unmarked mechanical switch, dim red light,
       close shot, no face visible, no text in frame, static
+    video_prompt: >
+      The camera is locked off and does not move. Only the hand is alive:
+      it hovers without touching the switch, with the faint unsteadiness of a
+      hand held in the air, fingers settling very slightly. It never lands and
+      never withdraws from the frame.
     note: >
+      The only living subject in the episode that is animated rather than
+      built locally, and the reason the rule exists: a hand held perfectly
+      still for eight seconds reads as a freeze-frame, because a real one
+      never does that. Locked-off assembly is for rooms and hardware only.
+
       The only hand in the episode. If two takes fail, cut to the switch alone
       rather than spending a third — the gesture is replaceable, the credits
       are not.
@@ -482,8 +518,7 @@ shots:
   - id: "5.4"
     scene: 5
     timeline_seconds: 8
-    generate_seconds: 8
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A1-control-room]
     prompt: >
@@ -505,8 +540,7 @@ shots:
   - id: "5.6"
     scene: 5
     timeline_seconds: 9
-    generate_seconds: 9
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: [A2-crt-console]
     prompt: >
@@ -547,8 +581,7 @@ shots:
   - id: "6.2"
     scene: 6
     timeline_seconds: 8
-    generate_seconds: 8
-    model: filler
+    source: ffmpeg_still     # locked-off: built from the approved still
     motion: static
     anchors: []
     prompt: >

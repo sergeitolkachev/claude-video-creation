@@ -15,8 +15,8 @@ shots = doc["shots"]
 rows, tot = [], 0.0
 by = defaultdict(lambda: [0, 0, 0.0])   # tier -> [shots, seconds, usd]
 for s in shots:
-    if s.get("source") == "ffmpeg":
-        by["ffmpeg"][0] += 1
+    if s.get("source", "").startswith("ffmpeg"):
+        by[s["source"]][0] += 1
         continue
     t, g = s["model"], s["generate_seconds"]
     tier = cfg["video"][t]
@@ -26,12 +26,12 @@ for s in shots:
 
 print(f"{'tier':<12}{'shots':>7}{'sec':>7}{'usd':>9}   endpoint")
 for t, (n, sec, c) in by.items():
-    eid = cfg["video"][t]["id"] if t != "ffmpeg" else "— built locally"
+    eid = "— built locally, no model" if t.startswith("ffmpeg") else cfg["video"][t]["id"]
     print(f"{t:<12}{n:>7}{sec:>7}{c:>9.2f}   {eid}")
     tot += c
 video = tot
 
-gen = [s for s in shots if s.get("source") != "ffmpeg"]
+gen = [s for s in shots if not s.get("source", "").startswith("ffmpeg")]
 stills_n = len(gen) * CANDIDATES_PER_SHOT
 stills = stills_n * cfg["image"]["still"]["price_per_image_usd"]
 anch_n = len(doc["anchors"]) * CANDIDATES_PER_ANCHOR

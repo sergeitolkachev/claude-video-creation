@@ -1,0 +1,99 @@
+# Channel art. One place for the prompts, the sizes and the picked seeds.
+#
+# These four assets are generated once and then live for the life of the
+# channel, so unlike an episode's shots they are versioned here in full —
+# a banner that has to be re-derived from memory in a year is a broken brand.
+#
+# Sizes are YouTube's published requirements. Re-check them in YouTube Help
+# before a final export; they drift like model prices do.
+#
+# Text is never generated. Seedream rewrites every prompt and invents
+# lettering out of anything that smells like a label, and the letters come
+# back as garbage glyphs. The spine forbids text and scripts/build_brand.py
+# composites the real characters in Pillow afterwards, in the same Menlo the
+# episode titles use — the channel reads as one system because every burned-in
+# character in it comes out of the same renderer.
+
+verified_on: 2026-09-08
+
+# Style spine. Material, light and palette only. Camera, distance and lens
+# live in each asset's own block — the same split the episode anchors use,
+# and for the same reason: spatial words in a shared spine drag every asset
+# to the same framing.
+spine: >
+  Declassified government archive aesthetic, 1970s institutional
+  documentation. Muted palette: manila beige, oxidized green, dust grey,
+  faded black. Analog film grain, slight halation, scratches in the emulsion.
+  Flat even lighting, no drama. Photographic, not illustrated.
+  No text, no letters, no numbers, no logos, no watermarks.
+
+seeds: [11, 22, 33]      # same three seeds for every asset, so a difference
+                         # between candidates is the prompt, not a roll
+
+assets:
+  # Cropped to a circle at every size YouTube shows it, so the subject has to
+  # survive losing its corners and still read at 32 px. One shape, centred,
+  # filling the frame.
+  - id: avatar
+    generate: {width: 1024, height: 1024}
+    export: {width: 800, height: 800}
+    # Punch-in applied in post, not asked for in the prompt. See zoom_in().
+    crop: {zoom: 0.78, bias_y: 0.25}
+    subject: >
+      Extreme close-up of the corner of a worn cardboard archive folder, one
+      rubber stamp impression on it partially visible and reduced to an
+      abstract ink shape with no readable characters in it. Centred
+      composition, the folder corner fills the frame edge to edge, heavy
+      vignette at the edges. Square format. Shot from directly overhead on a
+      dark steel surface, macro.
+
+  # 2560x1440 with a 1546x423 safe area at the centre: everything outside it
+  # is cropped away on some device. The frame is therefore composed empty in
+  # the middle and heavy at the edges, and the channel name goes into the
+  # hole in post.
+  - id: banner
+    generate: {width: 2560, height: 1440}
+    export: {width: 2560, height: 1440}
+    safe_area: {width: 1546, height: 423}
+    subject: >
+      Wide overhead shot of a metal archive shelf in a dim storage room, rows
+      of identical unlabelled folders receding into darkness on both sides.
+      The centre of the frame is nearly empty — a bare shelf surface, softly
+      lit from above. Deep shadow across the left and right thirds.
+      Ultra-wide horizontal composition.
+
+  # Thumbnail plate. One episode object on a table, left third deliberately
+  # empty and dark for the record number. Regenerated per episode with a new
+  # subject; the framing instruction stays.
+  - id: thumbnail
+    generate: {width: 1920, height: 1080}
+    export: {width: 1280, height: 720}
+    subject: >
+      A single cracked handheld field radio lying on a scuffed steel table
+      under one overhead lamp. Camera slightly above the object looking down,
+      50mm, shallow depth of field, hard shadow thrown to the right. The
+      object sits in the right half of the frame; the left third is empty
+      table and darker. Evidence documentation, not a product photograph.
+
+  # Not channel art — a reusable plate for the cuts between episodes and for
+  # verticals that need a neutral frame.
+  - id: corridor
+    generate: {width: 1920, height: 1080}
+    export: {width: 1920, height: 1080}
+    subject: >
+      An empty institutional corridor, identical closed doors down both walls,
+      fluorescent ceiling tubes with two of them dead. Camera centred at
+      standing height, symmetrical one-point perspective down the corridor.
+      Nobody present. Empty, not staged.
+
+# Burned in by scripts/build_brand.py. Same font and tracking as the episode
+# titles.
+text:
+  banner:
+    lines: ["FILE CLASS NINE"]
+    size: 96
+    tracking: 22
+  thumbnail:
+    lines: ["FC9-041"]
+    size: 64
+    tracking: 8
