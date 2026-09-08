@@ -1,0 +1,96 @@
+# fal endpoint ids and prices.
+#
+# Prices verified against fal.ai on 2026-09-08. Every id in this file was
+# probed live against queue.fal.run on the same day and returned 200; an
+# invalid id returns 404 "Application not found", so a working id here is a
+# checked fact rather than a guess.
+#
+# Re-check before every episode. Prices and model names drift, and the drift
+# is not announced.
+
+verified_on: 2026-09-08
+
+image:
+  # Anchors: 3-4 stills that define the location and the light. Generated
+  # from text, because there is nothing to reference yet.
+  anchor:
+    id: fal-ai/bytedance/seedream/v4/text-to-image
+    price_per_image_usd: 0.03
+    notes: >
+      Priced at 1MP; higher resolutions scale proportionally. Cinematic
+      composition, holds atmosphere better than the cheap explorers.
+
+  # Shot stills: always generated with the approved anchors passed as
+  # references, which is why this is an edit/image-to-image endpoint and not
+  # text-to-image.
+  still:
+    id: fal-ai/nano-banana/edit
+    price_per_image_usd: 0.0398
+    notes: Reference-driven. Anchors go in as input images on every call.
+
+  # Exterior shots. The still tier above is an edit endpoint and requires a
+  # reference image, but every anchor we have is an interior — handing one to
+  # an exterior shot does not transfer style, it leaks the room into the
+  # frame. Scene 2 shot 2.3 came back as the control room with an antenna
+  # pasted into the porthole. Exteriors go through text-to-image instead, with
+  # the style carried in words.
+  exterior:
+    id: fal-ai/bytedance/seedream/v4/text-to-image
+    price_per_image_usd: 0.03
+    notes: Same endpoint as the anchor tier. No reference image by design.
+
+  # Only when hunting for a direction that does not exist yet. Never in the
+  # normal pipeline.
+  explore:
+    id: fal-ai/flux/schnell
+    price_per_image_usd: 0.003
+
+video:
+  # Filler — static frames and slow drift, which is most of this episode.
+  # Accepts any duration from 2 to 12 seconds, so we pay for exactly the
+  # length we cut, with no rounding waste. Has a seed.
+  filler:
+    id: fal-ai/bytedance/seedance/v1/pro/fast/image-to-video
+    price_per_second_usd: 0.0486   # $0.243 per 5 s at 1080p
+    resolution: 1080p
+    duration_seconds: [2, 12]      # continuous range, not an enum
+    has_seed: true
+
+  # Workhorse — shots with a defined camera move or with content that has to
+  # read clearly. Only 5 or 10 second clips, so a 7 second shot is billed as
+  # 10 and trimmed in post.
+  workhorse:
+    id: fal-ai/kling-video/v2.5-turbo/pro/image-to-video
+    price_base_usd: 0.35           # covers the first 5 s
+    price_per_extra_second_usd: 0.07
+    price_10s_usd: 0.70
+    duration_seconds: [5, 10]      # enum, not a range
+    has_seed: false
+    required_params:
+      generate_audio: false        # defaults to true; must be switched off
+
+  # Priced per second by resolution. The $0.05/s figure on fal's pricing page
+  # is the 480p tier — at 1080p it is $0.15/s, three times the filler above.
+  # Kept here as a documented alternative, not used in episode 01.
+  filler_alt:
+    id: fal-ai/wan-25-preview/image-to-video
+    price_per_second_usd: {480p: 0.05, 720p: 0.10, 1080p: 0.15}
+    duration_seconds: [5, 10]
+    has_seed: true
+    notes: >
+      Generates native audio and exposes no toggle to disable it, which
+      collides with the audio-off rule. Strip with `-an` if ever used.
+
+  # Not used in episode 01. A single 10 s clip costs $4.00, a fifth of the
+  # whole budget, for a shot that then gets grain and a vignette dropped on
+  # top of it.
+  hero_premium:
+    id: fal-ai/veo3/image-to-video
+    price_per_second_usd: 0.40
+    status: not used
+
+# Known drift, 2026-09-08:
+#   Seedance 1.0 Lite is retired. Requests to
+#   fal-ai/bytedance/seedance/v1/lite/image-to-video are re-routed to Pro Fast.
+#   The Model Assignment table in CLAUDE.md still calls the filler tier
+#   "Wan / Seedance Fast" — the surviving endpoint is the one under video.filler.

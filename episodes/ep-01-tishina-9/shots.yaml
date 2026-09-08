@@ -1,0 +1,559 @@
+# Record No. 1 — "TISHINA-9"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompts here are already cleaned per the Prompt Hygiene section of
+# script.md: no grain, no scanlines, no legible text. Do not copy prompt text
+# out of script.md into a generation call — it is written for a human reader.
+
+episode: ep-01-tishina-9
+runtime_seconds: 250
+aspect: "16:9"
+
+# --- Anchors ----------------------------------------------------------------
+# Generated first, from text. A human approves these before a single shot
+# still is made. Every shot still afterwards is generated with the relevant
+# anchors passed in as reference images, which is what keeps the station the
+# same station across thirty shots.
+#
+# Four anchors, chosen to cover every recurring surface in the episode.
+
+# The spine carries material, light and palette only — the things that are
+# genuinely shared by every frame of this station. Camera, distance and lens
+# live in each anchor's own block.
+#
+# Pass 1 used four independent prompts and produced four different locations.
+# Pass 2 added a spine and fixed that, but the spine also carried spatial
+# words — "low ceiling", "rounded corners", "built for a single occupant" —
+# and those pushed the camera back into a wide symmetrical establishing shot
+# in all four, including the one that had to be a macro. Shared style belongs
+# in the spine; shared framing was never wanted.
+#
+# Two words were removed outright. "Dust" produced heaped sand across the
+# floor in both passes no matter how it was qualified — the grime now lives in
+# the enamel and the seams instead. "No signage" appeared to draw attention to
+# signage rather than suppress it, and nothing in pass 2 needed it.
+#
+# Seedream always rewrites the prompt before generating: enhance_prompt_mode
+# accepts only "standard" or "fast", there is no off. Anything left vague gets
+# filled in with whatever is statistically typical. Close the gaps or they get
+# closed for you — "small circular porthole" was read as small in the frame,
+# and the porthole came back too far away to hold a crescent of Earth.
+
+exterior_spine: &exterior_spine >
+  Footage from an external hull camera: monochrome, low contrast, a hard black
+  vacuum with scattered faint stars. Nothing of the station is in the frame —
+  no bulkhead, no porthole, no window frame, no interior, no people. The
+  camera is outside, looking at open space.
+
+anchor_spine: &spine >
+  The same 1970s deep-space relay station in every frame. Riveted sheet-metal
+  bulkheads under chipped pale grey-green enamel, bare scuffed metal showing
+  through at the edges, rust blooming along the seams, cable conduit clipped
+  to the walls. Warm amber panel lamps are the only strong light source.
+  Heavily desaturated brown-grey palette, no clean whites, no saturated
+  blues, no daylight, no concrete. No people. No lettering or interface
+  graphics on any screen.
+
+# Approved 2026-09-08 from pass 3. The four approved images sit at the root of
+# anchors/; every candidate from all three passes is kept under anchors/pass-N/
+# so a later "why does the station look like this" has an answer.
+#
+# approved_seed plus the prompt in this file reproduces the approved image
+# exactly. Do not regenerate an approved anchor — everything downstream is
+# built against these four frames.
+
+anchors:
+  - id: A1-control-room
+    model: anchor
+    covers: [1.1, 3.2, 5.4, 5.6, 5.7]
+    approved_seed: 33          # pass 3, approved 2026-09-08
+    approved_file: anchors/A1-control-room.jpg
+    spine: *spine
+    subject: >
+      Camera: 35mm lens at seated eye height, set off to one side of the
+      room's centre line so the consoles run diagonally across the frame —
+      not symmetrical, not head-on. Medium shot. Subject: three worn consoles
+      angled around an empty operator's chair, an amber strip lamp glowing
+      under the lip of the desk, one dark CRT off to the side, the far corner
+      falling away into shadow.
+
+  - id: A2-crt-console
+    model: anchor
+    covers: [1.2, 4.3, 3.1, 3.5, 4.5]
+    approved_seed: 33          # pass 3, approved 2026-09-08
+    approved_file: anchors/A2-crt-console.jpg
+    spine: *spine
+    subject: >
+      Camera: 100mm macro, close in, the screen filling two thirds of the
+      frame, everything behind it dissolved into soft bokeh. Positioned
+      slightly above the screen and to its left, not square on. Subject: a
+      single CRT in a metal console housing, scratched and faintly smeared
+      glass, an even pale green phosphor glow with nothing displayed on it, a
+      worn bezel.
+    note: >
+      This anchor locks the delay readout. Shots 1.2 and 4.3 are the same
+      display at two points in the story and must be generated from this
+      anchor with identical framing and lighting — the numbers are composited
+      in post, so any difference between the two plates shows up as a jump.
+      Pass 2 returned a wide room shot instead of a macro; the distance is now
+      stated in the anchor's own block rather than left to the spine.
+
+  - id: A3-porthole
+    model: anchor
+    covers: [1.3, 2.5, 4.1]
+    approved_seed: 33          # pass 3, approved 2026-09-08
+    approved_file: anchors/A3-porthole.jpg
+    spine: *spine
+    subject: >
+      Camera: 50mm at chest height, standing close to the wall and a little to
+      one side, so the porthole sits off-centre and fills half the height of
+      the frame. Subject: a circular porthole in a curved bulkhead, thick
+      bolted rim, deep black space and a scatter of faint stars beyond the
+      glass. The floor is bare swept metal.
+    note: >
+      Earth's size and brightness change across 1.3, 2.5 and 4.1. The frame,
+      the rim and the light must not. The porthole has to be large enough in
+      frame to hold a crescent of Earth, which is why its share of the frame
+      is specified rather than described as "small".
+
+  - id: A4-corridor
+    model: anchor
+    covers: [2.1, 4.6]
+    approved_seed: 11          # pass 3, approved 2026-09-08
+    approved_file: anchors/A4-corridor.jpg
+    spine: *spine
+    subject: >
+      Camera: 85mm from one end of the corridor, offset toward the left wall
+      so the vanishing point sits off-centre — compressed perspective, not a
+      symmetrical one-point tunnel. Subject: a long narrow corridor between
+      riveted bulkheads, cable conduit running overhead, dim amber strip lamps
+      low along the base of both walls, the far end unlit.
+    note: >
+      Light is amber to match A1. The two cut against each other inside scene
+      2, and a lighting mismatch there breaks the join whatever the walls are
+      made of.
+
+# --- Shots ------------------------------------------------------------------
+# timeline_seconds is what the shot occupies in the cut and is what runtime
+# validation sums. generate_seconds is what the model is asked for and is what
+# cost estimation sums. When they differ, the reason is stated.
+#
+# model refers to a tier in config/models.yaml, never to a bare endpoint id,
+# so that swapping a model stays a config edit.
+
+shots:
+  # SCENE 1 — COLD OPEN (22 s)
+  - id: "1.1"
+    scene: 1
+    timeline_seconds: 6
+    generate_seconds: 6
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Interior of a cramped deep space relay station, dim amber emergency
+      lighting, worn control panels covered in dust, a single blinking green
+      indicator, shallow depth of field, static locked-off shot, no people,
+      cinematic, muted color grade
+
+  - id: "1.2"
+    scene: 1
+    timeline_seconds: 8
+    generate_seconds: 10        # workhorse tier only accepts 5 or 10
+    trim_to: 8
+    model: workhorse
+    motion: very slow push in
+    anchors: [A2-crt-console]
+    prompt: >
+      Close view of an analog readout on a scratched CRT screen, blank glowing
+      panel with no legible digits, dark room, macro lens, shallow focus, very
+      slow push in
+    note: Must match 4.3. Same plate, two points in the story.
+
+  - id: "1.3"
+    scene: 1
+    timeline_seconds: 8
+    generate_seconds: 8
+    model: filler
+    motion: static
+    anchors: [A3-porthole]
+    prompt: >
+      View through a small circular porthole of a space station, Earth visible
+      as a small blue crescent in the far distance, cold light falling on a
+      metal frame, dust particles floating, static shot
+
+  # SCENE 2 — FIRST DEVIATION (43 s)
+  - id: "2.1"
+    scene: 2
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: [A4-corridor]
+    prompt: >
+      Empty station corridor during night cycle, long shadows, cables running
+      along the ceiling, one flickering light at the far end, deep
+      perspective, static shot, cinematic
+
+  - id: "2.2"
+    scene: 2
+    timeline_seconds: 7
+    generate_seconds: 10
+    trim_to: 7
+    model: workhorse
+    motion: slight tilt
+    anchors: [A1-control-room]
+    prompt: >
+      Open log book on a metal table, ruled columns filled with faint
+      illegible pencil marks, no readable digits, dim desk lamp, top-down
+      view, shallow focus, slight tilt
+
+  - id: "2.3"
+    scene: 2
+    timeline_seconds: 8
+    generate_seconds: 8
+    model: filler
+    motion: static
+    anchors: []
+    exterior: true          # text-to-image, no interior reference
+    note: >
+      Pass 1 showed the whole station as a small model adrift in space. That
+      is both toy-looking and wrong for the format — a station log has no
+      camera standing off the hull to film itself. The dish now fills the
+      frame and the hull is excluded outright.
+    prompt: >
+      A single large parabolic antenna dish filling most of the frame, its
+      weathered pale grey-green panels seen from behind and to one side, the
+      strut framework and drive gear silhouetted, turning slowly against deep
+      black space, a scatter of faint distant stars, no planet visible, no
+      spacecraft hull anywhere in frame, static wide shot
+
+  - id: "2.4"
+    scene: 2
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Diagnostic panel with rows of small indicator lights, every one of them
+      green, dust on the housing, dim room, close shot, shallow focus
+
+  - id: "2.5"
+    scene: 2
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: slow drift
+    anchors: [A3-porthole]
+    prompt: >
+      Starfield seen through a porthole, no planet anywhere in frame, cold
+      metal rim catching faint light, dust particles floating, slow drift
+
+  - id: "2.6"
+    scene: 2
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      An operator chair pushed back from a console, worn upholstery, dim
+      amber light, the room deserted, static shot
+
+  # SCENE 3 — THE REPLY (45 s)
+  - id: "3.1"
+    scene: 3
+    timeline_seconds: 8
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: static, paper feeding
+    anchors: [A2-crt-console]
+    prompt: >
+      Old dot-matrix terminal, green phosphor glow, paper feeding slowly
+      through the platen, printed area out of focus and illegible, dark room,
+      macro shot
+
+  - id: "3.2"
+    scene: 3
+    timeline_seconds: 9
+    generate_seconds: 10
+    trim_to: 9
+    model: workhorse
+    motion: very slow pull back
+    anchors: [A1-control-room]
+    prompt: >
+      A figure in a dark bulky coverall and headset seen from directly
+      behind, rendered as a flat unlit silhouette against the monitors — no
+      skin visible anywhere, no face, no hands, hood up. Sitting motionless
+      before a wall of screens, low light, cinematic wide shot, very slow
+      pull back
+
+  - id: "3.3"
+    scene: 3
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: []
+    note: >
+      The crossings-out are the point: the operator is counting days. Pass 1
+      cleaned the prompt so hard for the no-readable-text rule that it came
+      back as a blank calendar and the beat was gone. Illegible printing and
+      visible pencil strokes are not in conflict — the marks carry the meaning,
+      the numbers never had to.
+    prompt: >
+      A calendar sheet pinned to a metal wall, its grid of day cells crossed
+      off one by one with heavy diagonal pencil strokes down to about two
+      thirds of the way through, the remaining cells untouched and empty. The
+      printing is too small and too faint to read — only the crossings-out
+      are distinct. Harsh side light, close shot
+
+  - id: "3.4"
+    scene: 3
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: []
+    prompt: >
+      Long strip of printed paper spilled across a metal floor, curling,
+      printed area illegible, single overhead light, deep shadow, top-down view
+
+  - id: "3.5"
+    scene: 3
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Wall of small monitors all showing the same faint green glow, no legible
+      content on any screen, dark room, symmetrical composition
+
+  - id: "3.6"
+    scene: 3
+    timeline_seconds: 7
+    generate_seconds: 7
+    model: filler
+    motion: very slow drift
+    anchors: [A1-control-room]
+    prompt: >
+      Open log book under a desk lamp, pencil set down beside it, page filled
+      with faint illegible handwriting, the room deserted, shallow focus,
+      very slow drift
+
+  # SCENE 4 — GROWTH (55 s)
+  - id: "4.1"
+    scene: 4
+    timeline_seconds: 9
+    generate_seconds: 9
+    model: filler
+    motion: static
+    anchors: []
+    ref_shot: "1.3"          # the approved plate, not the anchor
+    prompt: >
+      Same porthole view as before, Earth noticeably smaller and dimmer, more
+      stars visible around it, cold blue light almost gone from the frame,
+      static shot
+
+  - id: "4.2"
+    scene: 4
+    timeline_seconds: 8
+    generate_seconds: 8
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Untouched food ration tray on a table, condensation on the metal, single
+      overhead light, still life composition, static shot
+
+  - id: "4.3"
+    scene: 4
+    timeline_seconds: 9
+    generate_seconds: 10
+    trim_to: 9
+    model: workhorse
+    motion: slow drift
+    anchors: []
+    ref_shot: "1.2"          # the approved plate, not the anchor
+    note: >
+      A clean plate on purpose: "DELAY: 11.60 S" is composited here in post,
+      and 1.2 carries the same plate with 1.31 s on it. Pass 1 read
+      "readout showing a number" as an invitation and drew an oscilloscope
+      trace across the tube. The prompt now forbids marks on the screen
+      outright — the reference already supplies everything else.
+    prompt: >
+      Keep this screen completely blank. An even pale green glow across the
+      whole tube and nothing on it — no waveform, no oscilloscope trace, no
+      line, no graph, no digits, no graphics of any kind. Only the scratches
+      in the glass itself. The screen is brighter than the rest of the dark
+      room. Macro lens, shallow focus, slow drift
+    note: Must match 1.2. Same plate, two points in the story.
+
+  - id: "4.4"
+    scene: 4
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: filler
+    motion: static
+    anchors: []
+    prompt: >
+      Unmade bunk in a narrow crew compartment, blanket thrown back, nobody in
+      it, cold light from a single fixture, static shot
+
+  - id: "4.5"
+    scene: 4
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: workhorse
+    motion: mechanism turning
+    anchors: [A2-crt-console]
+    prompt: >
+      Mechanical mission timer on a bulkhead, drum edges turning slowly behind
+      a small window, digits out of focus and unreadable, worn metal casing,
+      dim light, macro shot
+
+  - id: "4.6"
+    scene: 4
+    timeline_seconds: 9
+    generate_seconds: 9
+    model: filler
+    motion: slow drift
+    anchors: [A4-corridor]
+    prompt: >
+      Station corridor with most lights dimmed, only emergency strips glowing
+      along the floor, cables overhead, deep perspective, slow drift
+
+  # SCENE 5 — RESOLUTION (65 s)
+  - id: "5.1"
+    scene: 5
+    timeline_seconds: 8
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Hand hovering over a large unmarked mechanical switch, dim red light,
+      close shot, no face visible, no text in frame, static
+    note: >
+      The only hand in the episode. If two takes fail, cut to the switch alone
+      rather than spending a third — the gesture is replaceable, the credits
+      are not.
+
+  - id: "5.2"
+    scene: 5
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: workhorse
+    motion: screen comes alive
+    anchors: [A2-crt-console]
+    prompt: >
+      External camera feed appearing on a monitor, black and white, heavy
+      static noise, mostly empty space with scattered stars,
+      screen-within-screen framing
+    note: >
+      Noise stays in the prompt here. It is the camera feed inside the frame,
+      not film degradation — a global ffmpeg pass would dirty the room around
+      the monitor as well.
+
+  - id: "5.3"
+    scene: 5
+    timeline_seconds: 12
+    generate_seconds: 10
+    retime: 1.2                 # within the 1.3x ceiling
+    model: workhorse
+    motion: extremely slow push in
+    anchors: []
+    exterior: true          # text-to-image, no interior reference
+    prompt: >
+      Deep black space filled with distant stars, one pale blue point of light
+      indistinguishable from the others, extremely slow push in, grainy
+      monochrome camera feed, cinematic
+    note: >
+      The shot the episode is built toward, and the thumbnail. Noise is
+      content here, same as 5.2. Retimed rather than split — a cut inside a
+      12 second push-in is visible, a 1.2x slowdown on it is not.
+
+  - id: "5.4"
+    scene: 5
+    timeline_seconds: 8
+    generate_seconds: 8
+    model: filler
+    motion: static
+    anchors: [A1-control-room]
+    prompt: >
+      Dark station interior, all screens off except one showing static, empty
+      operator chair, cold light, static wide shot
+
+  - id: "5.5"
+    scene: 5
+    timeline_seconds: 9
+    generate_seconds: 10
+    trim_to: 9
+    model: workhorse
+    motion: gears turning
+    anchors: []
+    prompt: >
+      Old camera drive mechanism waking up, gears turning slowly behind a
+      grille, faint red status light, macro shot, dark surroundings
+
+  - id: "5.6"
+    scene: 5
+    timeline_seconds: 9
+    generate_seconds: 9
+    model: filler
+    motion: static
+    anchors: [A2-crt-console]
+    prompt: >
+      Pale green monitor glow raking sideways across a cluttered console,
+      grazing light picking out rows of toggle switches, worn knobs and dial
+      faces in relief, the screen itself pushed to one edge of the frame and
+      mostly out of shot, everything beyond the console falling into black,
+      static shot
+
+  - id: "5.7"
+    scene: 5
+    timeline_seconds: 9
+    generate_seconds: 10
+    trim_to: 9
+    model: workhorse
+    motion: very slow pull back
+    anchors: [A1-control-room]
+    prompt: >
+      A figure in a dark bulky coverall and headset, small in the frame, seen
+      from directly behind and rendered as a flat unlit silhouette — no skin
+      visible anywhere, no face, no hands, hood up. Motionless before a single
+      lit screen in a large dark compartment, wide shot, cinematic, very slow
+      pull back
+
+  # SCENE 6 — CLOSE (20 s)
+  - id: "6.1"
+    scene: 6
+    timeline_seconds: 12
+    source: ffmpeg             # not generated, costs nothing
+    prompt: >
+      Single blinking indicator light in complete darkness, everything else
+      black, extremely minimal frame
+    note: >
+      Built from one still with the blink keyframed. A generated near-black
+      frame is 12 seconds of paid noise; this loops cleanly and matches the
+      grain pass exactly, because it is made by the same pass.
+
+  - id: "6.2"
+    scene: 6
+    timeline_seconds: 8
+    generate_seconds: 8
+    model: filler
+    motion: static
+    anchors: []
+    prompt: >
+      Total darkness with drifting dust barely visible, no light source,
+      near-black frame
+    note: >
+      Fall back to ffmpeg like 6.1 if the take reads synthetic. Reassess
+      before paying twice for near-black.

@@ -1,0 +1,63 @@
+# The channel's voice. Locked once — drift between episodes is audible and
+# breaks the illusion that these recordings come from one archive.
+#
+# Voice descriptions and the reference texts used to create them live in
+# voices.md. Voice Design cannot reproduce a lost voice exactly, so treat the
+# voice_ids below as irreplaceable.
+
+narrator:
+  voice_id: tdl2YAu4Nj41holo8yUO      # "Mockumentary narrator"
+  model_id: eleven_multilingual_v2
+  output_format: mp3_44100_128
+  settings:
+    speed: 1.0
+    # stability / similarity_boost / style are left at the API defaults on
+    # purpose. Nothing has been measured about them yet, and an unmeasured
+    # number written down here reads as a decision.
+
+# Not used in episode 01 — that record has a narrator only, no character.
+character:
+  voice_id: EiVTLiipxYldU5SJvo5d      # "Character footage"
+  model_id: eleven_v3
+  output_format: mp3_44100_128
+
+# --- Why speed is 1.0 -------------------------------------------------------
+#
+# Measured 2026-09-08 on scene 5 of episode 01, one run per setting:
+#
+#   speed 1.0 -> 162 wpm      speed 0.8 -> 138 wpm
+#   speed 0.9 -> 154 wpm      speed 0.7 -> 144 wpm
+#
+# The API accepts 0.7 to 1.2 and rejects anything outside it. But the
+# response is not monotonic — 0.7 came back faster than 0.8 — and repeating
+# a single unchanged request showed why:
+#
+#   scene 2, identical text, 3 runs: 123.5 / 143.2 / 142.6 wpm  (16% spread)
+#   scene 3, identical text, 4 runs: 185.2 / 203.0 / 140.7 / 141.8  (44%)
+#
+# Per-request variance swamps the whole parameter. There is no setting to
+# tune, so speed sits at the default, where synthesis quality is best.
+#
+# Pace comes from the written text and from the pauses in script.md, which
+# are cut in ffmpeg to the frame and cost nothing.
+
+# --- Seed -------------------------------------------------------------------
+#
+# The same seed reproduces the same delivery, exactly:
+#
+#   seed 12345 -> 16.6255 s, three times running
+#   seed 777   -> 19.5976 s, twice        (134.7 wpm)
+#   seed 424242-> 14.6750 s, twice        (179.9 wpm)
+#
+# So the per-paragraph seed is what holds the episode together, not the order
+# the paragraphs were generated in. Generate a few takes, keep the one whose
+# pace sits with its neighbours, and write its seed into the episode's
+# narration.yaml. Regeneration is then exact, and "never regenerate an
+# approved asset" becomes something the repository can actually enforce.
+#
+# Seeds belong to the episode, not to the channel, so they are not listed here.
+
+request:
+  # Hand the previous paragraph in as context so prosody carries across a
+  # boundary the listener should not be able to hear. Costs nothing.
+  use_previous_text: true

@@ -1,11 +1,12 @@
 # THE ARCHIVE — Record No. 1
 ## "TISHINA-9"
 
-**Runtime:** 4:10 (250 s) — 28 shots, shot durations sum to 250 s exactly
+**Runtime:** 4:10 (250 s) — 30 shots, durations sum to 250 s exactly (22/43/45/55/65/20 per scene)
+**Generated shots:** 29 (shot 6.1 is built in ffmpeg from a still, not generated)
 **Format:** 16:9 horizontal, three vertical cuts carved from it
 **Voice:** single male, level, no performance. A man dictating into a log, not an actor.
 **Camera rule:** almost no movement. Slow drift, faint lens breathing. No faces in close-up.
-**Word count:** 386. At ~140 wpm that is ~165 s of speech over 250 s of runtime. The remaining third is silence, and it is load-bearing.
+**Word count:** 313. Measured delivery 144-162 wpm depending on run, which puts speech at 46-54% of runtime — comfortably inside the two-thirds ceiling. No wpm target: pacing comes from the pause table below, not from delivery speed.
 
 ---
 
@@ -32,10 +33,10 @@ DELAY: 1.31 S — NOMINAL
 ```
 
 **Shot 1.1** — static, 6 s
-> Interior of a cramped orbital relay station, dim amber emergency lighting, worn control panels covered in dust, a single blinking green indicator, shallow depth of field, 35mm film grain, static locked-off shot, no people, cinematic, muted color grade
+> Interior of a cramped deep space relay station, dim amber emergency lighting, worn control panels covered in dust, a single blinking green indicator, shallow depth of field, 35mm film grain, static locked-off shot, no people, cinematic, muted color grade
 
 **Shot 1.2** — very slow push in, 8 s
-> Close view of an analog signal delay readout on a scratched CRT screen, glowing numbers, slight scanline flicker, dark room, film grain, macro lens, shallow focus
+> Close view of an analog readout on a scratched CRT screen, blank glowing panel with no legible digits, dark room, macro lens, shallow focus
 
 **Shot 1.3** — static, 8 s
 > View through a small circular porthole of a space station, Earth visible as a small blue crescent in the far distance, cold light falling on a metal frame, dust particles floating, 35mm film grain, static shot
@@ -67,7 +68,7 @@ DELAY: 1.31 S — NOMINAL
 > Starfield seen through a porthole, no planet anywhere in frame, cold metal rim catching faint light, dust particles floating, 35mm film grain
 
 **Shot 2.6** — static, 7 s
-> Gloved hand resting on a worn control dial, not turning it, dim amber light from below, close shot, no face visible, film grain
+> Empty operator chair pushed back from a console, worn upholstery, dim amber light, nobody in frame, static shot, shot on 35mm
 
 **Narration:**
 > Log forty-three. Delay is up to one point four four.
@@ -100,7 +101,7 @@ DELAY: 1.31 S — NOMINAL
 > Wall of small monitors all displaying the same identical readout, faint green glow, dark room, symmetrical composition, 35mm film grain
 
 **Shot 3.6** — very slow drift, 7 s
-> Open log book under a desk lamp, a hand resting motionless beside it, pencil set down, no face visible, film grain, shallow focus
+> Open log book under a desk lamp, pencil set down beside it, page filled with faint illegible handwriting, nobody in frame, shallow focus, shot on 35mm
 
 **Narration:**
 > Control confirms. Orbit nominal. Delay on their end, one point three one. Nominal.
@@ -165,7 +166,7 @@ LOG 047 / DELAY: 11.60 S
 **Shot 5.2** — screen comes alive, 10 s
 > External camera feed appearing on a monitor, black and white, heavy static noise, mostly empty space with scattered stars, film grain, screen-within-screen framing
 
-**Shot 5.3** — slow zoom toward one point, 12 s
+**Shot 5.3** — slow zoom toward one point, 12 s on the timeline (`generate_seconds: 10`, `timeline_seconds: 12` — 1.2x slowdown, invisible on a push-in)
 > Deep black space filled with distant stars, one pale blue point of light indistinguishable from the others, extremely slow push in, grainy monochrome camera feed, cinematic
 
 **Shot 5.4** — static, 8 s
@@ -201,11 +202,11 @@ LOG 047 / DELAY: 11.60 S
 
 ## SCENE 6 — CLOSE (3:50–4:10)
 
-**Shot 6.1** — static, 12 s, sound falls away into silence
-> Single blinking indicator light in complete darkness, everything else black, extremely minimal frame, film grain
+**Shot 6.1** — static, 12 s, sound falls away into silence. **Not generated** — built in ffmpeg from a single still, indicator blink keyframed. Costs nothing and loops cleanly.
+> Single blinking indicator light in complete darkness, everything else black, extremely minimal frame
 
-**Shot 6.2** — static, 8 s
-> Total darkness with only faint film grain and drifting dust visible, no light source, near-black frame, 35mm grain texture
+**Shot 6.2** — static, 8 s. Also buildable in ffmpeg if generation looks synthetic.
+> Total darkness with drifting dust barely visible, no light source, near-black frame
 
 **Center title, white:**
 ```
@@ -225,6 +226,34 @@ Hook for the comments and the reason for a second episode.
 
 ---
 
+## Prompt Hygiene (applies when building `shots.yaml`)
+
+The prompts above are written for a human reader. Strip the following
+before they become generation calls:
+
+- **Grain and degradation.** Remove `35mm film grain`, `film grain`,
+  `heavy scanlines`, `grain texture`. Keep `shot on 35mm` where it is
+  doing framing and lighting work rather than adding noise. All
+  degradation is applied in ffmpeg over the whole episode, so that it
+  is consistent across shots instead of varying per generation.
+- **Exception:** noise that is *content* stays. In 5.2 and 5.3 the
+  static and monochrome roughness belong to the camera feed shown on a
+  monitor inside the frame. A global ffmpeg pass cannot produce that,
+  because it would degrade the room around the monitor too.
+- **Readable text and digits.** Generate screens, gauges and paper
+  blank, dim, or out of focus. Every number, readout and title is
+  composited in post. Prompt for a clean plate on purpose — a screen
+  with generated garbage on it is harder to overlay onto than an empty one.
+  Affects 1.2, 2.2, 3.1, 3.3, 3.5, 3.6, 4.3, 4.5. Note that 1.2 and 4.3
+  are the same delay readout at two points in the story — both blank.
+  In 3.6 the word `illegible` is already doing the job.
+- **Hands.** Only 5.1 keeps a hand, because the gesture carries the
+  scene. Everywhere else the operator is implied by absence — a pushed
+  back chair, a set down pencil. Hands are the highest-failure-rate generation
+  subject and there is no reason to buy that risk for atmosphere.
+
+---
+
 ## Audio
 
 Half the effect lives here. Do not economize.
@@ -232,7 +261,17 @@ Half the effect lives here. Do not economize.
 - Constant low station hum, one note, the whole video. It cuts out at the end.
 - A relay ticking once every 4–5 seconds.
 - In scenes 4 and 5, add a very quiet second noise layer, barely audible. The viewer does not register it consciously, but the tension builds.
-- Two seconds of nothing before the line "It is not the station that is moving away." No music, no hum.
+- Pauses are inserted at assembly, between separately generated paragraphs:
+
+  | Position | Gap |
+  |---|---|
+  | Between paragraphs | 1.2 s |
+  | Across a scene cut | 2.0 s |
+  | Before "It is not the station that is moving away." | 2.5 s, hum cut too |
+  | Before "The third of March was six years ago." | 1.8 s |
+
+- The pause before "It is not the station that is moving away" carries
+  no music and no hum. Everything stops.
 - No music as such. One drone underneath.
 
 ---

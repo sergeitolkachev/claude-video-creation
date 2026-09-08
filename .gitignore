@@ -1,2 +1,21 @@
+# Secrets
 .env
+
+# Editors
 .idea
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+
+# Generated media — reproducible from script.md, shots.yaml and the configs.
+# Contents are ignored; the empty directories stay in the tree so the layout
+# is visible without running anything.
+episodes/*/anchors/*
+episodes/*/stills/*
+episodes/*/approved/*
+episodes/*/takes/*
+episodes/*/audio/*/*
+episodes/*/out/*
+!episodes/*/**/.gitkeep

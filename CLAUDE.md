@@ -118,8 +118,19 @@ occupies well under half the runtime — silence is part of the format.
 
 - Generate narration **per paragraph**, not as one file, so a single
   line can be regenerated without touching the rest.
-- `voice_id` is locked in `config/voice.yaml`. Never let it drift
-  between episodes — the voice is the channel's identity.
+- `voice_id` and speaking rate are locked in `config/voice.yaml`. Never
+  let either drift between episodes — the voice is the channel's identity.
+- **Do not target a words-per-minute figure.** Measured on this voice,
+  the speed parameter is not monotonic — 0.7 came out faster than 0.8 —
+  and run-to-run spread is about +/-8 wpm. It is noise, not a control.
+  Pin it at the default, chosen for synthesis quality, and never touch it.
+- Pacing is bought with silence between paragraphs, not with delivery
+  speed inside them. Gaps are inserted at assembly, cost nothing, and are
+  frame-accurate. Default gap 1.2 s between paragraphs, 2 s across a
+  scene cut, longer where the script calls for it explicitly.
+- If a line still reads hurried after the gaps are in, edit the sentence:
+  shorter clauses, a period where a comma was. Never reach for the speed
+  parameter.
 - Room tone runs under the entire episode. Absolute digital silence
   destroys the illusion of a recording.
 
@@ -132,16 +143,39 @@ ffmpeg handles everything after generation. No models involved.
 - Do not upscale. Clean footage works against found-footage framing.
 - Verticals: center-safe crop, hard cut mid-sentence at the end.
 
+## `shots.yaml` Schema
+
+Duration is two separate fields. Conflating them breaks validation the
+moment a shot is retimed in post.
+
+```yaml
+- id: 5.3
+  generate_seconds: 10      # what the model is asked for
+  timeline_seconds: 12      # what it occupies in the cut
+  model: kling-pro
+  prompt: "..."
+- id: 6.1
+  source: ffmpeg            # no generation at all
+  timeline_seconds: 12
+```
+
+- `timeline_seconds` defaults to `generate_seconds` when absent.
+- Runtime validation sums `timeline_seconds`. Cost estimation sums
+  `generate_seconds`, skipping any shot with `source: ffmpeg`.
+- Retiming beyond 1.3x is not allowed — camera drift starts reading as
+  a stutter rather than as the medium.
+
 ## Validation Before Generation
 
 Run these checks against `shots.yaml` before spending anything. They are
 cheap in text and expensive in credits.
 
-- Shot durations must sum to the stated runtime, per scene and overall.
+- `timeline_seconds` must sum to the stated runtime, per scene and overall.
+  Never parse duration out of prose — read the field.
   A mismatch means either missing shots or an incorrect runtime — resolve
   it in the script, never by stretching clips in post.
-- Narration word count divided by ~140 wpm must be less than the runtime.
-  If speech fills more than two thirds of the episode, cut words.
+- Narration word count divided by the locked wpm must leave at least a
+  third of the runtime as silence. Use the measured rate, not an assumed one.
 - Every shot has a `model:` field.
 - No shot exceeds the model's maximum clip length.
 - Any figure stated in the narration (distances, delays, dates) must be

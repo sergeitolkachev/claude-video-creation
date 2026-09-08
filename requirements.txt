@@ -1,0 +1,5 @@
+# Build with: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# The system python is PEP 668 managed and refuses pip installs, so the venv
+# is not optional.
+PyYAML>=6.0
+Pillow>=11.0
