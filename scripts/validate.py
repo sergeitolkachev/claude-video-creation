@@ -58,10 +58,12 @@ def main(ep):
     locked = [s for s in shots if s.get("source") == "ffmpeg_still"]
     missing = [s["id"] for s in locked
                if not (ep / "approved" / f"{s['id']}.jpg").exists()]
-    if missing and len(missing) == len(locked):
-        print(f"\n  plates: 0 / {len(locked)} approved — stage 5 not started")
-    elif missing:
-        fail += [f"{i}: ffmpeg_still with no approved still" for i in missing]
+    if missing:
+        # Selection is a human step that runs over days; an incomplete
+        # approved/ is the normal state of an episode in stage 4, not a
+        # failure. build_static.py is the gate that actually needs the file.
+        print(f"\n  plates: {len(locked) - len(missing)} / {len(locked)} "
+              f"approved — {len(missing)} still to pick")
     else:
         print(f"\n  plates: {len(locked)} / {len(locked)} approved  ok")
 

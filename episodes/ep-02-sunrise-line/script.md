@@ -113,9 +113,9 @@ MARGIN draining once in real time over four seconds.
 60 km ÷ 2.50 km/h = 24 h
 ```
 
-**Shot 3.1** — static, 8 s. Ground level: a wide flat track pressed into
-damp soil.
-**Shot 3.2** — static, 8 s. Older tracks behind it, already cracking.
+**Shot 3.1** — static, 8 s. Ground level: a continuous band of broken,
+pressed-down crust across damp soil, intact ground on either side.
+**Shot 3.2** — static, 8 s. An older band, dried pale and splitting.
 **Shot 3.3** — three-plate dissolve, 10 s. The same patch of ground: damp,
 then dry, then split. **Not generated as video** — three approved stills
 cross-dissolved in ffmpeg, which is the only way the patch stays the same
@@ -191,7 +191,8 @@ higher, thinner, smaller prints. Cosine plate.
 **Shot 5.2** — aerial drift, 10 s. Along the higher, thinner trail.
 **Shot 5.3** — static, 9 s. Nursery ground: churned soil, many small
 overlapping tracks in a tight cluster, all pointing one way.
-**Shot 5.4** — static, 8 s. Small prints, close.
+**Shot 5.4** — static, 8 s. A much narrower band, close. Same trail, smaller
+animal.
 **Shot 5.5** — static, 8 s. High-latitude ground: thin frost, low grazing
 light.
 **Shot 5.6** — static, 9 s. Polar ground: still, unmarked, sun on the rim.
@@ -225,10 +226,10 @@ Earth–Moon distance 384,400 km
 
 **Shot 6.1** — static, 9 s. Empty band at what would be dawn, low golden
 light, no animals in frame. Odometer plate.
-**Shot 6.2** — static, 9 s. A single line of tracks receding, frost edge
-behind it.
-**Shot 6.3** — controlled drift, 10 s. Along the track line. Built locally:
-a model asked to travel down a line of tracks trucks the line out of frame.
+**Shot 6.2** — static, 9 s. A single narrow band receding into haze, frost
+edge behind it.
+**Shot 6.3** — controlled drift, 10 s. Along that band. Built locally: a model
+asked to travel down a trail trucks it out of frame.
 **Shot 6.4** — static, 6 s. Horizon, dust.
 
 **Narration:**
@@ -285,8 +286,14 @@ Carried forward from record 1, plus what this world adds.
 - No sky detail. Thin haze, no clouds, no stars, no second sun. The sun sits
   **on** the horizon and never above it — a model given "sunrise" will lift
   it, so every prompt says low and level, never rising.
-- Tracks are pressed into ground, never drawn on it. "Footprint" reads as a
-  stamped human shoe; the word used here is a wide flat pressed track.
+- **The animal's passage is a band, never a mark.** Five generation routes
+  were spent trying to produce a single impression in soft ground; every one
+  returned a boot sole, a tyre rut, a tracked belt or a moulded bowl, and
+  naming those to forbid them drew them. The words "track", "print" and
+  "footprint" are out of every prompt in this episode. What is described
+  instead is a continuous band of broken, pressed-down crust with untouched
+  ground beside it — which is what an animal that never stops walking
+  actually leaves.
 - Seedream rewrites every prompt before generating and cannot be turned off.
   Anything vague comes back as whatever is statistically typical: "dust"
   became heaps of grit on record 1, and "plain" invites a desert with dunes.

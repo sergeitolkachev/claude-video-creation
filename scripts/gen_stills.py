@@ -93,12 +93,12 @@ def main():
     jobs = []
     for s in shots:
         prompt = " ".join(s["prompt"].split())
-        # A shot that shows the animal's track carries the canonical
-        # description of one. It goes after the framing, because the framing
+        # A shot that shows where the animal has passed carries the canonical
+        # description of the trail. It goes after the framing, because the framing
         # is what the reference image argues with and the mark is what the
         # enhancer would otherwise invent.
-        if s.get("track_canon"):
-            prompt = f"{prompt}. {' '.join(s['track_canon'].split())}"
+        if s.get("trail_canon"):
+            prompt = f"{prompt}. {' '.join(s['trail_canon'].split())}"
         if s.get("ref_shot"):
             # Two shots in this episode are the same physical plate seen twice
             # in the story (1.2/4.3 the delay readout, 1.3/4.1 the porthole).

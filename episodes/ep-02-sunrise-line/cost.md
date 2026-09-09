@@ -140,6 +140,16 @@ is shown as a band of disturbed ground rather than as an imprint — which is
 also the truer image, since an animal that never stops walking leaves a
 continuous trail, not a row of separate marks.
 
+The rewrite landed on the first pass: twelve candidates, no boot, no tyre, no
+bowl, and three of the four seeds usable on every shot. $1.09 was spent
+finding out that the subject was wrong, and $0.52 fixing it.
+
+The dissolve plates are the other thing that worked exactly as record 1 said
+they would. 3.3b and 3.3c were generated against the **approved** 3.3a rather
+than against an anchor, and came back as the same band in the same frame with
+only the moisture changed — which is the whole point of `ref_shot:`, and the
+reason the drying sequence reads as one patch of ground instead of three.
+
 What is left to try is scale and texture rather than shape — the print floored
 with the same soil and the same cracks as everything around it, edges
 crumbled and asymmetric, shot from directly above with no horizon in frame to
@@ -179,3 +189,6 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | 3.1/3.2/3.3a on text-to-image with the track canon, 12 | $0.36 | $3.16 |
 | 2026-09-09 | 4 — stills | 3.1 with canon v2, failed: four tracked-vehicle prints | $0.12 | $3.28 |
 | 2026-09-09 | 4 — stills | 3.1 with canon v3, failed: four boot prints | $0.12 | $3.40 |
+| 2026-09-09 | 4 — stills | storyboard changed to bands; 3.1/3.2/3.3a, 12 | $0.36 | $3.76 |
+| 2026-09-09 | 4 — stills | 3.3b/3.3c against the approved 3.3a, 4 | $0.16 | $3.92 |
+| 2026-09-09 | 4 — stills | **approved:** 3.1 s44, 3.2 s11, 3.3a s11, 3.3b s22, 3.3c s11 — scene 3 complete | — | $3.92 |
