@@ -106,24 +106,6 @@ exterior_spine: &exterior_spine >
 # described by what it is not, and an enhancer filling that gap reaches for
 # the statistically typical mark on soft ground — a boot sole or a tyre.
 # One sentence, positive, in every shot that shows one.
-# Version 2. Version 1 described the shape — "a smooth oval depression with a
-# soft rounded rim of displaced soil" — and got a moulded bowl set into the
-# ground, too circular and too clean, reading a metre wide because nothing in
-# frame gave a scale. This one describes the material and the scale instead
-# and leaves the shape mostly unsaid: the print is made of the ground it is
-# in, and the cracks running through it are what say how big it is.
-track_canon: &track_canon >
-  The mark is a shallow print pressed into the soil, about the width of two
-  hands, and it is made of the same ground as everything around it — the same
-  grit, the same fine hairline cracks running down into it and out the other
-  side, the same colour, no cleaner and no smoother than the surface it sits
-  in. It is sunk only two or three centimetres, its floor uneven, its edges
-  crumbled and slightly asymmetric rather than a clean curve. There is no wall
-  or ridge of piled soil around it, no smooth moulded surface, no bowl, no
-  basin, no dish, no crater. Nothing is patterned inside it: no toes, no
-  claws, no pads, no split hoof, no tread, no lugs, no ribs, no grooves, and
-  no boot sole and no tyre mark anywhere in the frame.
-
 # The world at ground level, in words, for shots that go to text-to-image
 # because no reference helps them. Same material, light and palette as the
 # anchor spine, with the camera left out — a shot still says its own distance.
@@ -132,12 +114,27 @@ ground_spine: &ground_spine >
   pale cracked clay, dull rust staining, patches of pale blue-grey frost. The
   light comes in almost level from a sun sitting on the horizon far away, so
   everything is picked out by long raking shadows and the surface relief reads
-  strongly. Desaturated palette, no saturated colour, no lush green. The
-  ground is natural and irregular everywhere: no ribbed band, no corrugation,
-  no repeating parallel ridges, no evenly spaced grooves, no tyre tread,
-  nothing rolled, ploughed or combed across it, no kerb, no verge, no painted
-  line, no gravel shoulder. No people, no animals, no machinery, no vehicles,
-  no lettering or graphics of any kind.
+  strongly. Desaturated palette, no saturated colour, no lush green. Natural
+  untouched ground, irregular everywhere, nothing rolled, ploughed or combed
+  across it. No people, no animals, no machinery, no vehicles, no lettering.
+
+# Version 3, and the last thing tried before the storyboard changes instead.
+#
+# Two changes, both from what the failures had in common. The negation list is
+# gone entirely: v2 forbade tread, lugs, ribs and grooves by name and got all
+# four, which is record 1's "no signage" lesson at full strength — a list of
+# things not to draw is a list of things. And the word "track" is gone from
+# every prompt in this family, because in English it is a vehicle word, and it
+# had been sitting in every prompt that came back as a tyre rut or a tracked
+# belt since the first pass.
+#
+# What is left is one positive sentence about scale and material. Nothing
+# about what the mark is not.
+track_canon: &track_canon >
+  The mark is a shallow oval print in the soil, about the width of two hands
+  and sunk two or three centimetres, its floor made of the same grit and
+  crossed by the same fine hairline cracks as the ground around it, its edges
+  crumbled and uneven.
 
 # Appended to every image-to-video prompt. The approved still already carries
 # the subject, the light and the framing; the video prompt's only job is to
@@ -463,8 +460,8 @@ shots:
     spine_key: ground_spine
     track_canon: *track_canon
     prompt: >
-      One single track pressed into damp fine-grained soil, alone in an
-      otherwise undisturbed surface. Photographed from directly above with the
+      A single shallow print in damp fine-grained soil, alone in an otherwise
+      undisturbed surface. Photographed from directly above with the
       camera pointing straight down, the frame covering about half a metre of
       ground and nothing else — no horizon, no sky and no distance in the
       picture. Hard raking light from one side across the whole frame, static
@@ -479,8 +476,8 @@ shots:
     spine_key: ground_spine
     track_canon: *track_canon
     prompt: >
-      Two or three older tracks of that same kind in the same ground, spaced
-      well apart, their rims dried pale and beginning to split, fine cracks
+      Two or three older prints of that same kind in the same ground, spaced
+      well apart, their edges dried pale and beginning to split, fine cracks
       running out of them across the surface, the soil between them lighter
       and drier, raking light, ground level close shot
 
@@ -500,15 +497,14 @@ shots:
     spine_key: ground_spine
     track_canon: *track_canon
     prompt: >
-      Damp fine-grained soil filling the frame with one such track pressed
-      into it, raking light from the side, macro, static
+      Damp fine-grained soil filling the frame with one such print in it, raking light from the side, macro, static
     plate_prompts:
       "3.3b": >
-        The same patch of ground, now dried out: the same track in the same
+        The same patch of ground, now dried out: the same print in the same
         place, the surface gone pale and matte, the damp sheen gone. Nothing
         moves and nothing else changes.
       "3.3c": >
-        The same patch of ground, now split: the same track in the same place,
+        The same patch of ground, now split: the same print in the same place,
         the surface broken into hard curling plates with open cracks between
         them. Nothing moves and nothing else changes.
 
@@ -673,7 +669,7 @@ shots:
       carries the same rim and the same soil.
     track_canon: *track_canon
     prompt: >
-      Several tracks of that same kind but much smaller, a hand's width
+      Several prints of that same kind but much smaller, a hand's width
       across, overlapping each other in damp fine-grained soil, raking light,
       ground level close shot
 
@@ -733,7 +729,7 @@ shots:
     anchors: [A3-ground-macro]
     track_canon: *track_canon
     prompt: >
-      A single line of such tracks receding away from the camera into the
+      A single line of such prints receding away from the camera into the
       haze, evenly spaced and all pointing the same way, the pale line of a
       frost edge visible far behind them, low light, ground level shot,
       static

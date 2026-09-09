@@ -123,6 +123,22 @@ What was tried and what it cost:
 | A3 anchor reshot, pass 5 | negations cost the nadir, tread survived | $0.09 |
 | text-to-image, canon v1 (shape) | moulded ceramic bowl in the ground | $0.36 |
 | text-to-image, canon v2 (material) | excavator belt imprint, all four seeds | $0.12 |
+| text-to-image, canon v3 (no negations, "print") | lugged boot print, all four seeds | $0.12 |
+
+**Five routes, $1.09, and the conclusion is about the subject rather than the
+prompt.** A single discrete mark in soft ground has exactly two strong
+attractors in this model's training, a boot and a tyre, and every word
+available to name the thing points at one of them: "track" returns a tracked
+vehicle or a tyre rut, "print" returns a boot sole, describing the shape
+returns a moulded bowl, and referencing the anchor returns the anchor's own
+ribbed band. Naming what it must not be draws that thing instead.
+
+What this world does render, reliably and on the first pass, is **bands**:
+2.1, 2.4, 2.5 and 3.4 all landed immediately, and every one of them is a
+stripe of one material against a stripe of another. So the animal's passage
+is shown as a band of disturbed ground rather than as an imprint — which is
+also the truer image, since an animal that never stops walking leaves a
+continuous trail, not a row of separate marks.
 
 What is left to try is scale and texture rather than shape — the print floored
 with the same soil and the same cracks as everything around it, edges
@@ -162,3 +178,4 @@ problem, not a model problem.
 | 2026-09-09 | 3 — anchors | A3 pass 5, failed: negations cost the nadir, tread stayed | $0.09 | $2.80 |
 | 2026-09-09 | 4 — stills | 3.1/3.2/3.3a on text-to-image with the track canon, 12 | $0.36 | $3.16 |
 | 2026-09-09 | 4 — stills | 3.1 with canon v2, failed: four tracked-vehicle prints | $0.12 | $3.28 |
+| 2026-09-09 | 4 — stills | 3.1 with canon v3, failed: four boot prints | $0.12 | $3.40 |
