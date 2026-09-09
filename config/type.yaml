@@ -66,3 +66,28 @@ applies_to:
   - closing cards
   - thumbnail plates          # thumbnails.yaml
   - channel art               # brand.yaml
+
+# --- Captions, on the vertical cuts -----------------------------------------
+#
+# Captions are speech, not instrumentation: they stay neutral off-white rather
+# than phosphor, because phosphor is what the record's own readouts are drawn
+# in and a subtitle is not a readout. Same Menlo, same halo, no box — a box
+# reads as a player overlay.
+#
+# The block grows upward from a fixed clear space at the bottom, so adding a
+# second line never eats into it. That space exists because every vertical
+# platform parks its own furniture there: the caption, the handle, the sound
+# name, the buttons. Record 01 left 264 px of 1920 clear and it was still
+# under the pile.
+captions:
+  size: 46
+  tracking: 1.5
+  line_height: 66
+  colour: [240, 238, 232]
+  alpha: 250
+  halo_radius: 10
+  halo_alpha: 220
+  safe_width: 900           # of 1080; a real margin, not the frame edge
+  bottom_clear: 0.30        # fraction of frame height kept clear underneath
+  line_chars: 30
+  cue_chars: 58

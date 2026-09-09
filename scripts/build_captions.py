@@ -14,17 +14,21 @@ import os, sys, json, base64, subprocess, pathlib, re, urllib.request, yaml
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 sys.path.insert(0, "scripts")
-from sync_titles import placement
+import importlib.util
+_spec = importlib.util.spec_from_file_location("ba", "scripts/build_audio.py")
+ba = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(ba)
 
-FONT_PATH = "/System/Library/Fonts/Menlo.ttc"
 VW, VH = 1080, 1920
-SIZE, TRACK, LINE_H = 46, 1.5, 66
-BOTTOM_LINES = 4              # empty lines kept clear under the captions
-LINE_CHARS = 30               # per rendered line
-CUE_CHARS  = 58               # per cue, i.e. up to two lines
-MIN_TAIL   = 18               # a trailing cue shorter than this is an orphan
-SAFE_W     = 900              # keep a real margin; the frame is 1080 wide
-INK = (240, 238, 232)
+MIN_TAIL = 18                 # a trailing cue shorter than this is an orphan
+CFG = yaml.safe_load(pathlib.Path("config/type.yaml").read_text())
+FONT_PATH  = CFG["font"]["face"]
+C          = CFG["captions"]
+SIZE, TRACK, LINE_H = C["size"], C["tracking"], C["line_height"]
+LINE_CHARS, CUE_CHARS = C["line_chars"], C["cue_chars"]
+SAFE_W = C["safe_width"]
+INK = tuple(C["colour"])
+# Kept clear at the bottom of every vertical, for the platform's own furniture.
+BOTTOM_CLEAR = int(VH * C["bottom_clear"])
 
 def dur(p):
     return float(subprocess.run(["ffprobe","-v","error","-show_entries","format=duration",
@@ -32,7 +36,8 @@ def dur(p):
 
 def paragraphs(script):
     order, paras = [], {}
-    for sc, blk in enumerate(re.findall(r"\*\*Narration:\*\*\n((?:>.*\n)+)", script), 1):
+    for sc, blk in enumerate(
+            re.findall(r"\*\*Narration:\*\*\n+((?:>.*\n|\n(?=>))+)", script), 1):
         txt = re.sub(r"^> ?", "", blk, flags=re.M)
         for i, p in enumerate([x.strip() for x in txt.split("\n\n") if x.strip()], 1):
             pid = f"s{sc}p{i}"; order.append(pid); paras[pid] = " ".join(p.split())
@@ -102,22 +107,43 @@ def chunk(words):
     if cur: out.append(cur)
     out = [c for c in out if c]
 
-    # Rebalance a stranded tail — but a short cue that is a whole sentence is
-    # not stranded, it is a beat. "Nominal." standing alone is the point;
-    # pulling words back into it produced "Delay on their end, one point" /
-    # "three one. Nominal." and split the reading across two captions.
+    # Rebalance a stranded tail — but a cue that is a whole sentence is not
+    # stranded, it is a beat. "Nominal." standing alone is the point.
+    #
+    # And the rule may never create the problem it exists to solve: pulling a
+    # word back out of the previous cue is only allowed if what is left is
+    # still a readable cue. Without that guard, "There is no destination." /
+    # "There never was." was rebalanced into "There is no" / "destination.
+    # There never was." — the tail was fixed by orphaning the head.
     for i in range(1, len(out)):
-        whole_sentence = (out[i][-1]["w"].endswith((".", "?", "!"))
-                          and len(out[i]) <= 2)
-        if whole_sentence:
+        starts_sentence = out[i - 1][-1]["w"].endswith((".", "?", "!"))
+        ends_sentence = out[i][-1]["w"].endswith((".", "?", "!"))
+        if starts_sentence and ends_sentence:
             continue
         while (len(" ".join(x["w"] for x in out[i])) < MIN_TAIL
                and len(out[i - 1]) > 1):
             moved = out[i - 1][-1]
+            rest = " ".join(x["w"] for x in out[i - 1][:-1])
+            if len(rest) < MIN_TAIL:
+                break
             if len(" ".join(x["w"] for x in [moved] + out[i])) > CUE_CHARS:
                 break
             out[i - 1] = out[i - 1][:-1]
             out[i] = [moved] + out[i]
+
+    # Whatever is still a short head with no sentence in it joins the cue after
+    # it, if the two fit together.
+    i = 0
+    while i < len(out) - 1:
+        head = " ".join(x["w"] for x in out[i])
+        joined = len(head) + 1 + len(" ".join(x["w"] for x in out[i + 1]))
+        if (len(head) < MIN_TAIL and not head.endswith((".", "?", "!"))
+                and joined <= CUE_CHARS):
+            out[i + 1] = out[i] + out[i + 1]
+            del out[i]
+            continue
+        i += 1
+
     return out
 
 def render(text):
@@ -135,7 +161,7 @@ def render(text):
     def paint(fill, layer):
         d = ImageDraw.Draw(layer)
         # the block grows upward, so the clear space below never shrinks
-        y0 = VH - BOTTOM_LINES * LINE_H - LINE_H * len(lines)
+        y0 = VH - BOTTOM_CLEAR - LINE_H * len(lines)
         for i, l in enumerate(lines):
             w = sum(d.textlength(c, font=f) + TRACK for c in l)
             x = (VW - w) / 2
@@ -143,15 +169,20 @@ def render(text):
                 d.text((x, y0 + i * LINE_H), ch, font=f, fill=fill)
                 x += d.textlength(ch, font=f) + TRACK
 
-    im = Image.new("RGBA", (VW, VH), (0, 0, 0, 0)); paint(INK + (250,), im)
+    im = Image.new("RGBA", (VW, VH), (0, 0, 0, 0)); paint(INK + (C["alpha"],), im)
     # a soft dark halo so the type holds over both dark metal and lit screens,
     # without a caption box, which would look like a player overlay
-    halo = Image.new("RGBA", (VW, VH), (0, 0, 0, 0)); paint((0, 0, 0, 220), halo)
-    halo = halo.filter(ImageFilter.GaussianBlur(10))
+    halo = Image.new("RGBA", (VW, VH), (0, 0, 0, 0))
+    paint((0, 0, 0, C["halo_alpha"]), halo)
+    halo = halo.filter(ImageFilter.GaussianBlur(C["halo_radius"]))
     return Image.alpha_composite(halo, im)
 
 def main():
-    ep = pathlib.Path("episodes/ep-01-tishina-9")
+    args = sys.argv[1:]
+    only = None
+    if "--only" in args:
+        i = args.index("--only"); only = args[i + 1]; del args[i:i + 2]
+    ep = pathlib.Path(args[0] if args else "episodes/ep-02-sunrise-line")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
     for line in pathlib.Path(".env").read_text().splitlines():
         if "=" in line and not line.strip().startswith("#"):
@@ -161,54 +192,81 @@ def main():
     picks = yaml.safe_load((ep / "audio" / "narration.yaml").read_text())["picks"]
     order, paras = paragraphs((ep / "script.md").read_text())
     prev_of = {order[i]: (paras[order[i-1]] if i else None) for i in range(len(order))}
-    pos = placement(ep)
-    cache_dir = ep / "audio" / "alignment"; cache_dir.mkdir(exist_ok=True)
 
-    vid, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
-    src = ep / "out" / "verticals" / f"{vid}.mp4"
-    out_dir = ep / "out" / "captions" / vid
-    out_dir.mkdir(parents=True, exist_ok=True)
+    # Placement comes from the same function the mix uses, so a caption cannot
+    # disagree with the audio it is transcribing. Record 01 kept a second copy
+    # of the scene constants in sync_titles.py; there is only one copy now.
+    cfg = yaml.safe_load((ep / "audio.yaml").read_text())
+    shots = yaml.safe_load((ep / "shots.yaml").read_text())["shots"]
+    start, end = ba.scene_bounds(shots)
+    pos = {pid: t for pid, _, t in ba.place(picks, ep / "audio", start, end, cfg)}
+    cache_dir = ep / "audio" / "alignment"; cache_dir.mkdir(parents=True, exist_ok=True)
 
-    cues = []
-    for pid in order:
-        t0 = pos[pid]
-        d = dur(ep / "audio" / "narration" / f"{pid}_s{picks[pid]}.mp3")
-        # Tolerance matters: the line the whole short is built to end on
-        # finishes exactly at b, and a bare > comparison dropped it.
-        if t0 < a - 0.01 or t0 + d > b + 0.05:
+    verticals = yaml.safe_load((ep / "verticals.yaml").read_text())
+    for cut in verticals["cuts"]:
+        if only and cut["id"] != only:
             continue
-        words = alignment(pid, paras[pid], prev_of[pid], picks[pid], voice, key, cache_dir)
-        for grp in chunk(words):
-            text = " ".join(w["w"] for w in grp)
-            cues.append((t0 - a + grp[0]["t"], t0 - a + grp[-1]["e"] + 0.18, text))
+        vid, a, b = cut["id"], cut["from"], cut["to"]
+        src = ep / "out" / "verticals" / f"{vid}.mp4"
+        if not src.exists():
+            print(f"  {vid}: no {src} — run build_verticals.py first"); continue
+        out_dir = ep / "out" / "captions" / vid
+        out_dir.mkdir(parents=True, exist_ok=True)
+        print(f"\n  {vid}  {a:.1f}-{b:.1f}s")
 
-    # Never two captions on screen at once: a cue's tail is trimmed to the
-    # next cue's head. The +0.18 hold reads well at the end of a sentence and
-    # badly in the middle of one.
-    for i in range(len(cues) - 1):
-        s, e, txt = cues[i]
-        cues[i] = (s, min(e, cues[i + 1][0] - 0.04), txt)
+        cues = []
+        for pid in order:
+            if pid not in pos:
+                continue
+            t0 = pos[pid]
+            d = dur(ep / "audio" / "narration" / f"{pid}_s{picks[pid]}.mp3")
+            # A paragraph that starts inside the window counts, even if the cut
+            # lands mid-word — that last half sentence is the point of the cut.
+            if t0 + d < a - 0.01 or t0 > b - 0.2:
+                continue
+            words = alignment(pid, paras[pid], prev_of[pid], picks[pid],
+                              voice, key, cache_dir)
+            for grp in chunk(words):
+                s_t = t0 - a + grp[0]["t"]
+                e_t = t0 - a + grp[-1]["e"] + 0.18
+                if e_t <= 0 or s_t >= b - a:
+                    continue
+                cues.append((max(0.0, s_t), min(b - a, e_t),
+                             " ".join(w["w"] for w in grp)))
 
-    for i, (s, e, text) in enumerate(cues):
-        render(text).save(out_dir / f"c{i:02d}.png")
-        print(f"  {s:6.2f}–{e:5.2f}  {text}")
+        # Never two captions on screen at once: a cue's tail is trimmed to the
+        # next cue's head. The +0.18 hold reads well at the end of a sentence
+        # and badly in the middle of one.
+        for i in range(len(cues) - 1):
+            s_t, e_t, txt = cues[i]
+            cues[i] = (s_t, min(e_t, cues[i + 1][0] - 0.04), txt)
 
-    ins = ["-i", str(src)]
-    for i in range(len(cues)):
-        ins += ["-loop", "1", "-t", str(b - a), "-r", "24",
-                "-i", str(out_dir / f"c{i:02d}.png")]
-    fc, last = [], "0:v"
-    for i, (s, e, _) in enumerate(cues, start=1):
-        fc.append(f"[{i}:v]format=rgba,fade=t=in:st={s:.2f}:d=0.18:alpha=1,"
-                  f"fade=t=out:st={e-0.18:.2f}:d=0.18:alpha=1[c{i}]")
-        fc.append(f"[{last}][c{i}]overlay=0:0:enable='between(t,{s-0.05:.2f},{e+0.05:.2f})'[o{i}]")
-        last = f"o{i}"
-    dst = ep / "out" / "verticals" / f"{vid}-captioned.mp4"
-    subprocess.run([ff, "-y", "-v", "error", *ins, "-filter_complex", ";".join(fc),
-                    "-map", f"[{last}]", "-map", "0:a",
-                    "-c:v", "libx264", "-crf", "20", "-preset", "slow", "-tune", "grain",
-                    "-c:a", "copy", "-pix_fmt", "yuv420p", str(dst)], check=True)
-    print(f"\n  {len(cues)} cues -> {dst}  ({dst.stat().st_size/1048576:.1f} МБ)")
+        for i, (s_t, e_t, text) in enumerate(cues):
+            render(text).save(out_dir / f"c{i:02d}.png")
+            print(f"    {s_t:6.2f}-{e_t:5.2f}  {text}")
+
+        ins = ["-i", str(src)]
+        for i in range(len(cues)):
+            ins += ["-loop", "1", "-t", str(b - a), "-r", "24",
+                    "-i", str(out_dir / f"c{i:02d}.png")]
+        fc, last = [], "0:v"
+        for i, (s_t, e_t, _) in enumerate(cues, start=1):
+            fc.append(f"[{i}:v]format=rgba,fade=t=in:st={s_t:.2f}:d=0.18:alpha=1,"
+                      f"fade=t=out:st={max(0, e_t - 0.18):.2f}:d=0.18:alpha=1[c{i}]")
+            fc.append(f"[{last}][c{i}]overlay=0:0:"
+                      f"enable='between(t,{max(0, s_t - 0.05):.2f},{e_t + 0.05:.2f})'"
+                      f"[o{i}]")
+            last = f"o{i}"
+        dst = ep / "out" / "verticals" / f"{vid}-captioned.mp4"
+        subprocess.run([ff, "-y", "-v", "error", *ins,
+                        "-filter_complex", ";".join(fc),
+                        "-map", f"[{last}]", "-map", "0:a",
+                        "-c:v", "libx264", "-crf", "20", "-preset", "slow",
+                        "-tune", "grain", "-c:a", "copy", "-pix_fmt", "yuv420p",
+                        str(dst)], check=True)
+        print(f"    {len(cues)} cues -> {dst.name}  "
+              f"({dst.stat().st_size / 1048576:.1f} MB)")
+
 
 if __name__ == "__main__":
     main()

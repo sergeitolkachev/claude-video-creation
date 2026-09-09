@@ -333,11 +333,22 @@ The clicks come out with the cards: a typing sound with nothing typing on
 screen is a fault, not a signature. `build_audio.py --no-clicks` writes the
 mix these are cut from.
 
+**Captions are burned in, and the bottom 30% of the frame stays clear.** The
+timings come from ElevenLabs' with-timestamps endpoint called with the same
+seed *and* the same previous_text as the take in the mix, so the words land on
+the audio that is actually there. Record 01 kept 264 px of 1920 clear (13.75%)
+and it was still under the platform's own furniture; the figure is now
+`captions.bottom_clear` in config/type.yaml, channel-wide.
+
 | Cut | Window | Ends on |
 |---|---|---|
 | fc9-002-b-the-line | 50.0–72.2 | "Faster than anything can afford to ig—" |
 | fc9-002-c-the-margin | 78.0–99.2 | "the ground you are standing on is on f—" |
-| fc9-002-d-the-distance | 223.0–250.5 | "The animal is not travelling any—" |
+| fc9-002-d-the-distance | 224.5–252.2 | "The animal is not travelling any—" |
+
+The third window was 223.0–250.5 and ended on "There never was." — a full
+stop, which is the one thing a vertical must not end on. Moved to land 0.4 s
+into "anywhere", where the word stops being a word.
 
 ## Episode total
 

@@ -36,10 +36,13 @@ cuts:
       the record that is neither camera nor animal.
 
   - id: fc9-002-d-the-distance
-    from: 223.0
-    to: 250.5
+    from: 224.5
+    to: 252.2
     covers: ["6.1", "6.2", "6.3"]
     ends_on: "The animal is not travelling any—"
+    # 252.2 s lands 0.4 s into "anywhere", which is where the word stops being
+    # a word. The first window ended at 250.5 and cut on "There never was." —
+    # a full stop, which is the one thing a vertical must not end on.
     note: >
       The strongest number in the record — twice the Earth–Moon distance,
       walked in a circle — and then the line that takes it away.
