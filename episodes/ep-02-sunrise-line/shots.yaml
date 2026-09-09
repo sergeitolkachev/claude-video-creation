@@ -378,8 +378,15 @@ shots:
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
-    anchors: [A1-plain-wide]
+    anchors: [A4-aerial]
     note: >
+      Third attempt, rewired to the aerial anchor. The scene needs one frame
+      that shows the band as a band, and at eye height that means a vanishing
+      point, which is what produced the causeway and the people twice. Seen
+      from altitude the recession is diagonal across the frame instead of into
+      it: no vanishing point to fill in, no horizon in the picture at all, and
+      the one camera position in the scene that appears nowhere else in it.
+
       First pass returned a raised causeway running to the sun with a file of
       people walking along it, in both seeds. "Running away to the horizon"
       and "converging into haze" describe a vanishing point, and a vanishing
@@ -388,12 +395,14 @@ shots:
       lost on record 1. The band now recedes as three parallel stripes with
       the emptiness stated in the shot itself, not only in the spine.
     prompt: >
-      Three parallel stripes of ground receding at a shallow angle: dry pale
-      cracked ground, a dark line of low vegetation, and frost catching the
-      low light, all three running away side by side and softening into haze.
-      The land is completely deserted — no people, no figures, no silhouettes,
-      no procession, no path, no causeway, no embankment, no track and no
-      road anywhere in the frame. Wide static shot
+      Seen from an aircraft looking down at the ground, the three bands
+      running diagonally across the picture from one corner to the other: dry
+      pale cracked ground, a dark line of low vegetation, and frost catching
+      the low light, side by side, thinning into haze toward the far corner.
+      The ground fills the whole frame — no horizon, no skyline, no sun and no
+      sky in the picture. The land is completely deserted: no people, no
+      figures, no silhouettes, no path, no causeway, no embankment, no track,
+      no road. Static aerial shot
 
   # SCENE 3 — THE MARGIN (34 s)
   - id: "3.1"

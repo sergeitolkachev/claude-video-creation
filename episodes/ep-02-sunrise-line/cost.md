@@ -81,6 +81,26 @@ does not block generation, but `cards.yaml` is written and the plates for it
 are framed, so it should be built before the plates are graded rather than
 after.
 
+## The track problem
+
+Scene 3 is the first scene whose subject is the animal's tracks, and both
+ways of generating one failed on the same pass.
+
+**With the A3 anchor**, 3.1 and 3.2 came back carrying A3's ribbed tread band
+across the frame, and 3.1's "broad shallow track with a soft rounded rim"
+became a two-metre raised ring. The anchor was approved with that tread band
+known and recorded; scene 3 is where it stops being cosmetic.
+
+**Without an anchor**, 3.3a defaulted to human and vehicle prints — a tyre
+rut receding to the sun in one seed and a lug-soled boot print in another,
+which is exactly the failure CLAUDE.md predicts for the word "footprint".
+
+Both point at the same gap: nothing in this repository has ever said what
+this animal's track actually looks like. It is described by what it is not.
+The fix is a positive description reused verbatim in every shot that shows
+one — a smooth oval depression the size of a dinner plate, soft rounded rim,
+no toes, no claws, no tread, no ridges — plus a clean A3.
+
 ## Actual
 
 Fill in after each batch. If the episode runs past the ceiling, stop and
@@ -101,3 +121,7 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | scene 2, 10 generations | $0.40 | $2.15 |
 | 2026-09-09 | 4 — stills | 2.5 reworked, causeway and people removed, 2 | $0.08 | $2.23 |
 | 2026-09-09 | 4 — stills | **approved:** 2.1 s11, 2.2 s11, 2.3 s11, 2.4 s11 — 2.5 held | — | $2.23 |
+| 2026-09-09 | 4 — stills | 2.5 rewired to the aerial anchor, 2 | $0.08 | $2.31 |
+| 2026-09-09 | 4 — stills | **approved:** 2.5 s22 — scene 2 complete | — | $2.31 |
+| 2026-09-09 | 4 — stills | scene 3, 10 generations | $0.40 | $2.71 |
+| 2026-09-09 | 4 — stills | **approved:** 3.4 s22. 3.1, 3.2, 3.3a rejected — see below | — | $2.71 |
