@@ -161,6 +161,35 @@ The fix is a positive description reused verbatim in every shot that shows
 one — a smooth oval depression the size of a dinner plate, soft rounded rim,
 no toes, no claws, no tread, no ridges — plus a clean A3.
 
+## The animal has no legs
+
+Found while reviewing 7.2, after five prompt routes had been spent on
+the trail: **a legged animal cannot leave a continuous band.** It leaves
+separate prints. Every failure in scene 3 was the model correctly drawing the
+animal the storyboard had described, into a world whose ground said something
+else.
+
+The body plan was the part that had never actually been decided, so it was
+decided last and by the evidence: one long low body lying flat against the
+ground, no limbs, moving on its underside, leaving a band exactly as wide as
+itself. It renders for the same reason every landed shot in this episode
+renders — it is a stripe. The animal has the same shape as its own trail.
+
+It also settles the 7.2 problem permanently. There is no familiar silhouette
+to fall into, so the horned cow of the first pass and the near-wildebeest of
+the second cannot recur.
+
+Two words of narration changed: "keeps the legs going" became "keeps it
+moving", and "as their stride lengthens" became "as they lengthen" — which is
+now literal, since a longer body leaves a wider band, and the aerial 5.1 shows
+a broad trail and a thin one side by side.
+
+Taylor's cost-of-transport allometry is measured on legged runners. A body
+moving on its underside pays more per metre, not less, so the 24 MJ/day figure
+is now stated as a conservative floor rather than an estimate. The narration
+says "about" and never totals anything beyond 40, so no number on screen
+changed.
+
 ## Actual
 
 Fill in after each batch. If the episode runs past the ceiling, stop and
@@ -202,3 +231,6 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | 7.2 re-pitched off the bovine silhouette; 6.3 and 7.3 against approved plates, 6 | $0.24 | $6.28 |
 | 2026-09-09 | 4 — stills | **approved:** 6.1 s22, 6.2 s11, 6.3 s11, 6.4 s22, 7.1 s11, 7.2 s22, 7.3 s11, 7.4 s11 | — | $6.28 |
 | 2026-09-09 | 4 — stills | **stage 4 closed — 36/36 plates approved, 34 shots** | — | $6.28 |
+| 2026-09-09 | 4 — stills | 7 debug probes chasing a 401 that was a local variable shadowing the API key | $0.28 | $6.56 |
+| 2026-09-09 | 4 — stills | 7.2 regenerated on the creature canon, 2 | $0.08 | $6.64 |
+| 2026-09-09 | 4 — stills | **approved:** 7.2 s22 — the legless body | — | $6.64 |

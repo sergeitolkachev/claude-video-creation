@@ -12,7 +12,7 @@ present tense. Never dramatize. The numbers carry the tension — the voice
 does not. No rising inflection on the reveal.
 **Camera rule:** almost no movement. Slow lateral tracks, slow drift, faint
 lens breathing. The animal is glimpsed once, in scene 7, at long lens.
-**Word count:** 452. At the measured 162 wpm this is 167 s of speech against
+**Word count:** 450. At the measured 162 wpm this is 167 s of speech against
 272 s of runtime — 39% silence overall, and every scene clears one third
 individually. See the pause table under Audio.
 
@@ -167,8 +167,8 @@ in frame.
 > meltwater at the frost edge, on the move.
 >
 > And it never fully sleeps. One half of the brain rests while the other
-> keeps the legs going — the same arrangement found in dolphins and in birds
-> that stay airborne for months.
+> keeps it moving — the same arrangement found in dolphins and in birds that
+> stay airborne for months.
 
 ---
 
@@ -205,8 +205,8 @@ light.
 > requirement falls to one and a quarter kilometres per hour.
 >
 > So the young are not born on the equator. They are born high, where the
-> pace is halved, and they work their way down as their stride lengthens. On
-> this world, latitude is a measure of age.
+> pace is halved, and they work their way down as they lengthen. On this
+> world, latitude is a measure of age.
 >
 > At the pole itself, the requirement falls to zero. An animal could stand
 > still there for the rest of its life. Nothing does. The sun never climbs,
@@ -346,6 +346,10 @@ All of it was re-derived and checked before the shot list was written.
   J/(kg·m). At 200 kg this gives ≈ 2.01 J/(kg·m), so ≈ 401 J per metre, and
   60 km/day works out to ≈ 24.1 MJ/day. The claim that locomotion outweighs
   basal cost falls out of the arithmetic — it was not chosen for effect.
+  This allometry is measured on legged runners, and the animal here is not
+  one; a body that moves on its underside pays more per metre, not less, so
+  24 MJ/day is used as a conservative floor rather than an estimate. The
+  narration says "about" and states no total beyond 40.
 - Unihemispheric slow-wave sleep is documented in cetaceans and in birds
   sleeping on the wing.
 - Earth–Moon mean distance 384,400 km.
@@ -355,6 +359,12 @@ All of it was re-derived and checked before the shot list was written.
 - The 60 km width of the survivable band, and therefore the 24-hour margin.
 - Adult mass 200 kg and 40-year lifespan.
 - The animal itself, its nursery latitude, and its poleward drift with age.
+- Its body plan: a legless body four metres long lying flat against the
+  ground, moving on its underside, leaving a continuous band the width of
+  itself. Nothing on Earth at 200 kg moves this way. It was chosen because a
+  legged animal leaves separate prints and this record is built on an
+  unbroken trail — the storyboard and the biology disagreed, and the biology
+  was the part that had not been decided yet.
 
 Derived figures, if any input above is changed: circumference = 2πR;
 terminator speed = circumference ÷ solar day; margin = band width ÷

@@ -28,7 +28,14 @@ def env():
 def post(url, body, key):
     r = urllib.request.Request(url, data=json.dumps(body).encode(),
         headers={"Authorization": f"Key {key}", "Content-Type": "application/json"})
-    return json.load(urllib.request.urlopen(r))
+    try:
+        return json.load(urllib.request.urlopen(r, timeout=60))
+    except urllib.error.HTTPError as e:
+        # An HTTPError with no body is unreadable in a traceback, and this
+        # script spends money — the failing url and fal's own message are
+        # what tell you whether to retry or to fix the request.
+        print(f"  HTTP {e.code} from {url}\n    {e.read()[:400].decode(errors='replace')}")
+        raise
 
 def get(url, key):
     return json.load(urllib.request.urlopen(
@@ -97,8 +104,11 @@ def main():
         # description of the trail. It goes after the framing, because the framing
         # is what the reference image argues with and the mark is what the
         # enhancer would otherwise invent.
-        if s.get("trail_canon"):
-            prompt = f"{prompt}. {' '.join(s['trail_canon'].split())}"
+        # NB: not `key` — that is the API key, and shadowing it here sent
+        # `Authorization: Key creature_canon` and cost an hour of 401s.
+        for canon in ("trail_canon", "creature_canon"):
+            if s.get(canon):
+                prompt = f"{prompt}. {' '.join(s[canon].split())}"
         if s.get("ref_shot"):
             # Two shots in this episode are the same physical plate seen twice
             # in the story (1.2/4.3 the delay readout, 1.3/4.1 the porthole).

@@ -138,6 +138,27 @@ trail_canon: &trail_canon >
   intact, paler and unbroken. The boundary between the disturbed band and the
   untouched ground beside it is ragged and irregular, never a straight edge.
 
+# The animal. One paragraph, used in the one shot that shows it.
+#
+# The body plan was settled after the trail was, and by the trail: a legged
+# animal leaves separate marks, and this record shows a continuous band. Five
+# generation routes were spent on that contradiction before anyone noticed it
+# was a contradiction. A body that moves on its underside makes the band
+# inevitable — the trail is exactly as wide as the animal — and it also makes
+# the silhouette unfamiliar, which is what the first pass at 7.2 failed at
+# when it returned a horned cow.
+#
+# It renders, too, for the same reason everything else here renders: it is a
+# stripe. The animal has the same shape as its own trail.
+creature_canon: &creature_canon >
+  The animal is one long low body lying close against the ground, about four
+  metres from end to end and no taller than a large dog, its back a dark
+  ridge divided into shallow segments along its whole length, its underside
+  hidden where it meets the soil. It has no legs, no hooves and no limbs of
+  any kind, no neck, no ears, no horns and no tail; the front end is only a
+  slightly thicker blunt taper, with no face and no eye. Nothing about it
+  stands up off the ground.
+
 # Appended to every image-to-video prompt. The approved still already carries
 # the subject, the light and the framing; the video prompt's only job is to
 # say what moves. Two tails, because a shot that must not move and a shot
@@ -815,6 +836,7 @@ shots:
     model: workhorse
     motion: the animal crosses
     anchors: [A5-longlens-haze]
+    creature_canon: *creature_canon
     note: >
       The only animal in the record, and the only generated motion of a living
       subject. Working Agreements apply: if two takes fail, stop and report.
@@ -834,20 +856,18 @@ shots:
       because a head lowered to the ground is what makes it read as grazing
       cattle.
     prompt: >
-      A single large four-legged animal in the middle distance seen through
-      drifting dust, side on to the camera: a long heavy body carried low and
-      level, short thick legs, the neck reaching forward rather than down and
-      the head small and lost in the dust. No horns, no antlers, no ears, no
-      tail, no visible face and no eye. More than half of its outline is
-      broken up and softened by the dust between it and the camera, so the
-      shape is read rather than seen. Long lens, heavily compressed, shallow
-      focus
+      A single large dark animal in the middle distance, side on to the camera and
+      seen through drifting dust: one long low body lying flat along the ground,
+      its dark segmented back the only part that stands clear of the surface, the
+      rest of it merging into the soil it lies on. More than half of the outline is
+      broken up and softened by the dust between it and the camera, so the shape is
+      read rather than seen. Long lens, heavily compressed, shallow focus
     video_prompt: >
-      The animal walks steadily across the frame from right to left at an
-      unhurried constant pace, without pausing and without turning its head
-      toward the camera. It never becomes sharper or clearer. The camera is
-      locked off and does not move, does not pan and does not follow. Nothing
-      else enters the frame.
+      The animal glides steadily across the frame from right to left at one
+      unhurried constant speed, the whole body travelling as a single piece without
+      any part of it lifting off the ground, without pausing and without turning.
+      It never becomes sharper or clearer. The camera is locked off and does not
+      move, does not pan and does not follow. Nothing else enters the frame.
 
   - id: "7.3"
     scene: 7
