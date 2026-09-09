@@ -1,0 +1,56 @@
+[
+  {
+    "id": "aldren-card",
+    "shot": "1.1",
+    "at": 2.0,
+    "duration": 7.4,
+    "mov": "aldren-card.mov",
+    "wav": "aldren-card.wav",
+    "clicks": 87
+  },
+  {
+    "id": "temperature-profile",
+    "shot": "2.4",
+    "at": 52.5,
+    "duration": 11.5,
+    "mov": "temperature-profile.mov",
+    "wav": "temperature-profile.wav",
+    "clicks": 37
+  },
+  {
+    "id": "margin-countdown",
+    "shot": "3.4",
+    "at": 102.5,
+    "duration": 7.5,
+    "mov": "margin-countdown.mov",
+    "wav": "margin-countdown.wav",
+    "clicks": 17
+  },
+  {
+    "id": "energy-budget",
+    "shot": "4.2",
+    "at": 118.5,
+    "duration": 8.5,
+    "mov": "energy-budget.mov",
+    "wav": "energy-budget.wav",
+    "clicks": 94
+  },
+  {
+    "id": "latitude-cosine",
+    "shot": "5.1",
+    "at": 159.5,
+    "duration": 8.5,
+    "mov": "latitude-cosine.mov",
+    "wav": "latitude-cosine.wav",
+    "clicks": 65
+  },
+  {
+    "id": "odometer",
+    "shot": "6.1",
+    "at": 220.8,
+    "duration": 8.2,
+    "mov": "odometer.mov",
+    "wav": "odometer.wav",
+    "clicks": 48
+  }
+]

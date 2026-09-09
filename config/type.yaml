@@ -11,6 +11,12 @@ font:
   tracking: 2               # px between glyphs, at size 26
   colour: [232, 228, 220]
   alpha: 205
+  # A one-pixel shadow under every glyph. This ground is pale and the text is
+  # pale, and without it a card sits legibly on a dark plate and vanishes on a
+  # salt pan. It is not a scrim or a box — the card still belongs to the
+  # frame, it just stops competing with it.
+  shadow_offset: 2
+  shadow_alpha: 150
   # Titles sit under the grain pass, never over it. See CLAUDE.md, Post.
 
 typing:

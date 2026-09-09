@@ -247,3 +247,33 @@ problem, not a model problem.
 | 2026-09-09 | 6 — takes | scenes 6, 7: 6.4, 7.1, 7.2 | $1.05 | $15.39 |
 | 2026-09-09 | 6 — takes | 5.3 retaken — first take drifted orange and grew a blue sky | $0.70 | $16.09 |
 | 2026-09-09 | 6 — takes | **stage 6 closed — 34/34 shots, 272.00 s** | — | $16.09 |
+
+## Cards
+
+`scripts/build_cards.py` renders every card in `cards.yaml` against
+`config/type.yaml`, and costs nothing — no model is involved in any character
+on this channel.
+
+Per card it writes an RGBA overlay (QuickTime RLE, exactly the card's length),
+a click track at the same length, and a line in `cards/manifest.json` saying
+where it sits on the timeline. Overlays composite **before** the grain pass.
+
+| Card | At | Length | Clicks |
+|---|---:|---:|---:|
+| aldren-card | 2.0 s | 7.4 s | 87 |
+| temperature-profile | 52.5 s | 11.5 s | 37 |
+| margin-countdown | 102.5 s | 7.5 s | 17 |
+| energy-budget | 118.5 s | 8.5 s | 94 |
+| latitude-cosine | 159.5 s | 8.5 s | 65 |
+| odometer | 220.8 s | 8.2 s | 48 |
+
+348 clicks, every one synthesised locally from the same two-pole resonator, so
+the sound is byte-identical in every record that ever uses it.
+
+Two things were found by looking rather than by reasoning. The first build
+anchored each text block to the bottom margin and then drew the bar, the
+counter and the plot *below* it, off the bottom of the frame — a card is the
+text plus everything it carries, and that is what gets anchored. The second:
+pale text on a pale salt pan disappears, so every glyph, axis and curve now
+carries a two-pixel shadow at alpha 150. Not a scrim and not a box; the card
+still belongs to the frame, it just stops competing with it.
