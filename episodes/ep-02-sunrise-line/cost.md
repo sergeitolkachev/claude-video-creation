@@ -97,3 +97,7 @@ problem, not a model problem.
 | 2026-09-09 | 3 — anchors | **approved:** A1 p3 s11, A2 p3 s33, A3 p4 s22, A4 p4 s22, A5 p2 s33 | — | $1.35 |
 | 2026-09-09 | 4 — stills | scene 1, 8 generations | $0.32 | $1.67 |
 | 2026-09-09 | 4 — stills | 1.2 reworked, dust brought close to camera, 2 | $0.08 | $1.75 |
+| 2026-09-09 | 4 — stills | **approved:** 1.1 s11, 1.2 s11, 1.3 s22, 1.4 s22 — scene 1 complete | — | $1.75 |
+| 2026-09-09 | 4 — stills | scene 2, 10 generations | $0.40 | $2.15 |
+| 2026-09-09 | 4 — stills | 2.5 reworked, causeway and people removed, 2 | $0.08 | $2.23 |
+| 2026-09-09 | 4 — stills | **approved:** 2.1 s11, 2.2 s11, 2.3 s11, 2.4 s11 — 2.5 held | — | $2.23 |

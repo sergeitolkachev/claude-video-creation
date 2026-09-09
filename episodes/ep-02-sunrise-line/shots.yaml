@@ -379,11 +379,21 @@ shots:
     source: ffmpeg_still
     motion: static
     anchors: [A1-plain-wide]
+    note: >
+      First pass returned a raised causeway running to the sun with a file of
+      people walking along it, in both seeds. "Running away to the horizon"
+      and "converging into haze" describe a vanishing point, and a vanishing
+      point in an empty landscape is a road — which then gets travellers. The
+      spine's "no people" lost to the composition, the same way "no signage"
+      lost on record 1. The band now recedes as three parallel stripes with
+      the emptiness stated in the shot itself, not only in the spine.
     prompt: >
-      The whole band seen running away to the horizon, dry pale ground on one
-      side, a dark line of vegetation down the middle, frost catching the low
-      light on the other, converging into haze in the far distance, wide
-      static shot
+      Three parallel stripes of ground receding at a shallow angle: dry pale
+      cracked ground, a dark line of low vegetation, and frost catching the
+      low light, all three running away side by side and softening into haze.
+      The land is completely deserted — no people, no figures, no silhouettes,
+      no procession, no path, no causeway, no embankment, no track and no
+      road anywhere in the frame. Wide static shot
 
   # SCENE 3 — THE MARGIN (34 s)
   - id: "3.1"
