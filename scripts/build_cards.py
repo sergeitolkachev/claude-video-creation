@@ -400,7 +400,15 @@ def build_card(card, spec, ep, ff):
         _, fig_clicks = type_schedule([fig["text"]], fig["at"], spec)
         clicks += fig_clicks
 
-    end = card.get("hold_until") or (max((r[-1] for r in schedule if r), default=start) + 3)
+    last = max((r[-1] for r in schedule if r), default=start)
+    if card.get("figure"):
+        fig = card["figure"]
+        fs, _ = type_schedule([fig["text"]], fig["at"], spec)
+        last = max(last, fs[0][-1])
+    # hold_until may extend the card, never cut it short: the text has to
+    # finish, and then it has to stay long enough to be read after it does.
+    end = max(card.get("hold_until") or 0,
+              last + spec["typing"].get("hold_after_seconds", 2.0))
     for extra_key in ("bar", "counter", "figure"):
         e = card.get(extra_key) or {}
         if e.get("at"):
@@ -409,7 +417,7 @@ def build_card(card, spec, ep, ff):
         end = max(end, card["at"] + card.get("draw_seconds", 3) + 1)
     dur = end - start
     frames = int(round(dur * FPS))
-    size = card.get("size") or 26
+    size = card.get("size") or spec.get("card_size") or spec["font"]["size"]
 
     tmp = pathlib.Path(tempfile.mkdtemp())
     for i in range(frames):
@@ -441,7 +449,14 @@ def main():
     spec = load_type_spec()
     doc = yaml.safe_load((ep / "cards.yaml").read_text())
     spec["margin"] = doc["style"].get("margin", [96, 72])
+    spec["card_size"] = doc["style"].get("size")
     spec["rule_alpha"] = doc["style"].get("rule_alpha", 90)
+
+    # where each shot ends, so a card that outlives its plate says so
+    shots = yaml.safe_load((ep / "shots.yaml").read_text())["shots"]
+    shot_end, acc = {}, 0
+    for sh in shots:
+        acc += sh["timeline_seconds"]; shot_end[sh["id"]] = acc
 
     manifest = []
     for card in doc["cards"]:
@@ -449,8 +464,13 @@ def main():
             continue
         m = build_card(card, spec, ep, ff)
         manifest.append(m)
+        over = ""
+        if m.get("shot") and m["shot"] in shot_end:
+            spill = m["at"] + m["duration"] - shot_end[m["shot"]]
+            if spill > 0.05:
+                over = f"  runs {spill:.1f}s past shot {m['shot']}"
         print(f"  {m['id']:<20} at {m['at']:7.1f}s  {m['duration']:5.1f}s  "
-              f"{m['clicks']:4d} clicks")
+              f"{m['clicks']:4d} clicks{over}")
     (ep / "cards" / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
     if preview:

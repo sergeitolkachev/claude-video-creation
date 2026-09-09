@@ -3,7 +3,7 @@
     "id": "aldren-card",
     "shot": "1.1",
     "at": 2.0,
-    "duration": 7.4,
+    "duration": 11.732,
     "mov": "aldren-card.mov",
     "wav": "aldren-card.wav",
     "clicks": 87
@@ -30,7 +30,7 @@
     "id": "energy-budget",
     "shot": "4.2",
     "at": 118.5,
-    "duration": 8.5,
+    "duration": 11.785,
     "mov": "energy-budget.mov",
     "wav": "energy-budget.wav",
     "clicks": 94
@@ -39,7 +39,7 @@
     "id": "latitude-cosine",
     "shot": "5.1",
     "at": 159.5,
-    "duration": 8.5,
+    "duration": 9.076,
     "mov": "latitude-cosine.mov",
     "wav": "latitude-cosine.wav",
     "clicks": 65

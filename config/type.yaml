@@ -36,6 +36,12 @@ typing:
   chars_per_second: 18
   jitter: 0.15              # +/- fraction of the interval, so it is not a metronome
   line_pause_seconds: 0.35  # after a line completes, before the next begins
+  # A card never leaves the screen less than this after its last character.
+  # Record 02's first build set an explicit hold_until per card and three of
+  # the six were cut off mid-word by it — the hold was written before anyone
+  # knew how long the text took to type. The floor is the rule; hold_until
+  # can only extend it, never shorten it.
+  hold_after_seconds: 2.0
   cursor: none              # no block cursor, no underscore, nothing blinking
   # A line resolves and then holds for its own hold time; it never re-types.
 
