@@ -1,0 +1,130 @@
+# Data cards — record 2.
+#
+# New for this episode. Record 1 had one composited readout (a number on a
+# CRT) and burned-in title cards; this record's data graphics are a format
+# element rather than set dressing, so they get their own file and their own
+# renderer, `scripts/build_cards.py` (stage 8, not written yet).
+#
+# Rules carried from the channel:
+#   - Every character on screen comes out of Pillow in Menlo, at the same
+#     tracking as the episode titles and the channel art. Nothing is ever
+#     generated as lettering — Seedream returns garbage glyphs, and mixed
+#     renderers read as assembled rather than issued.
+#   - Cards go UNDER the grain pass, like the titles, so they belong to the
+#     recording instead of looking captioned onto it.
+#   - No animation flourish. Lines appear, they do not slide, bounce or wipe.
+#     A value that changes does so by redrawing, not by tweening — except the
+#     two that are explicitly counters, below.
+#   - Every card sits on a plate framed for it (`card:` in shots.yaml). If a
+#     plate comes back busy where the card goes, the plate is wrong, not the
+#     card.
+#
+# Times are absolute seconds on the 272 s timeline.
+# Scene starts: 1=0  2=34  3=76  4=110  5=159  6=220  7=254
+
+style:
+  font: /System/Library/Fonts/Menlo.ttc
+  size: 26
+  tracking: 2
+  colour: [232, 228, 220]
+  alpha: 205
+  rule_alpha: 90          # hairlines under headings and on axes
+  margin: [96, 72]        # from the frame edge, x and y
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: aldren-card
+    shot: "1.1"
+    pos: lower-left
+    build: line            # one line at a time
+    at: 2.0
+    interval: 1.6
+    hold_until: 9.4
+    lines:
+      - "ALDREN"
+      - "mean radius                3,500 km"
+      - "equatorial circumference  21,991 km"
+      - "solar day                    366 Earth days"
+      - "axial tilt                   1.4°"
+
+  # --- Scene 2 -------------------------------------------------------------
+  # A plot, not a table: temperature across the band, with the survivable
+  # window shaded. The 60 km width is the whole point of the graphic, so the
+  # shaded region is measured against the axis, not eyeballed.
+  - id: temperature-profile
+    shot: "2.4"
+    pos: lower-band        # drawn across the clean lower third of the plate
+    type: plot
+    at: 52.5
+    draw_seconds: 3.0      # the curve draws left to right, no easing
+    hold_until: 60.0
+    x_axis: {label: "km from the line", from: -120, to: 120, ticks: 60}
+    y_axis: {label: "K", from: 180, to: 420, ticks: 60}
+    shade: {from: -30, to: 30, label: "liquid water"}
+    figure:
+      at: 59.0             # resolves last, alone, and rides into shot 2.5
+      hold: 5.0
+      text: "terminator ground speed, equator    2.50 km/h"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: margin-countdown
+    shot: "3.4"
+    pos: lower-left
+    at: 102.5
+    hold_until: 110.0
+    lines:
+      - "60 km ÷ 2.50 km/h = 24 h"
+    bar:
+      label: "MARGIN"
+      at: 106.0
+      drain_seconds: 4.0   # real time, once, and it does not reset
+      width: 640
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: energy-budget
+    shot: "4.2"
+    pos: lower-left
+    type: stacked_bar
+    at: 118.5
+    hold_until: 127.0
+    rows:
+      - {label: "adult mass",       value: "200 kg",    at: 118.5}
+      - {label: "basal metabolism", value: "~16 MJ / day", at: 120.5, segment: 16}
+      - {label: "locomotion",       value: "~24 MJ / day", at: 122.5, segment: 24}
+      - {label: "total",            value: "~40 MJ / day", at: 124.5, rule: true}
+      - {label: "intake",           value: "body mass per 16 days", at: 126.0}
+
+  # --- Scene 5 -------------------------------------------------------------
+  # The cosine curve is drawn from the function, not traced by hand: the
+  # table and the curve have to agree, because the narration reads two of
+  # the rows out loud.
+  - id: latitude-cosine
+    shot: "5.1"
+    pos: right-half
+    type: cosine
+    at: 159.5
+    interval: 1.1
+    hold_until: 168.0
+    equator_speed: 2.504
+    rows: [0, 30, 45, 60, 75, 90]
+    format: "{lat:>2}°    {v:.2f} km/h"
+
+  # --- Scene 6 -------------------------------------------------------------
+  - id: odometer
+    shot: "6.1"
+    pos: lower-left
+    at: 220.8
+    hold_until: 229.0
+    counter:
+      label: "distance walked"
+      from: 0
+      to: 878000
+      count_seconds: 3.2   # fast, then settles — the only card that moves
+      unit: km
+    lines:
+      - {text: "lifespan            ~40 Earth years", at: 220.8}
+      - {text: "Earth–Moon distance    384,400 km",   at: 226.0}
+
+  # --- Scene 7 -------------------------------------------------------------
+  # Nothing on screen while the animal is crossing. The closing card lives in
+  # titles.yaml with the rest of the channel furniture.

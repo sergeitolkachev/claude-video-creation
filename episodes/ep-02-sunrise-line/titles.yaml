@@ -1,0 +1,30 @@
+# Burned-in titles — channel furniture only. The episode's data graphics are
+# in cards.yaml; these are the slug and the closing card, in the same Menlo,
+# same size, same corner as every other record.
+#
+# Times are absolute seconds on the 272 s timeline.
+# Scene starts: 1=0  2=34  3=76  4=110  5=159  6=220  7=254
+
+cards:
+  - id: slug
+    at: 1.0
+    hold: 6.0
+    lines: ["FC9-002 // THE SUNRISE LINE"]
+
+  - id: survey-stamp
+    at: 34.0
+    hold: 5.0
+    lines: ["RECONSTRUCTED SURVEY", "ALDREN — EQUATORIAL BAND"]
+
+  # Close. Under the grain, like everything else.
+  - id: close-1
+    at: 267.5
+    hold: 4.5
+    size: 30
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-002 // THE SUNRISE LINE"
+      - ""
+      - "Reconstructed survey. No such world is on record."

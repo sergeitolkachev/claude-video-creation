@@ -11,6 +11,15 @@ episode: ep-01-tishina-9
 runtime_seconds: 250
 aspect: "16:9"
 
+# The per-scene silence check was added while planning record 2, after a
+# submitted script averaged 30% silence overall while one scene sat at 8%.
+# Run against this episode it finds scene 5 at 29% against a 33% floor — real,
+# and caught after the master was rendered. Waived rather than fixed: nothing
+# downstream of a finished episode gets re-cut for four points of silence.
+# The lesson is applied to record 2, which is where it is worth money.
+silence_waiver:
+  5: "29% vs 33% floor. Found after master. Not re-cut."
+
 # --- Anchors ----------------------------------------------------------------
 # Generated first, from text. A human approves these before a single shot
 # still is made. Every shot still afterwards is generated with the relevant

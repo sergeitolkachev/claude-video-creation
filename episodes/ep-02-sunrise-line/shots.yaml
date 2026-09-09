@@ -1,0 +1,653 @@
+# Record No. 2 — "THE SUNRISE LINE"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompts here are already cleaned per the Prompt Hygiene section of
+# script.md: no grain, no legible text, no animal outside shot 7.2. Do not
+# copy prompt text out of script.md into a generation call — that text is
+# written for a human reader.
+
+episode: ep-02-sunrise-line
+runtime_seconds: 272
+aspect: "16:9"
+
+# Per-scene runtime, read by scripts/validate.py. Record 1 had these numbers
+# hardcoded in the script; a second episode is where that stops working.
+scene_runtime: {1: 34, 2: 42, 3: 34, 4: 49, 5: 61, 6: 34, 7: 18}
+
+# Prompt hygiene the validator enforces, beyond the pipeline-wide rules.
+# The one that matters here is the animal: the record shows it once, for four
+# seconds, and a grazer wandering into any other frame spends the reveal
+# before the reveal. Cheap to check in text, expensive to find in a batch.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(animal|creature|beast|grazer|herd|hoof|hooves|muzzle|fur|eye)\b'
+      except: ["7.2"]
+      why: the animal appears in 7.2 only
+    - pattern: '\b(sunrise|rising sun|sun rises|climbing sun)\b'
+      except: []
+      why: the sun sits on the horizon and never moves; the title is the only sunrise
+    - pattern: '\b(footprint|footprints|paw|claw marks)\b'
+      except: ["3.1", "5.4"]
+      why: >
+        "footprint" reads as a stamped human shoe. 3.1 and 5.4 use it only to
+        say there are no toes and no claw marks.
+
+# --- Anchors ----------------------------------------------------------------
+# Five, not four. Record 1 established that an anchor locks composition as
+# hard as it locks palette, so there is one anchor per camera distance that
+# recurs: wide plain, the boundary at mid distance, ground macro, high
+# aerial, and long lens through dust. Handing the wide anchor to the macro
+# shots is exactly the failure that cost pass 2 of record 1.
+#
+# Record 1's exteriors had no anchor at all and went to text-to-image,
+# because every anchor in that episode was an interior and leaked a bulkhead
+# into open space. Here the whole world is exterior, so the anchors carry it
+# and the edit tier works normally.
+
+# Material, light and palette only. No camera, no distance, no lens, no
+# framing words — those belong to each shot. "Low", "flat" and "wide" are
+# terrain here and nowhere else; anything that could be read as a framing
+# instruction has been kept out.
+anchor_spine: &spine >
+  The same world in every frame: a cold arid plain of fine grey-brown grit
+  and cracked pale clay, unbroken to the horizon. The sun sits exactly on the
+  horizon and never above it — a small pale disc in thin haze, giving level
+  raking light and shadows that run away to the edge of the frame. No clouds,
+  no sky detail, no stars, no second light source, no blue sky. Fine dust in
+  the air, drifting, never heaped on the ground. Desaturated palette: grey
+  brown ground, dull rust, pale blue-grey frost, dark olive low vegetation.
+  No saturated colour, no lush green, no daylight blue. No people, no
+  animals, no buildings, no machinery, no vehicles, no wheel ruts. No
+  lettering, no signage, no graphics of any kind anywhere in frame.
+
+# Used for any shot routed to text-to-image instead of the edit tier. On this
+# episode that is the aerial pair, where an eye-height reference fights the
+# altitude harder than the prompt can win it back.
+exterior_spine: &exterior_spine >
+  Seen from very high altitude, looking down at a cold arid plain of fine
+  grey-brown grit and cracked pale clay. Level raking light from a sun on the
+  horizon, long shadows, thin haze. Desaturated grey-brown and rust palette,
+  no saturated colour, no blue sky in frame. No people, no animals, no
+  buildings, no machinery, no lettering of any kind.
+
+# Appended to every image-to-video prompt. The approved still already carries
+# the subject, the light and the framing; the video prompt's only job is to
+# say what moves. Two tails, because a shot that must not move and a shot
+# that must move slowly need opposite instructions — record 1 proved that
+# using one tail for both tells a locked-off shot it is supposed to travel.
+motion_tail_static: &motion_tail_static >
+  The camera does not move at all. This is a locked-off tripod shot: the
+  framing at the last frame is identical to the framing at the first. No
+  dolly, no push in, no pull back, no pan, no tilt, no drift, no parallax.
+  Only light and airborne dust change. Nothing enters the frame, no new
+  objects appear, no animal appears, the sun does not rise or move.
+
+motion_tail_moving: &motion_tail_moving >
+  The movement is extremely slow, continuous and even, and covers only a very
+  short distance across the whole shot. Nothing else in the frame moves. No
+  cuts, no speed changes, no zoom snaps. Nothing enters the frame, no new
+  objects appear, no animal appears, the sun does not rise or move.
+
+anchors:
+  - id: A1-plain-wide
+    model: anchor
+    covers: ["1.1", "1.4", "2.5", "4.6", "6.1", "6.4"]
+    spine: *spine
+    subject: >
+      Camera: 35mm lens at standing eye height, level, horizon across the
+      lower third, the sun a small pale disc sitting on that horizon slightly
+      off centre. Wide establishing shot. Subject: open ground running
+      unbroken to the horizon, shadow bands from low ridges of grit stretching
+      toward the camera, thin haze softening the far distance.
+
+  - id: A2-boundary
+    model: anchor
+    covers: ["2.1", "2.2", "2.3", "2.4", "4.4"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens at chest height, looking across the ground rather than
+      along it, the three bands stacked in the frame. Mid shot. Subject: dry
+      scorched cracked clay in the near ground, a narrow strip of dark olive
+      low vegetation across the middle, pale blue-grey frost beyond it, the
+      change from one to the next happening over a few metres.
+
+  - id: A3-ground-macro
+    model: anchor
+    covers: ["1.3", "3.1", "3.2", "3.3", "3.4", "4.1", "4.5", "5.4"]
+    spine: *spine
+    subject: >
+      Camera: 100mm macro, close down onto the ground, the frame filled by
+      about a metre of it, everything beyond dissolved into soft blur.
+      Subject: damp fine-grained soil, one broad shallow depression pressed
+      into it with a soft rounded rim, grit and fine cracks picked out by
+      raking light from the side.
+
+  - id: A4-aerial
+    model: anchor
+    covers: ["5.1", "5.2", "5.3"]
+    spine: *spine
+    subject: >
+      Camera: looking down from very high altitude, near vertical, a slight
+      lean so the horizon sits at the very top edge of the frame. Subject: the
+      plain seen from above, its surface reading as texture rather than
+      ground, two faint pale lines running roughly parallel across it, thin
+      haze between the camera and the surface.
+
+  - id: A5-longlens-haze
+    model: anchor
+    covers: ["7.1", "7.2", "7.3", "7.4"]
+    spine: *spine
+    subject: >
+      Camera: 400mm long lens at eye height, heavily compressed perspective,
+      shallow depth of field, focus on a band of ground in the middle
+      distance with drifting dust between camera and subject softening
+      everything. Subject: empty ground, a low ridge line, the compressed haze
+      stacking into flat pale layers.
+
+# --- Shots ------------------------------------------------------------------
+# Locked-off shots are built from their approved stills in ffmpeg, per
+# CLAUDE.md: steadier than any model, exactly 1920x1080, exactly the right
+# duration, no cost. Everything with real movement goes to Kling. Seedance is
+# not used.
+#
+# The data cards in script.md are composited in post over the plates named in
+# cards.yaml. Those plates are framed with a clean lower third or clean lower
+# left on purpose — a card dropped onto a busy frame is unreadable, and there
+# is no fixing it after the still is approved.
+
+shots:
+  # SCENE 1 — COLD OPEN (34 s)
+  - id: "1.1"
+    scene: 1
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    card: aldren-card          # planetary card builds over this shot
+    prompt: >
+      Open arid plain running unbroken to the horizon, the sun a small pale
+      disc sitting exactly on that horizon, long shadow bands reaching toward
+      the camera and running out of the bottom of the frame, thin haze, the
+      lower left quarter of the frame empty flat ground with nothing in it,
+      wide static shot
+
+  - id: "1.2"
+    scene: 1
+    timeline_seconds: 8
+    generate_seconds: 10       # Kling does 5 or 10 only
+    trim_to: 8
+    model: workhorse
+    motion: lateral dust drift
+    anchors: [A1-plain-wide]
+    prompt: >
+      Fine airborne dust crossing the frame sideways low over the ground,
+      lit from the side by a sun on the horizon, the ground behind it flat and
+      almost featureless, nothing settling, no dunes, no heaps, mid shot
+    video_prompt: >
+      Only the airborne dust moves, travelling steadily sideways across the
+      frame from one edge to the other. The ground, the light and the horizon
+      are completely still.
+
+  - id: "1.3"
+    scene: 1
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      Close on cracked dry clay, the raking light from a sun on the horizon
+      throwing hard shadow edges out of every crack, fine grit caught along
+      the ridges, macro shot, shallow focus, static
+
+  - id: "1.4"
+    scene: 1
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      The horizon line alone, thin haze stacked into flat pale layers above
+      it, the sun sitting on the line as a small pale disc, no cloud and no
+      detail in the sky, the ground a narrow dark strip along the bottom,
+      static shot
+
+  # SCENE 2 — THE LINE (42 s)
+  - id: "2.1"
+    scene: 2
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: workhorse
+    motion: slow lateral track
+    anchors: [A2-boundary]
+    prompt: >
+      Scorched cracked clay in the near ground, a narrow strip of dark olive
+      low vegetation across the middle distance, pale blue-grey frost beyond
+      it, all three bands parallel across the frame, raking light, mid shot
+    video_prompt: >
+      The camera tracks sideways, very slowly and evenly, parallel to the
+      three bands, so that the bands stay exactly where they are in the frame
+      and only the ground slides past. No push in, no pull back, no rotation.
+
+  - id: "2.2"
+    scene: 2
+    timeline_seconds: 8
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: very slow push
+    anchors: [A2-boundary]
+    prompt: >
+      The frost edge close up, a thin ragged line of pale blue-grey rime
+      against dark damp ground, a faint sheen of meltwater along it, raking
+      light, no vegetation in frame, close shot
+    video_prompt: >
+      An extremely slow push straight in toward the frost edge, travelling
+      only a very short distance across the whole shot. The frost line stays
+      centred. Nothing melts visibly, nothing flows, no water pools appear.
+
+  - id: "2.3"
+    scene: 2
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A2-boundary]
+    prompt: >
+      The scorched side alone, pale clay broken into hard polygonal plates
+      curling at their edges, dry grit in the gaps, no vegetation anywhere,
+      hard raking light, static shot
+
+  - id: "2.4"
+    scene: 2
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A2-boundary]
+    card: temperature-profile
+    note: >
+      Chart plate. The vegetation strip sits in the upper half and the lower
+      third is clean ground, because the temperature profile is drawn across
+      the bottom of the frame.
+    prompt: >
+      The strip of dark olive low vegetation seen across the middle distance,
+      sparse and even, the lower third of the frame nothing but flat open
+      ground, thin haze behind, mid shot, static
+
+  - id: "2.5"
+    scene: 2
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      The whole band seen running away to the horizon, dry pale ground on one
+      side, a dark line of vegetation down the middle, frost catching the low
+      light on the other, converging into haze in the far distance, wide
+      static shot
+
+  # SCENE 3 — THE MARGIN (34 s)
+  - id: "3.1"
+    scene: 3
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      One broad shallow track pressed into damp fine-grained soil, wide and
+      flat with a soft rounded rim, no toes and no claw marks, raking light
+      picking out the rim, ground level close shot, static
+
+  - id: "3.2"
+    scene: 3
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      Older tracks in the same ground, their rims dried pale and beginning to
+      split, fine cracks running out of them across the surface, the soil
+      between them lighter and drier, raking light, ground level close shot
+
+  - id: "3.3"
+    scene: 3
+    timeline_seconds: 10
+    source: ffmpeg              # three approved plates, cross-dissolved
+    plates: ["3.3a", "3.3b", "3.3c"]
+    note: >
+      The same patch of ground three times: damp, dry, split. Generated as
+      video it would be three different patches — a texture change over time
+      is exactly what an image-to-video model rewrites. Three stills from one
+      approved plate, dissolved locally, keeps it the same square metre.
+      3.3b and 3.3c are generated with ref_shot 3.3a so the geometry holds.
+    prompt: >
+      Damp fine-grained soil filling the frame, one pressed track across it,
+      raking light from the side, macro, static
+    plate_prompts:
+      "3.3b": >
+        The same patch of ground, now dried out: the same track in the same
+        place, the surface gone pale and matte, the damp sheen gone. Nothing
+        moves and nothing else changes.
+      "3.3c": >
+        The same patch of ground, now split: the same track in the same place,
+        the surface broken into hard curling plates with open cracks between
+        them. Nothing moves and nothing else changes.
+
+  - id: "3.4"
+    scene: 3
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    card: margin-countdown
+    note: >
+      Bar plate. Deliberately the emptiest frame in the scene — the MARGIN bar
+      drains across the lower third and needs uninterrupted ground under it.
+    prompt: >
+      Flat open ground filling the frame evenly, fine grit and shallow
+      cracks, no tracks and no vegetation, even raking light, nothing in the
+      lower third but ground, static shot
+
+  # SCENE 4 — THE COST (49 s)
+  - id: "4.1"
+    scene: 4
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      Low dark olive stems close up, every one of them cropped off at the same
+      height in a clean level line, the cut ends pale, bare soil visible
+      between them, raking light, macro, static
+
+  - id: "4.2"
+    scene: 4
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    card: energy-budget
+    note: Bar plate. Clean lower left; the stacked bar builds there.
+    prompt: >
+      A band of low dark olive vegetation running straight away from the
+      camera to the horizon, one side of it cropped short in an unbroken
+      straight line and the other side untouched and taller, the difference
+      running all the way into the haze, wide static shot
+
+  - id: "4.3"
+    scene: 4
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: workhorse
+    motion: very slow drift
+    anchors: [A1-plain-wide]
+    note: >
+      The herd. It must stay unresolved — the record shows the animal once,
+      in 7.2, and anything legible here spends the reveal early. If a take
+      comes back with a readable body, reject it rather than trying to fix it
+      in the grade.
+    prompt: >
+      Several dark shapes in the far distance, small, low and completely
+      unresolved in thick haze, no legs and no bodies distinguishable, flat
+      ground between them and the camera, long lens compression, wide shot
+    video_prompt: >
+      The distant shapes drift very slowly sideways together, staying the same
+      size and staying unresolved. The camera does not move. No shape comes
+      closer or becomes clearer, and nothing enters the foreground.
+
+  - id: "4.4"
+    scene: 4
+    timeline_seconds: 8
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: trickle
+    anchors: [A2-boundary]
+    prompt: >
+      Meltwater running in a thin thread out from under a ragged frost edge,
+      dark wet soil below it, pale rime above, raking light catching the
+      surface of the water, close shot
+    video_prompt: >
+      Only the thread of water moves, running steadily and slowly downhill.
+      The frost edge, the soil and the light are still. No splashing, no
+      pooling, no widening stream, no wet reflections spreading.
+
+  - id: "4.5"
+    scene: 4
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      Low dark olive vegetation from just above, flat even light, thin stems
+      and small tough leaves over bare grit, no flowers, no bright green,
+      macro shot, static
+
+  - id: "4.6"
+    scene: 4
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      The vegetation band seen wide with nothing in it, the frost edge a pale
+      line far off to one side, the scorched ground a paler line to the other,
+      empty ground between them, low level light, static wide shot
+
+  # SCENE 5 — LATITUDE (61 s)
+  - id: "5.1"
+    scene: 5
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A4-aerial]
+    exterior: true             # text-to-image; see exterior_spine
+    card: latitude-cosine
+    note: Cosine plate. The globe and the table build over the right half.
+    prompt: >
+      The plain seen from very high altitude, near vertical, two faint pale
+      trails running across it roughly parallel, one broad and one noticeably
+      thinner, thin haze between camera and ground, the right half of the
+      frame almost empty texture, static aerial shot
+
+  - id: "5.2"
+    scene: 5
+    timeline_seconds: 10
+    generate_seconds: 10
+    model: workhorse
+    motion: aerial drift
+    anchors: []
+    exterior: true
+    ref_shot: "5.1"            # the approved aerial plate, same altitude
+    prompt: >
+      High altitude view following the thinner of two faint pale trails across
+      the plain, the trail running away toward the top of the frame, thin haze,
+      near vertical, aerial shot
+    video_prompt: >
+      The camera drifts slowly and evenly along the trail, keeping the same
+      altitude and the same angle throughout. No descent, no banking, no
+      rotation, no zoom. The trail stays in the frame the whole time.
+
+  - id: "5.3"
+    scene: 5
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A4-aerial]
+    exterior: true
+    prompt: >
+      Ground churned and broken up over a small area, dozens of small
+      overlapping pressed tracks crowded together in it, all of them leading
+      away in the same direction and thinning out into a single faint line,
+      seen from low altitude looking down, static shot
+
+  - id: "5.4"
+    scene: 5
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    ref_shot: "3.1"            # the same kind of track, smaller
+    note: >
+      Referenced to 3.1 rather than the anchor: the point of the shot is that
+      these are the same tracks at a smaller size, and only the approved plate
+      carries the same rim and the same soil.
+    prompt: >
+      The same kind of broad shallow pressed track, much smaller, several of
+      them overlapping in damp fine-grained soil, soft rounded rims, raking
+      light, ground level close shot
+
+  - id: "5.5"
+    scene: 5
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      Higher latitude ground: thin patchy frost over grey-brown grit, the
+      light lower and flatter than on the plain, longer shadows, sparse
+      vegetation almost gone, wide static shot
+
+  - id: "5.6"
+    scene: 5
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      Polar ground, unmarked and undisturbed, hard pale frost over bare grit,
+      no tracks anywhere, the sun grazing along the horizon behind it giving
+      almost no warmth in the colour, static shot
+
+  - id: "5.7"
+    scene: 5
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      Empty polar horizon, frost and grit meeting a flat pale sky with no
+      detail in it, the sun a small disc on the line, nothing else in frame,
+      wide static shot
+
+  # SCENE 6 — THE DISTANCE (34 s)
+  - id: "6.1"
+    scene: 6
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    card: odometer
+    note: Odometer plate. Clean lower left.
+    prompt: >
+      The vegetation band in low golden light with nothing alive in it, the
+      sun sitting on the horizon directly ahead, long shadows running toward
+      the camera, thin haze, the lower left of the frame empty ground, wide
+      static shot
+
+  - id: "6.2"
+    scene: 6
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    anchors: [A3-ground-macro]
+    prompt: >
+      A single line of broad shallow pressed tracks receding away from the
+      camera into the haze, evenly spaced, the pale line of a frost edge
+      visible far behind them, low light, ground level shot, static
+
+  - id: "6.3"
+    scene: 6
+    timeline_seconds: 10
+    source: ffmpeg_still
+    local_motion: drift
+    motion: controlled drift
+    anchors: []
+    ref_shot: "6.2"
+    note: >
+      Built locally, not generated. A model asked to travel along a line of
+      tracks trucks the line straight out of the frame — record 1 lost a plate
+      to exactly this. Locally the travel is a number we choose, and the
+      tracks cannot leave.
+    prompt: >
+      The same line of receding tracks, framed slightly wider, the frost edge
+      further back, low light, ground level shot
+
+  - id: "6.4"
+    scene: 6
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    anchors: [A1-plain-wide]
+    prompt: >
+      Bare horizon with drifting dust across it, no tracks and no vegetation,
+      the sun a small pale disc on the line, thin haze, wide static shot
+
+  # SCENE 7 — REVEAL AND CLOSE (18 s)
+  - id: "7.1"
+    scene: 7
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    anchors: [A5-longlens-haze]
+    prompt: >
+      Empty ground in the middle distance through drifting dust, long lens,
+      heavily compressed, shallow focus, a low ridge line behind, nothing in
+      frame, static shot
+
+  - id: "7.2"
+    scene: 7
+    timeline_seconds: 4
+    generate_seconds: 5        # Kling does 5 or 10; 5 is enough and is cheaper
+    trim_to: 4
+    model: workhorse
+    motion: the animal crosses
+    anchors: [A5-longlens-haze]
+    note: >
+      The only animal in the record, and the only generated motion of a living
+      subject. Working Agreements apply: if two takes fail, stop and report.
+      The fallback is 7.1 held longer with the shape passing at the very edge
+      of the frame — the record survives without the animal, the budget does
+      not survive a loop.
+
+      No face, no eye, no detail. The dust is doing most of the work; if a
+      take comes back clean and readable, it is wrong even if it is pretty.
+    prompt: >
+      A single large four-legged grazing animal in the middle distance seen
+      through drifting dust, dark and low-slung with a long heavy body and a
+      low-carried head, no visible face and no eye, its outline broken up by
+      the dust, standing side on to the camera, long lens, heavily compressed,
+      shallow focus
+    video_prompt: >
+      The animal walks steadily across the frame from right to left at an
+      unhurried constant pace, without pausing and without turning its head
+      toward the camera. It never becomes sharper or clearer. The camera is
+      locked off and does not move, does not pan and does not follow. Nothing
+      else enters the frame.
+
+  - id: "7.3"
+    scene: 7
+    timeline_seconds: 4
+    source: ffmpeg_still
+    motion: static
+    anchors: []
+    ref_shot: "7.1"            # the same empty frame it entered
+    note: >
+      Cut here while the animal is still crossing. The plate is 7.1's frame
+      so the cut reads as the same camera, not a new setup.
+    prompt: >
+      The same empty ground through drifting dust, long lens, heavily
+      compressed, shallow focus, nothing in frame, static shot
+
+  - id: "7.4"
+    scene: 7
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    anchors: [A5-longlens-haze]
+    card: closing
+    prompt: >
+      Flat ground and thin haze filling the frame almost evenly, no horizon
+      feature, no tracks, the light nearly gone, an almost empty frame, static
