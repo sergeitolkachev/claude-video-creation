@@ -380,6 +380,20 @@ def write_clicks(path, times, length_s, spec):
 
 # --- main --------------------------------------------------------------------
 
+def resolve_times(card, base):
+    """Shift a card's relative times onto the episode timeline."""
+    def walk(node):
+        if isinstance(node, dict):
+            return {k: (round(v + base, 3)
+                        if k in ("at", "hold_until") and isinstance(v, (int, float))
+                        else walk(v))
+                    for k, v in node.items()}
+        if isinstance(node, list):
+            return [walk(v) for v in node]
+        return node
+    return walk(card)
+
+
 def build_card(card, spec, ep, ff):
     lines = card_lines(card)
     start = card["at"]
@@ -458,10 +472,19 @@ def main():
     for sh in shots:
         acc += sh["timeline_seconds"]; shot_end[sh["id"]] = acc
 
+    shot_start = {}
+    acc = 0
+    for sh in shots:
+        shot_start[sh["id"]] = acc; acc += sh["timeline_seconds"]
+
     manifest = []
     for card in doc["cards"]:
         if only and card["id"] != only:
             continue
+        # Card times are relative to their own shot; resolve them here so the
+        # renderer keeps working in absolute seconds.
+        base = shot_start.get(card.get("shot"), 0)
+        card = resolve_times(card, base)
         m = build_card(card, spec, ep, ff)
         manifest.append(m)
         over = ""

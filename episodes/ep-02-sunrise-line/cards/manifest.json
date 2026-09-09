@@ -11,7 +11,7 @@
   {
     "id": "temperature-profile",
     "shot": "2.4",
-    "at": 52.5,
+    "at": 60.5,
     "duration": 11.5,
     "mov": "temperature-profile.mov",
     "wav": "temperature-profile.wav",
@@ -38,7 +38,7 @@
   {
     "id": "latitude-cosine",
     "shot": "5.1",
-    "at": 159.5,
+    "at": 162.5,
     "duration": 9.076,
     "mov": "latitude-cosine.mov",
     "wav": "latitude-cosine.wav",
@@ -47,7 +47,7 @@
   {
     "id": "odometer",
     "shot": "6.1",
-    "at": 220.8,
+    "at": 223.8,
     "duration": 8.2,
     "mov": "odometer.mov",
     "wav": "odometer.wav",

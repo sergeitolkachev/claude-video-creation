@@ -1,0 +1,41 @@
+# Record 02's mix. Scene boundaries are not here — they come from shots.yaml,
+# because they moved once already when the narration came in slower than the
+# estimate and two scenes had to grow.
+runtime_seconds: 279
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+
+# Extra air before specific lines, per the pause table in script.md. These are
+# the beats where the sentence before has to be allowed to land.
+hold:
+  s1p3: 2.0    # "This has one consequence that shapes everything else."
+  s2p3: 2.0    # "Slower than a walking human."
+  s3p3: 2.0    # "Nothing here has a season."
+  s5p3: 2.5    # "At the pole itself, the requirement falls to zero."
+  s6p2: 2.5    # "There is no destination. There never was."
+  s7p2: 3.0    # after the animal has crossed
+
+# Room tone runs under the whole record: absolute digital silence would break
+# the survey framing. Wind, not a hum — this world is outdoors.
+levels: {wind: -21, clicks: 0}
+layers:
+  wind: {file: sfx/wind.mp3, loop_to_fill: true, fade_out: [274, 5]}
+
+# Regenerable from here, per CLAUDE.md: nothing in audio/ is versioned.
+# The room tone is deliberately dull — it is the sound of air over open ground
+# and it must not become weather. Anything with gusts in it starts telling its
+# own story under a narrator who is reading numbers.
+sfx:
+  wind:
+    file: sfx/wind.mp3
+    seconds: 22
+    prompt: >
+      Steady low wind over a wide flat plain, distant and even, no gusts, no
+      whistling, no howling, no rustling vegetation, no birds, no voices, a
+      continuous smooth bed of moving air recorded outdoors, very low
+      frequency emphasis
+
+# The card clicks are already mixed and placed by build_cards.py; they come in
+# as one pre-built bed rather than as another layer to time here.
+clicks_bed: cards/clicks-bed.m4a

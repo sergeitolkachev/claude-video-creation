@@ -1,0 +1,19 @@
+# Record 01's mix constants, lifted out of scripts/build_audio.py when that
+# script was generalised for record 02. Values unchanged: this episode is
+# mastered and has to stay reproducible.
+runtime_seconds: 250
+lead_in: 1.5
+tail: 3.0
+min_gap: 1.2
+hold: {s5p6: 2.5, s5p8: 1.8}
+relay:
+  every: [4.0, 5.0]
+  from: 3.0
+  until: 246
+  seed: 11
+levels: {hum: -19, relay: -22, drone: -28}
+silence_at: [202.9, 2.5]
+layers:
+  hum:   {file: music/hum-raw.mp3, trim: [20, 200], loop_crossfade: 3, fade_out: [246, 4]}
+  drone: {file: music/drone.mp3, delay: 110}
+  relay: {file: sfx/relay.mp3}

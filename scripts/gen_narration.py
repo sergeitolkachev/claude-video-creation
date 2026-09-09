@@ -27,7 +27,10 @@ def paragraphs(script):
     """Narration blocks, in scene order, split on blank quoted lines."""
     out = []
     for scene, blk in enumerate(
-            re.findall(r"\*\*Narration:\*\*\n((?:>.*\n)+)", script), start=1):
+            # a blank line may sit between the heading and the quote — record
+            # 02's script is written that way and record 01's is not
+            re.findall(r"\*\*Narration:\*\*\n+((?:>.*\n|\n(?=>))+)", script),
+            start=1):
         text = re.sub(r"^> ?", "", blk, flags=re.M)
         for i, para in enumerate([p.strip() for p in text.split("\n\n") if p.strip()], 1):
             out.append((f"s{scene}p{i}", " ".join(para.split())))

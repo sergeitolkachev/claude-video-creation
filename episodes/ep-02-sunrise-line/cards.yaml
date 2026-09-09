@@ -20,8 +20,13 @@
 #     plate comes back busy where the card goes, the plate is wrong, not the
 #     card.
 #
-# Times are absolute seconds on the 272 s timeline.
-# Scene starts: 1=0  2=34  3=76  4=110  5=159  6=220  7=254
+# Times are seconds **from the start of the card's own shot**, not absolute.
+#
+# They were absolute once, and then the narration came in slower than the
+# estimate, two scenes grew to keep their silence, and every card after scene
+# 4 was pointing at the wrong second. A card belongs to a plate that was
+# framed for it; the plate's position on the timeline is not the card's
+# business.
 
 # Font, colour, typing rate and the click are channel furniture and live in
 # config/type.yaml. Only what is specific to this episode's cards is here.
@@ -54,14 +59,14 @@ cards:
     shot: "2.4"
     pos: lower-band        # drawn across the clean lower third of the plate
     type: plot
-    at: 52.5
+    at: 0.5
     draw_seconds: 3.0      # the curve draws left to right, no easing
-    hold_until: 60.0
+    hold_until: 8.0
     x_axis: {label: "km from the line", from: -120, to: 120, ticks: 60}
     y_axis: {label: "K", from: 180, to: 420, ticks: 60}
     shade: {from: -30, to: 30, label: "liquid water"}
     figure:
-      at: 59.0             # resolves last, alone, and rides into shot 2.5
+      at: 7.0             # resolves last, alone, and rides into shot 2.5
       hold: 5.0
       text: "terminator ground speed, equator    2.50 km/h"
 
@@ -69,13 +74,13 @@ cards:
   - id: margin-countdown
     shot: "3.4"
     pos: lower-left
-    at: 102.5
-    hold_until: 110.0
+    at: 0.5
+    hold_until: 8.0
     lines:
       - "60 km ÷ 2.50 km/h = 24 h"
     bar:
       label: "MARGIN"
-      at: 106.0
+      at: 4.0
       drain_seconds: 4.0   # real time, once, and it does not reset
       width: 640
 
@@ -84,14 +89,14 @@ cards:
     shot: "4.2"
     pos: lower-left
     type: stacked_bar
-    at: 118.5
-    hold_until: 127.0
+    at: 0.5
+    hold_until: 9.0
     rows:
-      - {label: "adult mass",       value: "200 kg",    at: 118.5}
-      - {label: "basal metabolism", value: "~16 MJ / day", at: 120.5, segment: 16}
-      - {label: "locomotion",       value: "~24 MJ / day", at: 122.5, segment: 24}
-      - {label: "total",            value: "~40 MJ / day", at: 124.5, rule: true}
-      - {label: "intake",           value: "body mass per 16 days", at: 126.0}
+      - {label: "adult mass",       value: "200 kg",    at: 0.5}
+      - {label: "basal metabolism", value: "~16 MJ / day", at: 2.5, segment: 16}
+      - {label: "locomotion",       value: "~24 MJ / day", at: 4.5, segment: 24}
+      - {label: "total",            value: "~40 MJ / day", at: 6.5, rule: true}
+      - {label: "intake",           value: "body mass per 16 days", at: 8.0}
 
   # --- Scene 5 -------------------------------------------------------------
   # The cosine curve is drawn from the function, not traced by hand: the
@@ -101,9 +106,9 @@ cards:
     shot: "5.1"
     pos: lower-left
     type: cosine
-    at: 159.5
+    at: 0.5
     interval: 1.1
-    hold_until: 168.0
+    hold_until: 9.0
     equator_speed: 2.504
     rows: [0, 30, 45, 60, 75, 90]
     format: "{lat:>2}°    {v:.2f} km/h"
@@ -112,8 +117,8 @@ cards:
   - id: odometer
     shot: "6.1"
     pos: lower-left
-    at: 220.8
-    hold_until: 229.0
+    at: 0.8
+    hold_until: 9.0
     counter:
       label: "distance walked"
       from: 0
@@ -121,8 +126,8 @@ cards:
       count_seconds: 3.2   # fast, then settles — the only card that moves
       unit: km
     lines:
-      - {text: "lifespan            ~40 Earth years", at: 220.8}
-      - {text: "Earth–Moon distance    384,400 km",   at: 226.0}
+      - {text: "lifespan            ~40 Earth years", at: 0.8}
+      - {text: "Earth–Moon distance    384,400 km",   at: 6.0}
 
   # --- Scene 7 -------------------------------------------------------------
   # Nothing on screen while the animal is crossing. The closing card lives in

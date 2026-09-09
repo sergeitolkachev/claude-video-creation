@@ -9,12 +9,17 @@
 # written for a human reader.
 
 episode: ep-02-sunrise-line
-runtime_seconds: 272
+runtime_seconds: 279
 aspect: "16:9"
 
 # Per-scene runtime, read by scripts/validate.py. Record 1 had these numbers
 # hardcoded in the script; a second episode is where that stops working.
-scene_runtime: {1: 34, 2: 42, 3: 34, 4: 49, 5: 61, 6: 34, 7: 18}
+# Scenes 4 and 6 grew by 3 and 4 seconds after the narration was recorded:
+# the takes came in slower than the 162 wpm estimate and both scenes fell
+# under the one-third silence floor. The picture was extended rather than the
+# delivery hurried — 4.6 simply stopped being trimmed, and two local shots in
+# scene 6 were rebuilt longer, which costs a rebuild and nothing else.
+scene_runtime: {1: 34, 2: 42, 3: 34, 4: 52, 5: 61, 6: 38, 7: 18}
 
 # Prompt hygiene the validator enforces, beyond the pipeline-wide rules.
 # The one that matters here is the animal: the record shows it once, for four
@@ -694,9 +699,8 @@ shots:
   - id: "4.6"
     scene: 4
     motion_tier: model
-    timeline_seconds: 7
+    timeline_seconds: 10
     generate_seconds: 10
-    trim_to: 7
     model: workhorse
     motion: dust over the empty band
     anchors: [A1-plain-wide]
@@ -858,7 +862,7 @@ shots:
   - id: "6.1"
     scene: 6
     motion_tier: static
-    timeline_seconds: 9
+    timeline_seconds: 11
     source: ffmpeg_still
     motion: static
     anchors: [A1-plain-wide]
@@ -874,7 +878,7 @@ shots:
     scene: 6
     motion_tier: local
     local_motion: drift
-    timeline_seconds: 9
+    timeline_seconds: 11
     source: ffmpeg_still
     motion: static
     anchors: []

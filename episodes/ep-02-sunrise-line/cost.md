@@ -277,3 +277,25 @@ text plus everything it carries, and that is what gets anchored. The second:
 pale text on a pale salt pan disappears, so every glyph, axis and curve now
 carries a two-pixel shadow at alpha 150. Not a scrim and not a box; the card
 still belongs to the frame, it just stops competing with it.
+
+## Narration
+
+19 paragraphs, 2 519 characters, three seeded takes each — 7 557 characters of
+a 35 903 character monthly allowance, and $0.00 against this budget.
+
+Picked by record 01's rule: **the slowest of three.** Every risk in this voice
+runs one way, it hurries, and none of the takes was ever too slow. Seeds are
+in `audio/narration.yaml`, so the episode's audio rebuilds from the repository
+and script.md alone.
+
+The takes came in slower than the 162 wpm the plan assumed — 171.4 s of speech
+against 167 s estimated — and that pushed scene 4 to 29% silence and scene 6
+to 27%, both under the floor. **The picture was extended rather than the
+delivery hurried:** shot 4.6 simply stopped being trimmed (the Kling clip is
+10 s and was cut to 7), and two local shots in scene 6 were rebuilt longer.
+Runtime 272 → 279 s, cost $0.00, and both scenes now sit at 39% and 41%.
+
+That move is also why card times are no longer absolute. They were, and when
+the scenes grew every card after scene 4 was pointing at the wrong second.
+They are now offsets from their own shot, which is the thing they were framed
+against.
