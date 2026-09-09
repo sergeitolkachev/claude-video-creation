@@ -315,3 +315,34 @@ that got noticed on playback — a 0.06 s collapse to near-black reads as a
 dropped frame in the player, not as tape. `scripts/check_flicker.py` scores a
 master for single dark frames away from any cut: record 01 scores 9, this one
 scores 0.
+
+## Verticals
+
+Three cuts, 22.2 s, 21.2 s and 27.5 s, all 1080x1920, $0.00 — carved from
+`out/EPISODE-clean.mp4`, which is the same grade and the same grain as the
+master with nothing laid over it.
+
+**No data cards in a vertical.** A card is composed for the lower left of a
+16:9 frame; a 9:16 crop takes 608 px of width out of 1920, and the ALDREN card
+alone is about 1000 px wide. Anchoring the crop left rather than centre would
+have kept the labels and cut the numbers off — the half worth keeping. So a
+vertical carries the picture, the voice, the wind and the slug. The record is
+where the numbers live, which is also the argument for watching it.
+
+The clicks come out with the cards: a typing sound with nothing typing on
+screen is a fault, not a signature. `build_audio.py --no-clicks` writes the
+mix these are cut from.
+
+| Cut | Window | Ends on |
+|---|---|---|
+| fc9-002-b-the-line | 50.0–72.2 | "Faster than anything can afford to ig—" |
+| fc9-002-c-the-margin | 78.0–99.2 | "the ground you are standing on is on f—" |
+| fc9-002-d-the-distance | 223.0–250.5 | "The animal is not travelling any—" |
+
+## Episode total
+
+**$16.09** against a $30 ceiling. Anchors $1.35, stills $6.64 including
+$1.09 spent discovering that the animal's body plan was wrong, video $8.10 of
+Kling plus one $0.70 retake. Everything else — 20 local builds, six data
+cards, three titles, 348 clicks, the grade, the master and three verticals —
+was made locally and cost nothing.

@@ -30,7 +30,14 @@ CONTRAST = 1.05
 
 
 def main():
-    ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-02-sunrise-line")
+    args = sys.argv[1:]
+    # --clean grades and grains the cut but lays nothing over it. The verticals
+    # are built from this: a data card composed for a 16:9 lower left cannot
+    # survive a 9:16 crop, and half a card is worse than none.
+    clean = "--clean" in args
+    if clean:
+        args.remove("--clean")
+    ep = pathlib.Path(args[0] if args else "episodes/ep-02-sunrise-line")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
     total = doc["runtime_seconds"]
@@ -39,8 +46,10 @@ def main():
         grade_cfg = yaml.safe_load((ep / "grade.yaml").read_text()) or {}
 
     src = ep / "out" / "rough-cut.mp4"
-    audio = ep / "audio" / "episode-mix.mp3"
-    manifest = json.loads((ep / "cards" / "manifest.json").read_text())
+    audio = ep / "audio" / ("episode-mix-noclicks.mp3" if clean
+                            else "episode-mix.mp3")
+    manifest = [] if clean else json.loads(
+        (ep / "cards" / "manifest.json").read_text())
 
     ins = ["-i", str(src), "-i", str(audio)]
     for m in manifest:
@@ -74,7 +83,7 @@ def main():
     # Grain last, so it lies over the cards and the titles too.
     fc.append(f"[{last}]noise=alls={GRAIN}:allf=t+u,format=yuv420p[v]")
 
-    out = ep / "out" / "EPISODE-final.mp4"
+    out = ep / "out" / ("EPISODE-clean.mp4" if clean else "EPISODE-final.mp4")
     subprocess.run([ff, "-y", "-v", "error", *ins,
                     "-filter_complex", ";".join(fc),
                     "-map", "[v]", "-map", "1:a",

@@ -69,7 +69,13 @@ def place(picks, A, start, end, cfg):
 
 
 def main():
-    ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-02-sunrise-line")
+    args = sys.argv[1:]
+    # The verticals carry no cards, so they must not carry the sound of cards
+    # typing — a click with nothing on screen is a fault, not a signature.
+    no_clicks = "--no-clicks" in args
+    if no_clicks:
+        args.remove("--no-clicks")
+    ep = pathlib.Path(args[0] if args else "episodes/ep-02-sunrise-line")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
     A = ep / "audio"
     cfg = yaml.safe_load((ep / "audio.yaml").read_text())
@@ -151,7 +157,7 @@ def main():
             mixed.append(f"[rc{n}]")
         print(f"  relay: {len(times)} clicks")
 
-    if cfg.get("clicks_bed") and (ep / cfg["clicks_bed"]).exists():
+    if not no_clicks and cfg.get("clicks_bed") and (ep / cfg["clicks_bed"]).exists():
         i = add(ep / cfg["clicks_bed"])
         fc.append(f"[{i}:a]volume={levels.get('clicks', 0)}dB,apad,"
                   f"atrim=0:{total}[clicks]")
@@ -168,7 +174,7 @@ def main():
               f"alimiter=limit=0.95,aformat=sample_rates=44100:"
               f"channel_layouts=stereo[out]")
 
-    out = A / "episode-mix.mp3"
+    out = A / ("episode-mix-noclicks.mp3" if no_clicks else "episode-mix.mp3")
     subprocess.run([ff, "-y", "-v", "error", *ins,
                     "-filter_complex", ";".join(fc), "-map", "[out]",
                     "-c:a", "libmp3lame", "-b:a", "192k", str(out)], check=True)
