@@ -33,7 +33,10 @@ def zoom_in(im, cfg):
     almost always too loose for a frame that has to land in a 210 px grid."""
     z = cfg["zoom"]
     w, h = round(im.width * z), round(im.height * z)
-    x = (im.width - w) // 2
+    # bias_x as well as bias_y: a subject that is centred in a 16:9 shot is
+    # not necessarily what the crop should be built around. Record 02's animal
+    # sits left of centre and disappears at grid size if the crop is centred.
+    x = round((im.width - w) * cfg.get("bias_x", 0.5))
     y = round((im.height - h) * cfg.get("bias_y", 0.5))
     return im.crop((x, y, x + w, y + h))
 

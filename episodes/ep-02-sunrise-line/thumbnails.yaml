@@ -1,0 +1,77 @@
+# Thumbnail variants for A/B. Three plates, three different promises — the
+# test measures nothing if all three sell the same thing with the text moved
+# around. Record 01's split was a number, a view, a person; this record has no
+# people, so it is a number, a world, and a body.
+#
+# Plates are approved stills. Nothing is generated for a thumbnail: the frame
+# is already in the episode, and promising a frame the episode does not
+# contain is the reliable way to lose watch time.
+#
+# Every character is burned in by scripts/build_thumbs.py in the channel's
+# Menlo. Positions are fractions of the frame so they hold if the export size
+# changes. Variant ids never get renamed — the id is what a conversion figure
+# is attached to later.
+
+episode: ep-02-sunrise-line
+slug: "FC9-002 // The Sunrise Line"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the number. The largest figure in the record, against the trail that
+  # produced it. It reads as absurd until you watch, which is the job.
+  - id: a-distance
+    plate: "6.2"
+    crop: {zoom: 0.88, bias_y: 0.52}
+    blocks:
+      - lines: ["878,000 KM"]
+        size: 128
+        tracking: 6
+        x: 0.06
+        y: 0.10
+        anchor: left
+        scrim: true
+      - lines: ["ON FOOT, IN A CIRCLE"]
+        size: 38
+        tracking: 10
+        x: 0.06
+        y: 0.34
+        anchor: left
+        scrim: true
+
+  # B — the world. The aerial, where the two trails are visible at once and
+  # neither is explained. The only variant that states the premise instead of
+  # a consequence of it.
+  - id: b-world
+    plate: "5.1"
+    crop: {zoom: 0.94, bias_y: 0.5}
+    blocks:
+      - lines: ["SOLAR DAY", "366 EARTH DAYS"]
+        size: 76
+        tracking: 8
+        x: 0.05
+        y: 0.60
+        anchor: left
+        scrim: true
+
+  # C — the body. The one frame in the record that contains the animal, and it
+  # is already broken up by dust, so the thumbnail gives away no more than the
+  # four seconds do. The risk is the opposite of record 01's: this promises an
+  # animal and the record shows it once. The flat line is there to say so.
+  - id: c-body
+    plate: "7.2"
+    crop: {zoom: 0.42, bias_x: 0.40, bias_y: 0.44}
+    blocks:
+      - lines: ["ONE SIGHTING"]
+        size: 76
+        tracking: 8
+        x: 0.05
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["IN FOUR MINUTES"]
+        size: 32
+        tracking: 10
+        x: 0.05
+        y: 0.24
+        anchor: left
+        scrim: true

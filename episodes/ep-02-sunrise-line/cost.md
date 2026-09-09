@@ -357,3 +357,26 @@ $1.09 spent discovering that the animal's body plan was wrong, video $8.10 of
 Kling plus one $0.70 retake. Everything else — 20 local builds, six data
 cards, three titles, 348 clicks, the grade, the master and three verticals —
 was made locally and cost nothing.
+
+## Thumbnails
+
+Three variants, `out/thumbs/`, 1280x720, $0.00 — every plate is an approved
+still that is already in the record. Nothing was generated for a thumbnail.
+
+Record 01's split was a number, a view, a person. This record has no people,
+so it is a number, a world, and a body:
+
+| Variant | Plate | Sells |
+|---|---|---|
+| a-distance | 6.2 | 878,000 KM / ON FOOT, IN A CIRCLE |
+| b-world | 5.1 | SOLAR DAY / 366 EARTH DAYS |
+| c-body | 7.2 | ONE SIGHTING / IN FOUR MINUTES |
+
+`c-body` needed a 0.42 punch-in biased left before the animal survived at
+210 px, which is the size that actually decides a click. `build_thumbs.py`
+gained `bias_x` for it: a subject centred in a 16:9 shot is not necessarily
+what the crop should be built around.
+
+The second line on `c-body` is doing honest work. The variant promises an
+animal and the record shows it once, for four seconds — saying so on the
+thumbnail is cheaper than losing the watch time to a viewer who feels sold to.
