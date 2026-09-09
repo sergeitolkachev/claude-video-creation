@@ -758,7 +758,9 @@ shots:
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
-    anchors: [A3-ground-macro]
+    anchors: []
+    exterior: true            # A3 injects its ribbed band; see scene 3
+    spine_key: ground_spine
     trail_canon: *trail_canon
     prompt: >
       One single narrow band of broken, pressed-down crust receding away from the
@@ -822,12 +824,24 @@ shots:
 
       No face, no eye, no detail. The dust is doing most of the work; if a
       take comes back clean and readable, it is wrong even if it is pretty.
+
+      First pass returned a horned bovine grazing with its head down — a cow,
+      in both seeds, and legible enough that a viewer names it. That is the
+      one failure this shot cannot survive: the record is invented fauna, and
+      a familiar silhouette turns four seconds of reveal into four seconds of
+      livestock. The horns, ears and tail are now excluded by name, the head
+      is small and in the dust, and the neck reaches forward instead of down,
+      because a head lowered to the ground is what makes it read as grazing
+      cattle.
     prompt: >
-      A single large four-legged grazing animal in the middle distance seen
-      through drifting dust, dark and low-slung with a long heavy body and a
-      low-carried head, no visible face and no eye, its outline broken up by
-      the dust, standing side on to the camera, long lens, heavily compressed,
-      shallow focus
+      A single large four-legged animal in the middle distance seen through
+      drifting dust, side on to the camera: a long heavy body carried low and
+      level, short thick legs, the neck reaching forward rather than down and
+      the head small and lost in the dust. No horns, no antlers, no ears, no
+      tail, no visible face and no eye. More than half of its outline is
+      broken up and softened by the dust between it and the camera, so the
+      shape is read rather than seen. Long lens, heavily compressed, shallow
+      focus
     video_prompt: >
       The animal walks steadily across the frame from right to left at an
       unhurried constant pace, without pausing and without turning its head

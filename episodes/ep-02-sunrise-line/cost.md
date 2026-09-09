@@ -198,3 +198,7 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | scene 5, 16 generations | $0.56 | $5.20 |
 | 2026-09-09 | 4 — stills | 5.5/5.6 re-pitched by distance, 5.2 against approved 5.1, 10 | $0.32 | $5.52 |
 | 2026-09-09 | 4 — stills | **approved:** 5.1 s22, 5.2 s11, 5.3 s44, 5.4 s22, 5.5 s11, 5.6 s22, 5.7 s11 — scene 5 complete | — | $5.52 |
+| 2026-09-09 | 4 — stills | scenes 6 and 7, 14 generations | $0.52 | $6.04 |
+| 2026-09-09 | 4 — stills | 7.2 re-pitched off the bovine silhouette; 6.3 and 7.3 against approved plates, 6 | $0.24 | $6.28 |
+| 2026-09-09 | 4 — stills | **approved:** 6.1 s22, 6.2 s11, 6.3 s11, 6.4 s22, 7.1 s11, 7.2 s22, 7.3 s11, 7.4 s11 | — | $6.28 |
+| 2026-09-09 | 4 — stills | **stage 4 closed — 36/36 plates approved, 34 shots** | — | $6.28 |
