@@ -531,7 +531,9 @@ shots:
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
-    anchors: [A3-ground-macro]
+    anchors: []
+    exterior: true            # A3 injects its ribbed band; see scene 3
+    spine_key: ground_spine
     prompt: >
       Low dark olive stems close up, every one of them cropped off at the same
       height in a clean level line, the cut ends pale, bare soil visible
@@ -544,12 +546,23 @@ shots:
     motion: static
     anchors: [A1-plain-wide]
     card: energy-budget
-    note: Bar plate. Clean lower left; the stacked bar builds there.
+    note: >
+      Bar plate. Clean lower left; the stacked bar builds there.
+
+      First pass read "running straight away from the camera to the horizon"
+      as a vanishing line and returned a perfectly triangular wedge of
+      vegetation converging on the sun — the same failure as 2.5, and a
+      manicured one. The cropped edge now runs across the frame instead of
+      into it, which is also how a grazing line is actually read: by the step
+      in height, not by perspective.
     prompt: >
-      A band of low dark olive vegetation running straight away from the
-      camera to the horizon, one side of it cropped short in an unbroken
-      straight line and the other side untouched and taller, the difference
-      running all the way into the haze, wide static shot
+      A straight level edge running left to right across the frame where low dark
+      olive vegetation has been cropped off short and even on the near side of it,
+      while beyond that edge the same vegetation stands taller and untouched. The
+      height difference is caught by the raking light along the whole length of the
+      edge. The near ground in the lower left of the frame is plain open soil with
+      nothing on it. Mid shot, seen from the side, no vanishing point, no wedge or
+      triangle of vegetation, no path leading to the sun, static
 
   - id: "4.3"
     scene: 4
@@ -594,7 +607,9 @@ shots:
     timeline_seconds: 7
     source: ffmpeg_still
     motion: static
-    anchors: [A3-ground-macro]
+    anchors: []
+    exterior: true            # A3 injects its ribbed band; see scene 3
+    spine_key: ground_spine
     prompt: >
       Low dark olive vegetation from just above, flat even light, thin stems
       and small tough leaves over bare grit, no flowers, no bright green,
@@ -607,9 +622,10 @@ shots:
     motion: static
     anchors: [A1-plain-wide]
     prompt: >
-      The vegetation band seen wide with nothing in it, the frost edge a pale
-      line far off to one side, the scorched ground a paler line to the other,
-      empty ground between them, low level light, static wide shot
+      Wide empty ground with nothing growing in the foreground at all — bare soil
+      and grit to the bottom edge, no bushes, no shrubs, no dry grass tufts, no
+      scrub — the pale line of a frost edge far off to one side and paler scorched
+      ground to the other, low level light, static wide shot
 
   # SCENE 5 — LATITUDE (61 s)
   - id: "5.1"
