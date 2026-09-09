@@ -25,7 +25,7 @@ where the plate has room for it.
 """
 import json, math, pathlib, random, struct, subprocess, sys, tempfile, wave
 import yaml
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 FPS = 24
 W, H = 1920, 1080
@@ -153,6 +153,27 @@ def card_lines(card):
     return []
 
 
+def finish(layer, spec):
+    """Halo, glow, glyphs — in that order.
+
+    The halo is a blurred black silhouette of the card and is the only reason
+    it survives a bright salt pan; the glow is a blurred copy of the card
+    itself, which is the phosphor bloom off an analogue monitor. Neither is a
+    scrim: both are the shape of the text, so the frame still shows through
+    everywhere the text is not.
+    """
+    f = spec["font"]
+    a = layer.split()[3]
+    halo = Image.new("RGBA", layer.size, (0, 0, 0, 0))
+    halo.putalpha(a.filter(ImageFilter.GaussianBlur(f.get("halo_radius", 9)))
+                   .point(lambda v: int(v * f.get("halo_alpha", 170) / 255)))
+    glow = layer.filter(ImageFilter.GaussianBlur(f.get("glow_radius", 7)))
+    glow.putalpha(glow.split()[3].point(
+        lambda v: int(v * f.get("glow_alpha", 150) / 255)))
+    out = Image.alpha_composite(halo, glow)
+    return Image.alpha_composite(out, layer)
+
+
 def render_frame(card, spec, t, schedule, lines, size):
     """One RGBA frame of a card at absolute time t."""
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -161,8 +182,7 @@ def render_frame(card, spec, t, schedule, lines, size):
     tracking = spec["font"]["tracking"]
     colour = tuple(spec["font"]["colour"])
     alpha = spec["font"]["alpha"]
-    shadow = (spec["font"].get("shadow_offset", 1),
-              spec["font"].get("shadow_alpha", 90))
+    shadow = None                 # the halo does this now, see finish()
     lh = int(size * 1.55)
 
     box_w = max((tracked_width(d, l, f, tracking) for l in lines), default=0)
@@ -223,10 +243,10 @@ def render_frame(card, spec, t, schedule, lines, size):
     if card.get("type") == "plot":
         draw_plot(d, card, spec, t, x0, y0 + text_h, size)
     if card.get("type") == "cosine":
-        draw_cosine(d, card, spec, t, x0, y0, size, box_h)
+        draw_cosine(d, card, spec, t, x0 + box_w + 90, y0, size, text_h)
     if card.get("type") == "stacked_bar":
         draw_stack(d, card, spec, t, x0, y0 + text_h + 24, size)
-    return img
+    return finish(img, spec)
 
 
 def draw_plot(d, card, spec, t, x0, y0, size):
@@ -239,11 +259,8 @@ def draw_plot(d, card, spec, t, x0, y0, size):
     if draw_s <= 0:
         return
     ax, ay = card["x_axis"], card["y_axis"]
-    for off, a in ((2, 150), (0, rule)):
-        ink = (0, 0, 0, a) if off else colour + (a,)
-        d.line([(x0 + off, y0 + ph + off), (x0 + pw + off, y0 + ph + off)],
-               fill=ink, width=1)
-        d.line([(x0 + off, y0 + off), (x0 + off, y0 + ph + off)], fill=ink, width=1)
+    d.line([(x0, y0 + ph), (x0 + pw, y0 + ph)], fill=colour + (rule,), width=2)
+    d.line([(x0, y0), (x0, y0 + ph)], fill=colour + (rule,), width=2)
 
     def px(v): return x0 + (v - ax["from"]) / (ax["to"] - ax["from"]) * pw
     def py(v): return y0 + ph - (v - ay["from"]) / (ay["to"] - ay["from"]) * ph
@@ -263,47 +280,56 @@ def draw_plot(d, card, spec, t, x0, y0, size):
         k = 1 / (1 + math.exp(kx / 26))
         pts.append((px(kx), py(ay["from"] + (ay["to"] - ay["from"]) * k)))
     if len(pts) > 1:
-        d.line([(x + 2, y + 2) for x, y in pts], fill=(0, 0, 0, 150), width=2)
-        d.line(pts, fill=colour + (alpha,), width=2)
+        d.line(pts, fill=colour + (alpha,), width=3)
 
 
-def draw_cosine(d, card, spec, t, x0, y0, size, box_h):
+def draw_cosine(d, card, spec, t, x0, y0, size, box_h):  # x0 is past the table
     """Required speed by latitude. The curve is drawn from the function, not
     traced: the table and the curve have to agree, because the narration reads
     two of the rows out loud."""
     colour = tuple(spec["font"]["colour"]); alpha = spec["font"]["alpha"]
     rule = spec.get("rule_alpha", 90)
-    cw, ch = 360, 220
-    cx, cy = x0 - cw - 60, y0
-    if cx < 96:
-        cx = 96
+    # The curve sits beside the table, not behind it: the table is read and
+    # the curve is glanced at, and a curve under six lines of numbers is
+    # neither. x0 already arrives offset past the table's width.
+    cw, ch = 420, max(220, box_h)
+    cx, cy = x0, y0
     d.line([(cx, cy + ch), (cx + cw, cy + ch)], fill=colour + (rule,), width=1)
     d.line([(cx, cy), (cx, cy + ch)], fill=colour + (rule,), width=1)
     n = max(2, int(90 * min(1.0, (t - card["at"]) / 2.0)))
     pts = [(cx + cw * lat / 90,
             cy + ch - ch * math.cos(math.radians(lat))) for lat in range(0, n + 1)]
     if len(pts) > 1:
-        d.line([(x + 2, y + 2) for x, y in pts], fill=(0, 0, 0, 150), width=2)
-        d.line(pts, fill=colour + (alpha,), width=2)
+        d.line(pts, fill=colour + (alpha,), width=3)
 
 
 def draw_stack(d, card, spec, t, x0, y0, size):
-    """Basal against locomotion, to scale. Motion is the taller segment and
-    that is the point of the scene, so the two are drawn on one axis."""
+    """Basal against locomotion, to scale, with each segment named inside it.
+
+    The first build drew two unlabelled rectangles under the numbers and they
+    read as a progress bar for nothing. A bar that does not say what it is
+    measuring is decoration, and this channel does not do decoration.
+    """
     colour = tuple(spec["font"]["colour"]); alpha = spec["font"]["alpha"]
+    tracking = spec["font"]["tracking"]
     segs = [(r["label"], r["segment"], r["at"]) for r in card["rows"] if r.get("segment")]
     if not segs:
         return
     total = sum(s[1] for s in segs)
-    bw, bh = 620, 22
+    bw, bh = 900, int(size * 1.1)
+    lab = font_at(spec, int(size * 0.62))
     x = x0
     for label, value, at in segs:
         if t < at:
             break
         w = bw * value / total
-        fill = alpha if "locomotion" in label else int(alpha * 0.45)
+        # Locomotion is the segment the scene is about, so it is the one that
+        # is filled; basal is barely tinted. The two must not read as one bar.
+        fill = int(alpha * 0.50) if "locomotion" in label else int(alpha * 0.10)
         d.rectangle([x, y0, x + w, y0 + bh], fill=colour + (fill,))
-        d.rectangle([x, y0, x + w, y0 + bh], outline=colour + (90,), width=1)
+        d.rectangle([x, y0, x + w, y0 + bh], outline=colour + (alpha,), width=2)
+        draw_tracked(d, (x + 10, y0 + (bh - int(size * 0.62)) / 2 - 2),
+                     f"{label} {value}", lab, colour + (alpha,), tracking)
         x += w
 
 

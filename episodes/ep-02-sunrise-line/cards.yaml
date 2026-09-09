@@ -26,7 +26,7 @@
 # Font, colour, typing rate and the click are channel furniture and live in
 # config/type.yaml. Only what is specific to this episode's cards is here.
 style:
-  size: 26
+  size: 40
   rule_alpha: 90          # hairlines under headings and on axes
   margin: [96, 72]        # from the frame edge, x and y
 
@@ -99,7 +99,7 @@ cards:
   # the rows out loud.
   - id: latitude-cosine
     shot: "5.1"
-    pos: right-half
+    pos: lower-left
     type: cosine
     at: 159.5
     interval: 1.1

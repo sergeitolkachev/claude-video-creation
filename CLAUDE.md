@@ -156,6 +156,18 @@ episode, never A/B tested.
 
 - **Font: Menlo**, the same face and tracking as the episode titles and the
   channel art. One computer font, everywhere. Never a second face.
+- **Phosphor green, at 40 px on a 1080p frame, with a halo and a glow.**
+  Record 02 shipped its first cards in off-white at 26 px and they vanished
+  into a salt pan: pale text on pale ground has only luminance to separate it,
+  and these worlds are all luminance. Green owns a channel the landscape does
+  not use. The halo is a blurred black silhouette of the text and is what
+  holds it on a bright plate; the glow is a blurred copy of the text itself,
+  which is the bloom off an analogue monitor. Neither is a scrim or a box —
+  both are the shape of the glyphs, so the frame shows through everywhere the
+  text is not. **A card may never be smaller than 40 px.**
+- **A graphic says what it is measuring.** The first energy card drew two
+  unlabelled rectangles under the numbers and they read as a progress bar for
+  nothing. Every bar carries its own label inside it.
 - **Characters appear one at a time**, left to right, as if arriving on a
   monitor over a slow link — not fading in, not sliding, not typewriter-
   bouncing. A line resolves and then holds.

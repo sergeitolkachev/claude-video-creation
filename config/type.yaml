@@ -8,15 +8,25 @@
 font:
   face: /System/Library/Fonts/Menlo.ttc
   name: Menlo
-  tracking: 2               # px between glyphs, at size 26
-  colour: [232, 228, 220]
-  alpha: 205
-  # A one-pixel shadow under every glyph. This ground is pale and the text is
-  # pale, and without it a card sits legibly on a dark plate and vanishes on a
-  # salt pan. It is not a scrim or a box — the card still belongs to the
-  # frame, it just stops competing with it.
-  shadow_offset: 2
-  shadow_alpha: 150
+  size: 40                  # body size at 1080p; a card may not go smaller
+  tracking: 3               # px between glyphs, at size 40
+  # Phosphor green, off an analogue monitor. The first build was off-white at
+  # size 26 and disappeared into a salt pan: pale text on pale ground has no
+  # colour separation to fall back on, only luminance, and this world is all
+  # luminance. Green owns a channel nothing in this landscape uses.
+  colour: [150, 255, 190]
+  alpha: 235
+
+  # Legibility on any plate, light or dark, without a scrim or a box. Three
+  # layers, in this order:
+  #   halo  — a blurred black silhouette, which is what holds the text on a
+  #           bright salt pan
+  #   glow  — a blurred copy of the text itself, which is the phosphor bloom
+  #   sharp — the glyphs
+  halo_radius: 9
+  halo_alpha: 170
+  glow_radius: 7
+  glow_alpha: 150
   # Titles sit under the grain pass, never over it. See CLAUDE.md, Post.
 
 typing:
