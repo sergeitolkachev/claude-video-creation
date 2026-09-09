@@ -101,6 +101,34 @@ exterior_spine: &exterior_spine >
 # Shot framing keeps them out of most plates; where one appears in a still,
 # reject the still rather than reworking the anchor.
 
+# What the animal's track looks like. Reused verbatim everywhere a track
+# appears, which is the point: scene 3 failed because the track was only ever
+# described by what it is not, and an enhancer filling that gap reaches for
+# the statistically typical mark on soft ground — a boot sole or a tyre.
+# One sentence, positive, in every shot that shows one.
+track_canon: &track_canon >
+  The mark itself is a single smooth oval depression about the size of a
+  dinner plate, pressed straight down into the soil, deepest in the middle and
+  shallowing out to a soft rounded rim of displaced soil around it. Its inside
+  is smooth and featureless: no toes, no claws, no pads, no split hoof, no
+  tread, no lugs, no ribs, no grooves and no pattern of any kind in it, and no
+  boot sole and no tyre mark anywhere in the frame.
+
+# The world at ground level, in words, for shots that go to text-to-image
+# because no reference helps them. Same material, light and palette as the
+# anchor spine, with the camera left out — a shot still says its own distance.
+ground_spine: &ground_spine >
+  Close to the ground on a cold arid plain: fine grey-brown soil and grit,
+  pale cracked clay, dull rust staining, patches of pale blue-grey frost. The
+  light comes in almost level from a sun sitting on the horizon far away, so
+  everything is picked out by long raking shadows and the surface relief reads
+  strongly. Desaturated palette, no saturated colour, no lush green. The
+  ground is natural and irregular everywhere: no ribbed band, no corrugation,
+  no repeating parallel ridges, no evenly spaced grooves, no tyre tread,
+  nothing rolled, ploughed or combed across it, no kerb, no verge, no painted
+  line, no gravel shoulder. No people, no animals, no machinery, no vehicles,
+  no lettering or graphics of any kind.
+
 # Appended to every image-to-video prompt. The approved still already carries
 # the subject, the light and the framing; the video prompt's only job is to
 # say what moves. Two tails, because a shot that must not move and a shot
@@ -177,8 +205,11 @@ anchors:
       to edge. Subject: damp fine-grained soil, its surface
       whole and undisturbed — bare grit, a faint sheen of moisture, hairline
       cracks and the shallow relief of the grain itself, picked out by raking
-      light from one side. The ground is not dug and not broken: no hole, no
-      pit, no crater, no hollow, no dip, nothing scooped out of it. No painted
+      light from one side. The surface is irregular and natural everywhere:
+      no ribbed band, no corrugation, no repeating parallel ridges, no evenly
+      spaced grooves, no herringbone pattern, no tyre tread, nothing rolled or
+      combed across it. The ground is not dug and not broken: no hole, no pit,
+      no crater, no hollow, no dip, nothing scooped out of it. No painted
       line, no white stripe, no kerb, no verge, no moss, no lichen.
     note: >
       Two passes lost to one word. "One broad shallow depression pressed into
@@ -192,6 +223,13 @@ anchors:
       distance, the soil and the light, which is what an anchor is for; the
       tracks are described in the shots that need them (3.1, 3.2, 5.4, 6.2),
       where a wrong one costs $0.04 instead of a whole anchor pass.
+
+      Pass 5, after scene 3. The approved pass 4 frame carried a band of
+      ribbed tread across the middle — visible at approval, accepted as
+      cosmetic, and it turned out not to be: every shot referencing A3 came
+      back with that band in it, and 3.1's shallow track became a raised ring
+      beside it. The repeating patterns are now forbidden by name, one clause
+      per shape the model reaches for.
 
   - id: A4-aerial
     model: anchor
@@ -410,22 +448,29 @@ shots:
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
-    anchors: [A3-ground-macro]
+    anchors: []
+    exterior: true            # no reference: A3 injects tread, see below
+    spine_key: ground_spine
+    track_canon: *track_canon
     prompt: >
-      One broad shallow track pressed into damp fine-grained soil, wide and
-      flat with a soft rounded rim, no toes and no claw marks, raking light
-      picking out the rim, ground level close shot, static
+      One single track pressed into damp fine-grained soil, alone in an
+      otherwise undisturbed surface, raking light picking out its rim, ground
+      level close shot, static
 
   - id: "3.2"
     scene: 3
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
-    anchors: [A3-ground-macro]
+    anchors: []
+    exterior: true            # no reference: A3 injects tread, see below
+    spine_key: ground_spine
+    track_canon: *track_canon
     prompt: >
-      Older tracks in the same ground, their rims dried pale and beginning to
-      split, fine cracks running out of them across the surface, the soil
-      between them lighter and drier, raking light, ground level close shot
+      Two or three older tracks of that same kind in the same ground, spaced
+      well apart, their rims dried pale and beginning to split, fine cracks
+      running out of them across the surface, the soil between them lighter
+      and drier, raking light, ground level close shot
 
   - id: "3.3"
     scene: 3
@@ -438,9 +483,13 @@ shots:
       is exactly what an image-to-video model rewrites. Three stills from one
       approved plate, dissolved locally, keeps it the same square metre.
       3.3b and 3.3c are generated with ref_shot 3.3a so the geometry holds.
+    anchors: []
+    exterior: true
+    spine_key: ground_spine
+    track_canon: *track_canon
     prompt: >
-      Damp fine-grained soil filling the frame, one pressed track across it,
-      raking light from the side, macro, static
+      Damp fine-grained soil filling the frame with one such track pressed
+      into it, raking light from the side, macro, static
     plate_prompts:
       "3.3b": >
         The same patch of ground, now dried out: the same track in the same
@@ -610,10 +659,11 @@ shots:
       Referenced to 3.1 rather than the anchor: the point of the shot is that
       these are the same tracks at a smaller size, and only the approved plate
       carries the same rim and the same soil.
+    track_canon: *track_canon
     prompt: >
-      The same kind of broad shallow pressed track, much smaller, several of
-      them overlapping in damp fine-grained soil, soft rounded rims, raking
-      light, ground level close shot
+      Several tracks of that same kind but much smaller, a hand's width
+      across, overlapping each other in damp fine-grained soil, raking light,
+      ground level close shot
 
   - id: "5.5"
     scene: 5
@@ -669,10 +719,12 @@ shots:
     source: ffmpeg_still
     motion: static
     anchors: [A3-ground-macro]
+    track_canon: *track_canon
     prompt: >
-      A single line of broad shallow pressed tracks receding away from the
-      camera into the haze, evenly spaced, the pale line of a frost edge
-      visible far behind them, low light, ground level shot, static
+      A single line of such tracks receding away from the camera into the
+      haze, evenly spaced and all pointing the same way, the pale line of a
+      frost edge visible far behind them, low light, ground level shot,
+      static
 
   - id: "6.3"
     scene: 6

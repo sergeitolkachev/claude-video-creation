@@ -95,6 +95,19 @@ known and recorded; scene 3 is where it stops being cosmetic.
 rut receding to the sun in one seed and a lug-soled boot print in another,
 which is exactly the failure CLAUDE.md predicts for the word "footprint".
 
+**Third route, text-to-image plus a written canon.** The canon did what it
+was written to do — no boot soles, no tyre marks, no toes — and then
+overshot: "a smooth oval depression with a rim of displaced soil" came back
+as a moulded bowl set into the ground, too circular, too clean, and read at
+the wrong scale because nothing in the frame gives one. A5 pass 5 of the
+anchor failed separately: the added negations pushed the prompt long enough
+that the nadir geometry was dropped and the tread survived anyway.
+
+What is left to try is scale and texture rather than shape — the print floored
+with the same soil and the same cracks as everything around it, edges
+crumbled and asymmetric, shot from directly above with no horizon in frame to
+argue about size.
+
 Both point at the same gap: nothing in this repository has ever said what
 this animal's track actually looks like. It is described by what it is not.
 The fix is a positive description reused verbatim in every shot that shows
@@ -125,3 +138,5 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | **approved:** 2.5 s22 — scene 2 complete | — | $2.31 |
 | 2026-09-09 | 4 — stills | scene 3, 10 generations | $0.40 | $2.71 |
 | 2026-09-09 | 4 — stills | **approved:** 3.4 s22. 3.1, 3.2, 3.3a rejected — see below | — | $2.71 |
+| 2026-09-09 | 3 — anchors | A3 pass 5, failed: negations cost the nadir, tread stayed | $0.09 | $2.80 |
+| 2026-09-09 | 4 — stills | 3.1/3.2/3.3a on text-to-image with the track canon, 12 | $0.36 | $3.16 |

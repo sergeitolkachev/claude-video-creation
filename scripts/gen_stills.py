@@ -93,6 +93,12 @@ def main():
     jobs = []
     for s in shots:
         prompt = " ".join(s["prompt"].split())
+        # A shot that shows the animal's track carries the canonical
+        # description of one. It goes after the framing, because the framing
+        # is what the reference image argues with and the mark is what the
+        # enhancer would otherwise invent.
+        if s.get("track_canon"):
+            prompt = f"{prompt}. {' '.join(s['track_canon'].split())}"
         if s.get("ref_shot"):
             # Two shots in this episode are the same physical plate seen twice
             # in the story (1.2/4.3 the delay readout, 1.3/4.1 the porthole).
@@ -103,11 +109,21 @@ def main():
             refs = [upload(src, key, ep / "approved" / "urls.json")]
             kind, seeds = f"shot {s['ref_shot']}", SEEDS_ANCHORED
         elif s.get("exterior"):
-            # No interior anchor can help here; a reference would leak the
-            # room into open space. Style goes in as text, endpoint is
-            # text-to-image.
-            model, refs, kind, seeds = ext_model, None, "text-only", SEEDS_FREE
-            prompt = f"{ext_spine} {prompt}"
+            # No reference at all: style goes in as text and the endpoint is
+            # text-to-image. Record 1 used this where every anchor was an
+            # interior and would have leaked a bulkhead into open space.
+            # Record 2 uses it where the anchor is the thing doing the damage
+            # — A3 injected a band of tyre tread into every ground shot that
+            # referenced it, through five passes.
+            #
+            # Which text spine is per shot: the default is the episode's
+            # exterior_spine, but a shot can name another key, because "seen
+            # from three thousand metres" is the wrong opening sentence for a
+            # macro of wet soil.
+            spine_key = s.get("spine_key", "exterior_spine")
+            model, refs, kind = ext_model, None, f"text-only/{spine_key}"
+            seeds = SEEDS_FREE
+            prompt = f"{' '.join(doc[spine_key].split())} {prompt}"
         elif s.get("anchors"):
             model = still_model
             refs = [anchor_urls[a] for a in s["anchors"]]
