@@ -1,4 +1,4 @@
-# The Archive — Production Pipeline
+# File Class Nine (FC9) — Production Pipeline
 
 Faux-archival video channel. Each episode is a recording that was never
 supposed to survive: a ship's log, a field report, a day in 1178.
@@ -116,6 +116,58 @@ The voice is a recording device, not a storyteller.
 
 Target: roughly 900–1100 words for a 10-minute episode. Narration
 occupies well under half the runtime — silence is part of the format.
+
+## Motion Policy
+
+Record 01 was built almost entirely from locked-off frames because that was
+the cheap and reliable answer to a model that would not hold a camera. It is
+watchable, and it is also close to a slideshow. Record 02 fixes the rule
+rather than the episode.
+
+**A frame is allowed to be still only when the viewer is reading or
+listening.** Three tiers, and every shot in `shots.yaml` declares one:
+
+- `static` — locked-off, built in ffmpeg with lens breathing only. Allowed
+  **only** for a shot carrying a data card, a title, or burned-in text. The
+  eye is on the text; a moving frame under it fights the reading.
+- `local` — drift or push, built in ffmpeg from the approved still. For shots
+  under narration where the frame is texture rather than event. Free, exact,
+  and steadier than any model, but it is a move across a photograph: no
+  parallax, nothing in the frame is alive.
+- `model` — a video model, normally Kling. **Required** for any shot that
+  runs under silence, and for any shot whose content should physically move:
+  dust, water, frost, the herd, the animal.
+
+The rule that matters: **no text on screen and no voice means the picture
+carries the shot alone, and a still frame cannot.** Silence is a format
+choice here, not dead air, and it only reads as intentional if something in
+the frame is moving while nobody is talking.
+
+The budget follows the rule, not the other way round. Locked-off shots are
+free and that is exactly why they are seductive; if an episode comes in
+cheap because half of it is frozen, the saving was taken out of the episode.
+
+## On-Screen Text — the channel signature
+
+Every character that appears on screen on this channel is drawn by one
+renderer, in one font, and types itself on with a sound. This is channel
+furniture, like the slug: identical in every record, never varied for an
+episode, never A/B tested.
+
+- **Font: Menlo**, the same face and tracking as the episode titles and the
+  channel art. One computer font, everywhere. Never a second face.
+- **Characters appear one at a time**, left to right, as if arriving on a
+  monitor over a slow link — not fading in, not sliding, not typewriter-
+  bouncing. A line resolves and then holds.
+- **Each character lands with a short click**, one per glyph, dry and quiet,
+  sitting under the narration rather than over it. Synthesised locally so it
+  is byte-identical between episodes — a sound that drifts is worse than no
+  sound.
+- Numbers that count up (an odometer, a draining bar) tick per digit change,
+  same click, same level.
+- The full spec — rate, jitter, click envelope, level — lives in
+  `config/type.yaml`. It is versioned in full for the same reason the banner
+  is: it outlives the episode.
 
 ## Writing Shot Prompts
 
@@ -319,3 +371,5 @@ conversion figure gets attached to later, so ids do not get renamed.
 - Never regenerate an approved asset without being asked.
 - When a shot fails twice, stop and report — do not burn credits looping.
 - Report cost after every batch.
+- Answer and Type to user in Russian language
+- Do NOT commit, do NOT push to Git

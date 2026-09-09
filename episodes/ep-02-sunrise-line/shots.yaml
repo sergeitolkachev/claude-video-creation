@@ -169,13 +169,15 @@ motion_tail_static: &motion_tail_static >
   framing at the last frame is identical to the framing at the first. No
   dolly, no push in, no pull back, no pan, no tilt, no drift, no parallax.
   Only light and airborne dust change. Nothing enters the frame, no new
-  objects appear, no animal appears, the sun does not rise or move.
+  objects appear, the frame stays as empty as it starts, and the sun does not
+  rise or move.
 
 motion_tail_moving: &motion_tail_moving >
   The movement is extremely slow, continuous and even, and covers only a very
   short distance across the whole shot. Nothing else in the frame moves. No
   cuts, no speed changes, no zoom snaps. Nothing enters the frame, no new
-  objects appear, no animal appears, the sun does not rise or move.
+  objects appear, the frame stays as empty as it starts, and the sun does not
+  rise or move.
 
 anchors:
   - id: A1-plain-wide
@@ -307,6 +309,21 @@ anchors:
       vegetation of any kind in frame.
 
 # --- Shots ------------------------------------------------------------------
+# Every shot declares a motion_tier, per the Motion Policy in CLAUDE.md:
+#
+#   static — locked-off, lens breathing only. Allowed only where the viewer is
+#            reading: a data card, a title, burned-in text. Anything else needs
+#            a static_exception saying why the stillness is the point.
+#   local  — drift or push, built locally from the approved still. Free and
+#            exact, but it is a move across a photograph: no parallax, nothing
+#            in the frame is alive.
+#   model  — Kling. Required wherever the shot runs under silence, and wherever
+#            something in frame should physically move: dust, water, frost,
+#            haze, the herd, the animal.
+#
+# Record 01 was 26 locked-off shots out of 30 and reads as a slideshow. That
+# was a budget answer to a model that would not hold a camera, and it got
+# mistaken for a style. Here it is 14 model, 13 local, 7 static.
 # Locked-off shots are built from their approved stills in ffmpeg, per
 # CLAUDE.md: steadier than any model, exactly 1920x1080, exactly the right
 # duration, no cost. Everything with real movement goes to Kling. Seedance is
@@ -321,6 +338,7 @@ shots:
   # SCENE 1 — COLD OPEN (34 s)
   - id: "1.1"
     scene: 1
+    motion_tier: static
     timeline_seconds: 10
     source: ffmpeg_still
     motion: static
@@ -335,6 +353,7 @@ shots:
 
   - id: "1.2"
     scene: 1
+    motion_tier: model
     timeline_seconds: 8
     generate_seconds: 10       # Kling does 5 or 10 only
     trim_to: 8
@@ -359,6 +378,8 @@ shots:
 
   - id: "1.3"
     scene: 1
+    motion_tier: local
+    local_motion: push
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -370,19 +391,28 @@ shots:
 
   - id: "1.4"
     scene: 1
+    motion_tier: model
     timeline_seconds: 8
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: haze and dust drifting
     anchors: [A1-plain-wide]
     prompt: >
       The horizon line alone, thin haze stacked into flat pale layers above
       it, the sun sitting on the line as a small pale disc, no cloud and no
       detail in the sky, the ground a narrow dark strip along the bottom,
       static shot
+    video_prompt: >
+      Only the air moves: the layers of haze above the horizon drift very
+      slowly sideways and thin out, and fine dust crosses low over the ground.
+      The horizon line, the sun and the ground are completely still, and the
+      camera does not move at all.
 
   # SCENE 2 — THE LINE (42 s)
   - id: "2.1"
     scene: 2
+    motion_tier: model
     timeline_seconds: 10
     generate_seconds: 10
     model: workhorse
@@ -399,6 +429,7 @@ shots:
 
   - id: "2.2"
     scene: 2
+    motion_tier: model
     timeline_seconds: 8
     generate_seconds: 10
     trim_to: 8
@@ -416,6 +447,8 @@ shots:
 
   - id: "2.3"
     scene: 2
+    motion_tier: local
+    local_motion: drift
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -427,6 +460,7 @@ shots:
 
   - id: "2.4"
     scene: 2
+    motion_tier: static
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -443,9 +477,12 @@ shots:
 
   - id: "2.5"
     scene: 2
+    motion_tier: model
     timeline_seconds: 8
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: dust crossing the band
     anchors: [A4-aerial]
     note: >
       Third attempt, rewired to the aerial anchor. The scene needs one frame
@@ -471,10 +508,17 @@ shots:
       sky in the picture. The land is completely deserted: no people, no
       figures, no silhouettes, no path, no causeway, no embankment, no track,
       no road. Static aerial shot
+    video_prompt: >
+      Only the air moves: fine dust drifts slowly across the three bands from
+      one side of the frame to the other, and the haze in the far distance
+      shifts very slightly. The ground, the vegetation line and the frost do
+      not move, nothing grows or spreads, and the camera is locked off.
 
   # SCENE 3 — THE MARGIN (34 s)
   - id: "3.1"
     scene: 3
+    motion_tier: local
+    local_motion: drift
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -490,6 +534,8 @@ shots:
 
   - id: "3.2"
     scene: 3
+    motion_tier: local
+    local_motion: push
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -505,6 +551,7 @@ shots:
 
   - id: "3.3"
     scene: 3
+    motion_tier: local
     timeline_seconds: 10
     source: ffmpeg              # three approved plates, cross-dissolved
     plates: ["3.3a", "3.3b", "3.3c"]
@@ -533,6 +580,7 @@ shots:
 
   - id: "3.4"
     scene: 3
+    motion_tier: static
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -549,6 +597,8 @@ shots:
   # SCENE 4 — THE COST (49 s)
   - id: "4.1"
     scene: 4
+    motion_tier: local
+    local_motion: push
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -562,6 +612,7 @@ shots:
 
   - id: "4.2"
     scene: 4
+    motion_tier: static
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
@@ -587,6 +638,7 @@ shots:
 
   - id: "4.3"
     scene: 4
+    motion_tier: model
     timeline_seconds: 10
     generate_seconds: 10
     model: workhorse
@@ -608,6 +660,7 @@ shots:
 
   - id: "4.4"
     scene: 4
+    motion_tier: model
     timeline_seconds: 8
     generate_seconds: 10
     trim_to: 8
@@ -625,6 +678,8 @@ shots:
 
   - id: "4.5"
     scene: 4
+    motion_tier: local
+    local_motion: drift
     timeline_seconds: 7
     source: ffmpeg_still
     motion: static
@@ -638,19 +693,28 @@ shots:
 
   - id: "4.6"
     scene: 4
+    motion_tier: model
     timeline_seconds: 7
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 10
+    trim_to: 7
+    model: workhorse
+    motion: dust over the empty band
     anchors: [A1-plain-wide]
     prompt: >
       Wide empty ground with nothing growing in the foreground at all — bare soil
       and grit to the bottom edge, no bushes, no shrubs, no dry grass tufts, no
       scrub — the pale line of a frost edge far off to one side and paler scorched
       ground to the other, low level light, static wide shot
+    video_prompt: >
+      Only the air moves: a thin veil of dust travels slowly across the open
+      ground and the distant haze breathes very slightly. The frame stays
+      empty of everything but the dust, the ground and the frost line are
+      still, and the camera does not move.
 
   # SCENE 5 — LATITUDE (61 s)
   - id: "5.1"
     scene: 5
+    motion_tier: static
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
@@ -666,6 +730,7 @@ shots:
 
   - id: "5.2"
     scene: 5
+    motion_tier: model
     timeline_seconds: 10
     generate_seconds: 10
     model: workhorse
@@ -684,9 +749,12 @@ shots:
 
   - id: "5.3"
     scene: 5
+    motion_tier: model
     timeline_seconds: 9
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 10
+    trim_to: 9
+    model: workhorse
+    motion: slow aerial drift
     anchors: [A4-aerial]
     exterior: true
     prompt: >
@@ -694,9 +762,16 @@ shots:
       with overlapping disturbance, and leading away from it a single narrow band
       of broken ground thinning out into one faint line across untouched crust,
       seen from low altitude looking down, static shot
+    video_prompt: >
+      The camera drifts slowly and evenly sideways at a constant altitude, so
+      the churned ground and the narrow band leading away from it pass across
+      the frame. No descent, no banking, no rotation, no zoom. Nothing on the
+      ground itself moves.
 
   - id: "5.4"
     scene: 5
+    motion_tier: local
+    local_motion: push
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -715,6 +790,8 @@ shots:
 
   - id: "5.5"
     scene: 5
+    motion_tier: local
+    local_motion: drift
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
@@ -736,6 +813,8 @@ shots:
 
   - id: "5.6"
     scene: 5
+    motion_tier: local
+    local_motion: push
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
@@ -750,18 +829,26 @@ shots:
 
   - id: "5.7"
     scene: 5
+    motion_tier: model
     timeline_seconds: 8
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 10
+    trim_to: 8
+    model: workhorse
+    motion: polar haze
     anchors: [A1-plain-wide]
     prompt: >
       Empty polar horizon, frost and grit meeting a flat pale sky with no
       detail in it, the sun a small disc on the line, nothing else in frame,
       wide static shot
+    video_prompt: >
+      Only the haze moves, very slowly, along the horizon, and a little loose
+      frost drifts across the ground. The sun does not rise or move, nothing
+      enters the frame, and the camera is locked off.
 
   # SCENE 6 — THE DISTANCE (34 s)
   - id: "6.1"
     scene: 6
+    motion_tier: static
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
@@ -776,6 +863,8 @@ shots:
 
   - id: "6.2"
     scene: 6
+    motion_tier: local
+    local_motion: drift
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
@@ -791,6 +880,7 @@ shots:
 
   - id: "6.3"
     scene: 6
+    motion_tier: local
     timeline_seconds: 10
     source: ffmpeg_still
     local_motion: drift
@@ -808,28 +898,43 @@ shots:
 
   - id: "6.4"
     scene: 6
+    motion_tier: model
     timeline_seconds: 6
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 5
+    retime: 1.2
+    model: workhorse
+    motion: dust across the horizon
     anchors: [A1-plain-wide]
     prompt: >
       Bare horizon with drifting dust across it, no tracks and no vegetation,
       the sun a small pale disc on the line, thin haze, wide static shot
+    video_prompt: >
+      Only the dust moves, drifting steadily across the frame low over the
+      ground and thinning as it goes. The horizon, the sun and the ground are
+      still, and the camera does not move.
 
   # SCENE 7 — REVEAL AND CLOSE (18 s)
   - id: "7.1"
     scene: 7
+    motion_tier: model
     timeline_seconds: 5
-    source: ffmpeg_still
-    motion: static
+    generate_seconds: 5
+    model: workhorse
+    motion: dust between camera and subject
     anchors: [A5-longlens-haze]
     prompt: >
       Empty ground in the middle distance through drifting dust, long lens,
       heavily compressed, shallow focus, a low ridge line behind, nothing in
       frame, static shot
+    video_prompt: >
+      Only the dust between the camera and the ground moves, drifting slowly
+      across the frame and softening and revealing the far ridge as it passes.
+      The frame stays empty right up to the cut, and the camera is locked
+      off.
 
   - id: "7.2"
     scene: 7
+    motion_tier: model
     timeline_seconds: 4
     generate_seconds: 5        # Kling does 5 or 10; 5 is enough and is cheaper
     trim_to: 4
@@ -871,6 +976,11 @@ shots:
 
   - id: "7.3"
     scene: 7
+    motion_tier: static
+    static_exception: >
+      The cut to an empty frame is the beat — the record stops looking at
+      the animal before the animal has finished crossing. A drifting camera
+      here would say the survey is still following it.
     timeline_seconds: 4
     source: ffmpeg_still
     motion: static
@@ -885,6 +995,7 @@ shots:
 
   - id: "7.4"
     scene: 7
+    motion_tier: static
     timeline_seconds: 5
     source: ffmpeg_still
     motion: static

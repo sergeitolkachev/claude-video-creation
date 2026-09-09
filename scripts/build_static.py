@@ -22,16 +22,50 @@ def main():
     ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-01-tishina-9")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
-    out = ep / "takes"; out.mkdir(exist_ok=True)
+    out_dir = ep / "takes"; out_dir.mkdir(exist_ok=True)
     built = 0
     for s in doc["shots"]:
+        # A shot with `plates:` is a texture change over time — record 2's
+        # drying ground — built as a cross-dissolve of its approved plates
+        # rather than generated, because a model rewrites the patch instead
+        # of drying it. Each plate holds, then dissolves into the next; the
+        # whole thing gets the same lens breathing as any other locked shot.
+        if s.get("plates"):
+            plates = [ep / "approved" / f"{pid}.jpg" for pid in s["plates"]]
+            missing = [f.name for f in plates if not f.exists()]
+            if missing:
+                print(f"  {s['id']:<5} SKIP — no {', '.join(missing)}"); continue
+            secs, k = s["timeline_seconds"], len(plates)
+            hold, xfade = secs / k, 1.2
+            args = [ff, "-y", "-v", "error"]
+            for f in plates:
+                args += ["-loop", "1", "-t", f"{hold + xfade:.3f}", "-i", str(f)]
+            fc = "".join(
+                f"[{i}:v]scale=1920:1080:force_original_aspect_ratio=increase,"
+                f"crop=1920:1080,setsar=1,fps=24[p{i}];" for i in range(k))
+            prev, off = "[p0]", hold
+            for i in range(1, k):
+                out = f"[x{i}]" if i < k - 1 else "[v]"
+                fc += (f"{prev}[p{i}]xfade=transition=fade:duration={xfade}:"
+                       f"offset={off:.3f}{out};")
+                prev, off = out, off + hold
+            fc = fc.rstrip(";")
+            dst = out_dir / f"{s['id']}.mp4"
+            subprocess.run(args + ["-filter_complex", fc, "-map", "[v]",
+                                   "-t", str(secs), "-r", "24",
+                                   "-c:v", "libx264", "-crf", "18",
+                                   "-pix_fmt", "yuv420p", str(dst)], check=True)
+            built += 1
+            print(f"  {s['id']:<5} {secs}s  dissolve {k} plates "
+                  f"{dst.stat().st_size // 1024:>6} KB")
+            continue
         if s.get("source") != "ffmpeg_still":
             continue
         # A shot with a composited screen is built from that plate, so the
         # readout moves with the shot instead of being tracked onto it.
         screened = ep / "approved" / f"{s['id']}.screen.jpg"
         src = screened if screened.exists() else ep / "approved" / f"{s['id']}.jpg"
-        dst = out / f"{s['id']}.mp4"
+        dst = out_dir / f"{s['id']}.mp4"
         secs = s["timeline_seconds"]; frames = secs * 24
         n = frames - 1
         if s.get("local_motion") == "push":

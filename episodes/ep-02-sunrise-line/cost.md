@@ -12,15 +12,22 @@ Regenerate the plan column with `scripts/estimate.py episodes/ep-02-sunrise-line
 
 | Item | Count | Sec | Planned | Actual |
 |---|---:|---:|---:|---:|
-| Workhorse video — Kling 2.5 Turbo Pro | 7 | 65 | $4.55 | |
-| Locked-off shots — built in ffmpeg | 26 | — | $0.00 | |
+| Workhorse video — Kling 2.5 Turbo Pro | 14 | 125 | $8.75 | |
+| Local shots — drift or push, built in ffmpeg | 12 | — | $0.00 | |
+| Static shots — card plates, lens breathing only | 8 | — | $0.00 | |
 | Shot 3.3 — three-plate dissolve, ffmpeg | 1 | — | $0.00 | |
-| Shot stills — Nano Banana, 2 anchored / 4 free | 74 | — | $2.95 | |
-| Anchors — Seedream V4, 3 per anchor, 5 anchors | 15 | — | $0.45 | |
-| **Base, zero retakes** | | | **$7.95** | |
-| Reserve, +30% on video | | | $1.37 | |
-| Anchor reserve, 2 extra passes | | | $0.90 | |
-| **Expected** | | | **$10.22** | |
+| Shot stills — Nano Banana | 88 | — | $3.50 | $6.19 |
+| Anchors — Seedream V4, 5 passes | 15+ | — | $0.45 | $1.35 |
+| **Base, zero retakes** | | | **$12.70** | |
+| Reserve, +30% on video | | | $2.63 | |
+| **Expected** | | | **$15.33** | |
+
+The video line tripled after record 01's motion lesson was written into
+CLAUDE.md: 26 of 30 shots locked off is a slideshow, and the saving came out
+of the episode rather than out of the budget. Here 14 shots go to Kling — every
+shot that runs under silence, and every shot where dust, water, frost or haze
+should actually move — 12 get a local drift or push, and only 8 are frozen,
+all of them carrying a data card the viewer is reading.
 
 Narration comes out of the ElevenLabs subscription, not this budget. 452
 words is about 2 600 characters against a 35 903 character monthly allowance;

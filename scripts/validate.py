@@ -88,6 +88,25 @@ def main(ep):
             if s["timeline_seconds"] > s["generate_seconds"]:
                 fail.append(f"{s['id']}: timeline longer than generated, no retime declared")
 
+    # 4c. Motion policy, per CLAUDE.md. A still frame is allowed only where
+    # the viewer is reading something.
+    TIERS = {"static", "local", "model"}
+    for s in shots:
+        tier = s.get("motion_tier")
+        if tier not in TIERS:
+            fail.append(f"{s['id']}: motion_tier missing or unknown ({tier})")
+            continue
+        if tier == "static" and not s.get("card") and not s.get("static_exception"):
+            fail.append(f"{s['id']}: static with no card and no static_exception")
+        if tier == "model" and "model" not in s:
+            fail.append(f"{s['id']}: motion_tier model but no model tier named")
+        if tier == "local" and not s.get("source", "").startswith("ffmpeg"):
+            fail.append(f"{s['id']}: motion_tier local but not built locally")
+    n = {t: sum(1 for s in shots if s.get("motion_tier") == t) for t in TIERS}
+    moving = n["model"] + n["local"]
+    print(f"\n  motion: {n['model']} model, {n['local']} local, {n['static']} static "
+          f"— {moving * 100 // len(shots)}% of shots move")
+
     # 5. Narration leaves at least a third of the runtime as silence.
     blocks = re.findall(r"\*\*Narration:\*\*\n+((?:>.*\n|\n(?=>))+)", script)
     words = sum(len(re.sub(r"^> ?", "", b, flags=re.M).split()) for b in blocks)

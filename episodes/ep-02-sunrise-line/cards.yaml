@@ -12,9 +12,10 @@
 #     renderers read as assembled rather than issued.
 #   - Cards go UNDER the grain pass, like the titles, so they belong to the
 #     recording instead of looking captioned onto it.
-#   - No animation flourish. Lines appear, they do not slide, bounce or wipe.
-#     A value that changes does so by redrawing, not by tweening — except the
-#     two that are explicitly counters, below.
+#   - Characters type on one at a time with a click per glyph, per
+#     config/type.yaml. Nothing slides, fades, bounces or wipes. A value that
+#     changes does so by redrawing, not by tweening — except the two that are
+#     explicitly counters, which tick per digit.
 #   - Every card sits on a plate framed for it (`card:` in shots.yaml). If a
 #     plate comes back busy where the card goes, the plate is wrong, not the
 #     card.
@@ -22,12 +23,10 @@
 # Times are absolute seconds on the 272 s timeline.
 # Scene starts: 1=0  2=34  3=76  4=110  5=159  6=220  7=254
 
+# Font, colour, typing rate and the click are channel furniture and live in
+# config/type.yaml. Only what is specific to this episode's cards is here.
 style:
-  font: /System/Library/Fonts/Menlo.ttc
   size: 26
-  tracking: 2
-  colour: [232, 228, 220]
-  alpha: 205
   rule_alpha: 90          # hairlines under headings and on axes
   margin: [96, 72]        # from the frame edge, x and y
 
