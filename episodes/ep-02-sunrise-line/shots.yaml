@@ -106,13 +106,23 @@ exterior_spine: &exterior_spine >
 # described by what it is not, and an enhancer filling that gap reaches for
 # the statistically typical mark on soft ground — a boot sole or a tyre.
 # One sentence, positive, in every shot that shows one.
+# Version 2. Version 1 described the shape — "a smooth oval depression with a
+# soft rounded rim of displaced soil" — and got a moulded bowl set into the
+# ground, too circular and too clean, reading a metre wide because nothing in
+# frame gave a scale. This one describes the material and the scale instead
+# and leaves the shape mostly unsaid: the print is made of the ground it is
+# in, and the cracks running through it are what say how big it is.
 track_canon: &track_canon >
-  The mark itself is a single smooth oval depression about the size of a
-  dinner plate, pressed straight down into the soil, deepest in the middle and
-  shallowing out to a soft rounded rim of displaced soil around it. Its inside
-  is smooth and featureless: no toes, no claws, no pads, no split hoof, no
-  tread, no lugs, no ribs, no grooves and no pattern of any kind in it, and no
-  boot sole and no tyre mark anywhere in the frame.
+  The mark is a shallow print pressed into the soil, about the width of two
+  hands, and it is made of the same ground as everything around it — the same
+  grit, the same fine hairline cracks running down into it and out the other
+  side, the same colour, no cleaner and no smoother than the surface it sits
+  in. It is sunk only two or three centimetres, its floor uneven, its edges
+  crumbled and slightly asymmetric rather than a clean curve. There is no wall
+  or ridge of piled soil around it, no smooth moulded surface, no bowl, no
+  basin, no dish, no crater. Nothing is patterned inside it: no toes, no
+  claws, no pads, no split hoof, no tread, no lugs, no ribs, no grooves, and
+  no boot sole and no tyre mark anywhere in the frame.
 
 # The world at ground level, in words, for shots that go to text-to-image
 # because no reference helps them. Same material, light and palette as the
@@ -454,8 +464,10 @@ shots:
     track_canon: *track_canon
     prompt: >
       One single track pressed into damp fine-grained soil, alone in an
-      otherwise undisturbed surface, raking light picking out its rim, ground
-      level close shot, static
+      otherwise undisturbed surface. Photographed from directly above with the
+      camera pointing straight down, the frame covering about half a metre of
+      ground and nothing else — no horizon, no sky and no distance in the
+      picture. Hard raking light from one side across the whole frame, static
 
   - id: "3.2"
     scene: 3

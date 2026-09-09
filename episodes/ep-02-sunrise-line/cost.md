@@ -103,6 +103,27 @@ the wrong scale because nothing in the frame gives one. A5 pass 5 of the
 anchor failed separately: the added negations pushed the prompt long enough
 that the nadir geometry was dropped and the tread survived anyway.
 
+**Fourth route, canon v2: scale and texture, negations kept.** All four seeds
+returned the imprint of a tracked vehicle — the deep lugged belt of an
+excavator pressed into the clay. The canon says "no tread, no lugs, no ribs,
+no grooves" and the model drew tread, lugs, ribs and grooves. This is record
+1's "no signage" lesson at full strength: a negation list is a list of nouns,
+and nouns in a prompt are things to draw.
+
+There is a second suspect, which is the English word itself. "Track" is a
+vehicle word — tyre track, tracked vehicle, track marks — and it has been in
+every prompt in this family from the beginning, including the ones that
+returned tyre ruts. "Print" and "impression" carry no machine sense.
+
+What was tried and what it cost:
+
+| Route | Result | Cost |
+|---|---|---|
+| A3 anchor as reference | anchor's ribbed tread band in every frame | $0.40 |
+| A3 anchor reshot, pass 5 | negations cost the nadir, tread survived | $0.09 |
+| text-to-image, canon v1 (shape) | moulded ceramic bowl in the ground | $0.36 |
+| text-to-image, canon v2 (material) | excavator belt imprint, all four seeds | $0.12 |
+
 What is left to try is scale and texture rather than shape — the print floored
 with the same soil and the same cracks as everything around it, edges
 crumbled and asymmetric, shot from directly above with no horizon in frame to
@@ -140,3 +161,4 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | **approved:** 3.4 s22. 3.1, 3.2, 3.3a rejected — see below | — | $2.71 |
 | 2026-09-09 | 3 — anchors | A3 pass 5, failed: negations cost the nadir, tread stayed | $0.09 | $2.80 |
 | 2026-09-09 | 4 — stills | 3.1/3.2/3.3a on text-to-image with the track canon, 12 | $0.36 | $3.16 |
+| 2026-09-09 | 4 — stills | 3.1 with canon v2, failed: four tracked-vehicle prints | $0.12 | $3.28 |
