@@ -217,7 +217,15 @@ episode, never A/B tested.
 
 ffmpeg handles everything after generation. No models involved.
 
-- Grain, vignette, slight chromatic aberration, occasional dropout.
+- Grain, vignette, slight chromatic aberration. **No dropouts.** Record 01
+  collapsed the picture to near-black for 0.06 s, seven times, as a tape
+  artefact; on a screen it does not read as tape, it reads as a dropped frame
+  in the player, and the viewer checks their connection instead of watching
+  the record. `grade.py` leaves them off unless an episode asks for them by
+  name in its own `grade.yaml`. `scripts/check_flicker.py` is the gate: it
+  scores a master for single dark frames, skipping shot boundaries, because a
+  cut to a darker shot is not a flicker. Record 01 scores 9; record 02 scores
+  0, and that is the number to ship.
 - Grain is locked at `noise=alls=9` and the master at `-crf 23 -tune grain`.
   Grain is close to incompressible — every particle costs bits and kills
   inter-frame prediction — so a heavier setting is expensive without being

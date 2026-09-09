@@ -109,7 +109,7 @@ def anchor_xy(pos, spec, box_w, box_h):
     if pos == "right-half":
         return W // 2 + mx // 2, my + 120
     if pos == "centre":
-        return (W - box_w) // 2, (H - box_h) // 2
+        return int((W - box_w) // 2), int((H - box_h) // 2)
     return mx, my
 
 
@@ -458,6 +458,9 @@ def main():
     preview = "--preview" in args
     if preview:
         args.remove("--preview")
+    titles_too = "--titles" in args
+    if titles_too:
+        args.remove("--titles")
     ep = pathlib.Path(args[0] if args else "episodes/ep-02-sunrise-line")
     ff = "/usr/local/opt/ffmpeg-full/bin/ffmpeg"
     spec = load_type_spec()
@@ -477,8 +480,19 @@ def main():
     for sh in shots:
         shot_start[sh["id"]] = acc; acc += sh["timeline_seconds"]
 
+    deck = list(doc["cards"])
+    if titles_too and (ep / "titles.yaml").exists():
+        # Titles come through the same renderer as the data cards: one font,
+        # one typing rate, one click, per the On-Screen Text section of
+        # CLAUDE.md. They carry absolute times and no shot, so resolve_times
+        # leaves them alone.
+        for tc in yaml.safe_load((ep / "titles.yaml").read_text())["cards"]:
+            tc = dict(tc)
+            tc.setdefault("hold_until", tc["at"] + tc.get("hold", 5))
+            deck.append(tc)
+
     manifest = []
-    for card in doc["cards"]:
+    for card in deck:
         if only and card["id"] != only:
             continue
         # Card times are relative to their own shot; resolve them here so the
@@ -494,6 +508,11 @@ def main():
                 over = f"  runs {spill:.1f}s past shot {m['shot']}"
         print(f"  {m['id']:<20} at {m['at']:7.1f}s  {m['duration']:5.1f}s  "
               f"{m['clicks']:4d} clicks{over}")
+    if only:
+        old = json.loads((ep / "cards" / "manifest.json").read_text()) \
+              if (ep / "cards" / "manifest.json").exists() else []
+        manifest = [m for m in old if m["id"] != only] + manifest
+        manifest.sort(key=lambda m: m["at"])
     (ep / "cards" / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
     if preview:

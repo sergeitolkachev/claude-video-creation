@@ -2,8 +2,12 @@
 # in cards.yaml; these are the slug and the closing card, in the same Menlo,
 # same size, same corner as every other record.
 #
-# Times are absolute seconds on the 272 s timeline.
-# Scene starts: 1=0  2=34  3=76  4=110  5=159  6=220  7=254
+# Times are absolute seconds on the 279 s timeline. Titles are not tied to a
+# plate the way a data card is — the slug belongs to the record, not to the
+# shot it happens to land on — so these stay absolute.
+#
+# Rendered by build_cards.py --titles, in the same phosphor, the same Menlo and
+# the same typing as every other character on the channel.
 
 cards:
   - id: slug
@@ -18,9 +22,9 @@ cards:
 
   # Close. Under the grain, like everything else.
   - id: close-1
-    at: 267.5
-    hold: 4.5
-    size: 30
+    at: 268.0
+    hold: 7.0
+    size: 34
     pos: centre
     alpha: 235
     lines:

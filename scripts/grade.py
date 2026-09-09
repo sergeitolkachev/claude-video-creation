@@ -1,82 +1,99 @@
 #!/usr/bin/env python3
-"""Stage 8, part two — grade the cut and burn in the titles.
+"""Stage 8, part two — grade the cut, lay the overlays under the grain, master.
 
-Everything here is degradation the shot prompts were deliberately kept free of,
-so that it is identical across all thirty shots instead of varying per
-generation. Order matters: grade, then grain, then titles. Titles sit under the
-grain, not on top of it — they are part of the recording, not a caption added
-to it afterwards.
+Order matters and has not changed: grade, then overlays, then grain. Every
+card and title sits *under* the grain, so it belongs to the recording rather
+than being a caption added to it afterwards.
+
+What did change is the dropout. Record 01 collapsed the picture to near-black
+for 0.06 s, seven times, as a tape artefact. On a screen it does not read as
+tape — it reads as a dropped frame in the player, and the viewer checks their
+connection instead of watching the record. It is off by default now and any
+episode that wants it has to ask for it by name in grade.yaml.
+
+Usage: grade.py [episode dir]
 """
-import os, sys, subprocess, pathlib, yaml, random
+import json, os, pathlib, random, subprocess, sys, yaml
 
-# Locked for the channel. Compared 1:1 against grain 13 at CRF 20: the
-# texture is indistinguishable at pixel level, and the master is nine times
-# smaller (276 MB against 2.5 GB for four minutes). Do not change these per
-# episode — different grain reads as a different source recording.
-GRAIN      = 9       # noise strength
-CRF        = 23
-VIGNETTE   = "PI/4.5"
-CHROMA     = 1       # rgbashift, pixels
-SAT        = 0.86
-CONTRAST   = 1.05
-DROPOUTS   = 7       # brief tape dropouts across the episode
+print = __import__('functools').partial(print, flush=True)
+
+# Locked for the channel. Compared 1:1 against grain 13 at CRF 20: the texture
+# is indistinguishable at pixel level and the master is nine times smaller.
+# Never vary these between episodes — different grain reads as a different
+# source recording.
+GRAIN    = 9
+CRF      = 23
+VIGNETTE = "PI/4.5"
+CHROMA   = 1        # rgbashift, pixels
+SAT      = 0.86
+CONTRAST = 1.05
+
 
 def main():
-    ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-01-tishina-9")
+    ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-02-sunrise-line")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
-    cards = yaml.safe_load((ep / "titles.yaml").read_text())["cards"]
-    src = ep / "out" / "EPISODE-with-audio.mp4"
+    doc = yaml.safe_load((ep / "shots.yaml").read_text())
+    total = doc["runtime_seconds"]
+    grade_cfg = {}
+    if (ep / "grade.yaml").exists():
+        grade_cfg = yaml.safe_load((ep / "grade.yaml").read_text()) or {}
 
-    random.seed(7)
-    drops = sorted(random.uniform(8, 240) for _ in range(DROPOUTS))
-    # lutyuv evaluates per pixel and has no notion of time; eq supports
-    # timeline editing, so the dropouts are a timed brightness collapse.
-    drop_expr = "+".join(f"between(t,{d:.2f},{d+0.06:.2f})" for d in drops)
+    src = ep / "out" / "rough-cut.mp4"
+    audio = ep / "audio" / "episode-mix.mp3"
+    manifest = json.loads((ep / "cards" / "manifest.json").read_text())
 
-    # A still PNG is a single frame at t=0. Without -loop the overlay has
-    # nothing to draw once the timeline moves past zero and every title
-    # silently fails to appear — which is exactly what happened on pass 1.
-    ins = ["-i", str(src)]
-    for c in cards:
-        ins += ["-loop", "1", "-t", "250", "-r", "24",
-                "-i", str(ep / "out" / "titles" / f"{c['id']}.png")]
+    ins = ["-i", str(src), "-i", str(audio)]
+    for m in manifest:
+        ins += ["-i", str(ep / "cards" / m["mov"])]
 
-    fc = [
-        # grade first, so the grain sits on top of the final colour
-        f"[0:v]eq=saturation={SAT}:contrast={CONTRAST},"
-        f"rgbashift=rh=-{CHROMA}:bv={CHROMA},"
-        f"vignette={VIGNETTE},"
-        # dropouts: the picture collapses for about three frames
-        f"eq=brightness=-0.42:contrast=0.5:enable='{drop_expr}'[base]"
-    ]
-    last = "base"
-    for i, c in enumerate(cards, start=1):
-        a, b = c["at"], c["at"] + c["hold"]
-        fc.append(f"[{i}:v]format=rgba,"
-                  f"fade=t=in:st={a}:d=0.6:alpha=1,"
-                  f"fade=t=out:st={b-0.8}:d=0.8:alpha=1[t{i}]")
-        fc.append(f"[{last}][t{i}]overlay=0:0:enable='between(t,{a-0.1},{b+0.1})'[o{i}]")
-        last = f"o{i}"
-    # grain last: it lies over the titles too, so they belong to the recording
+    fc = [f"[0:v]eq=saturation={SAT}:contrast={CONTRAST},"
+          f"rgbashift=rh=-{CHROMA}:bv={CHROMA},"
+          f"vignette={VIGNETTE}[graded]"]
+    last = "graded"
+
+    drops = []
+    n_drops = grade_cfg.get("dropouts", 0)
+    if n_drops:
+        random.seed(grade_cfg.get("dropout_seed", 7))
+        drops = sorted(random.uniform(8, total - 30) for _ in range(n_drops))
+        expr = "+".join(f"between(t,{d:.2f},{d + 0.06:.2f})" for d in drops)
+        fc.append(f"[{last}]eq=brightness=-0.42:contrast=0.5:"
+                  f"enable='{expr}'[dropped]")
+        last = "dropped"
+
+    # Every overlay is shorter than the record, so it is shifted into place
+    # rather than enabled in place: an overlay filter with a short input holds
+    # its last frame forever otherwise.
+    for n, m in enumerate(manifest, start=2):
+        fc.append(f"[{n}:v]setpts=PTS-STARTPTS+{m['at']}/TB[ov{n}]")
+        fc.append(f"[{last}][ov{n}]overlay=0:0:eof_action=pass:"
+                  f"enable='between(t,{m['at']},{m['at'] + m['duration']:.3f})'"
+                  f"[c{n}]")
+        last = f"c{n}"
+
+    # Grain last, so it lies over the cards and the titles too.
     fc.append(f"[{last}]noise=alls={GRAIN}:allf=t+u,format=yuv420p[v]")
 
     out = ep / "out" / "EPISODE-final.mp4"
     subprocess.run([ff, "-y", "-v", "error", *ins,
                     "-filter_complex", ";".join(fc),
-                    "-map", "[v]", "-map", "0:a",
-                    # Grain is close to incompressible. Pass 1 used plain
-                    # CRF 17 and produced 2.9 GB for four minutes; tune=grain
-                    # tells x264 to keep the texture without spending a bit on
-                    # every particle.
+                    "-map", "[v]", "-map", "1:a",
+                    # Grain is close to incompressible; tune=grain keeps the
+                    # texture without spending a bit on every particle.
                     "-c:v", "libx264", "-crf", str(CRF), "-preset", "slow",
-                    "-tune", "grain",
-                    "-c:a", "copy", str(out)], check=True)
-    dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-                          "-of", "default=nw=1:nk=1", str(out)],
-                         capture_output=True, text=True).stdout.strip()
-    print(f"  {len(cards)} titles, {DROPOUTS} dropouts at "
-          + ", ".join(f"{d:.0f}s" for d in drops))
-    print(f"  {out}  {float(dur):.2f}s")
+                    "-tune", "grain", "-pix_fmt", "yuv420p",
+                    "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
+
+    probe = str(pathlib.Path(ff).with_name("ffprobe"))
+    info = subprocess.run([probe, "-v", "error", "-select_streams", "v:0",
+                           "-show_entries", "stream=width,height:format=duration",
+                           "-of", "csv=p=0", str(out)],
+                          capture_output=True, text=True).stdout.split()
+    print(f"  {len(manifest)} overlays under the grain")
+    print(f"  dropouts: {len(drops) or 'none — see the docstring'}")
+    print(f"  {out}  {info[0]}  {float(info[1]):.2f}s  "
+          f"{out.stat().st_size // 1024 // 1024} MB")
+
 
 if __name__ == "__main__":
     main()

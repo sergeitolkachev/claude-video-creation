@@ -299,3 +299,19 @@ That move is also why card times are no longer absolute. They were, and when
 the scenes grew every card after scene 4 was pointing at the wrong second.
 They are now offsets from their own shot, which is the thing they were framed
 against.
+
+## Master
+
+`out/EPISODE-final.mp4` — 1920x1080, 279.00 s, 373 MB, CRF 23 with
+`-tune grain`, AAC 192k. The 540p and 720p files beside it are previews for
+sending; the master has always been 1080.
+
+Nine overlays sit under the grain: six data cards and three titles, all
+through `build_cards.py`, all in the same phosphor Menlo, all typing on with
+the same click.
+
+**No dropouts.** Record 01's seven deliberate tape dropouts are the flicker
+that got noticed on playback — a 0.06 s collapse to near-black reads as a
+dropped frame in the player, not as tape. `scripts/check_flicker.py` scores a
+master for single dark frames away from any cut: record 01 scores 9, this one
+scores 0.

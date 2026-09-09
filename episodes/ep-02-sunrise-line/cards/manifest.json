@@ -52,5 +52,32 @@
     "mov": "odometer.mov",
     "wav": "odometer.wav",
     "clicks": 48
+  },
+  {
+    "id": "slug",
+    "shot": null,
+    "at": 1.0,
+    "duration": 6.0,
+    "mov": "slug.mov",
+    "wav": "slug.wav",
+    "clicks": 23
+  },
+  {
+    "id": "survey-stamp",
+    "shot": null,
+    "at": 34.0,
+    "duration": 5.0,
+    "mov": "survey-stamp.mov",
+    "wav": "survey-stamp.wav",
+    "clicks": 40
+  },
+  {
+    "id": "close-1",
+    "shot": null,
+    "at": 268.0,
+    "duration": 8.084,
+    "mov": "close-1.mov",
+    "wav": "close-1.wav",
+    "clicks": 78
   }
 ]
