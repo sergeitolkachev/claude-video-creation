@@ -697,22 +697,35 @@ shots:
     timeline_seconds: 8
     source: ffmpeg_still
     motion: static
-    anchors: [A1-plain-wide]
+    anchors: []
+    exterior: true
+    spine_key: ground_spine
+    note: >
+      5.5, 5.6 and 5.7 came back as three interchangeable frames of flat pan
+      under a half sun — and 4.6 and 1.4 are two more. The adjectives differed
+      and nothing else did. Differentiation has to come from camera distance,
+      so 5.5 is now a low look across the ground, 5.6 a macro of frost crust,
+      and 5.7 keeps the wide. The horizon and the sun are out of the first two
+      outright, which is what actually separates them.
     prompt: >
-      Higher latitude ground: thin patchy frost over grey-brown grit, the
-      light lower and flatter than on the plain, longer shadows, sparse
-      vegetation almost gone, wide static shot
+      Higher latitude ground close up, the camera low and looking down across it at
+      a shallow angle: thin patchy frost lying in the hollows of grey-brown grit,
+      the last sparse stems small and half buried, flat cold light, no horizon and
+      no sun in the frame, static
 
   - id: "5.6"
     scene: 5
     timeline_seconds: 9
     source: ffmpeg_still
     motion: static
-    anchors: [A1-plain-wide]
+    anchors: []
+    exterior: true
+    spine_key: ground_spine
     prompt: >
-      Polar ground, unmarked and undisturbed, hard pale frost over bare grit,
-      no tracks anywhere, the sun grazing along the horizon behind it giving
-      almost no warmth in the colour, static shot
+      Hard polar frost crust filling the whole frame, seen close from just above:
+      a continuous pale rime over bare grit, completely unmarked and undisturbed,
+      its surface pitted and granular, cold colourless light, no horizon and no sun
+      in the frame, macro, static
 
   - id: "5.7"
     scene: 5

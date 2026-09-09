@@ -105,6 +105,13 @@ def main():
             # An anchor would only make them the same kind of thing; the
             # approved still makes them the same object.
             src = ep / "approved" / f"{s['ref_shot']}.jpg"
+            if not src.exists():
+                # The shot it references has not been picked yet. Record 2's
+                # 5.2 follows the approved 5.1, and 5.1 is generated in the
+                # same scene — so this holds instead of crashing, and the
+                # scene is simply run twice.
+                print(f"  hold   {s['id']}: waiting on approved/{src.name}")
+                continue
             model = still_model
             refs = [upload(src, key, ep / "approved" / "urls.json")]
             kind, seeds = f"shot {s['ref_shot']}", SEEDS_ANCHORED
