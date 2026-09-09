@@ -68,6 +68,25 @@ def main():
 
     shots = [s for s in doc["shots"]
              if s["scene"] == scene and s.get("source") != "ffmpeg"]
+
+    # A shot with `plates:` is not generated as video at all, but it still
+    # needs stills — record 2's shot 3.3 is one patch of ground photographed
+    # three times as it dries out. The first plate is generated against the
+    # anchor like any other still; the later ones reference the *approved*
+    # first plate, because the whole point is that it is the same square metre.
+    # So they only queue once 3.3a has been picked, and say so until then.
+    for s0 in doc["shots"]:
+        if s0["scene"] != scene or not s0.get("plates"):
+            continue
+        base = s0["plates"][0]
+        shots.append({**s0, "id": base, "plate_prompts": None})
+        for pid, pprompt in (s0.get("plate_prompts") or {}).items():
+            if (ep / "approved" / f"{base}.jpg").exists():
+                shots.append({**s0, "id": pid, "prompt": pprompt,
+                              "anchors": [], "ref_shot": base,
+                              "plate_prompts": None})
+            else:
+                print(f"  hold   {pid}: waiting on approved/{base}.jpg")
     if not shots:
         print(f"scene {scene}: nothing to generate"); return
 
@@ -99,7 +118,10 @@ def main():
             # still has to be recognisable behind it, so A1 goes in as a
             # style reference and the spine goes in as text.
             model = still_model
-            refs = [anchor_urls["A1-control-room"]]
+            # Whatever the episode's first anchor is — record 1 hardcoded
+            # its own control room here, which is not a fact about the
+            # pipeline.
+            refs = [anchor_urls[doc["anchors"][0]["id"]]]
             kind, seeds = "style-ref", SEEDS_FREE
             prompt = f"{spine} {prompt}"
 

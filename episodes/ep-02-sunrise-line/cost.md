@@ -94,3 +94,6 @@ problem, not a model problem.
 | 2026-09-09 | 3 — anchors | 15 candidates, pass 2, sky and infrastructure fixed | $0.45 | $0.90 |
 | 2026-09-09 | 3 — anchors | 9 candidates, pass 3, A1/A2/A3 only | $0.27 | $1.17 |
 | 2026-09-09 | 3 — anchors | 6 candidates, pass 4, A3/A4 nadir geometry | $0.18 | $1.35 |
+| 2026-09-09 | 3 — anchors | **approved:** A1 p3 s11, A2 p3 s33, A3 p4 s22, A4 p4 s22, A5 p2 s33 | — | $1.35 |
+| 2026-09-09 | 4 — stills | scene 1, 8 generations | $0.32 | $1.67 |
+| 2026-09-09 | 4 — stills | 1.2 reworked, dust brought close to camera, 2 | $0.08 | $1.75 |
