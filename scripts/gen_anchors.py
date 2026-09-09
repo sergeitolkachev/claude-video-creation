@@ -10,6 +10,12 @@ then be reproduced exactly, the same way narration seeds work.
 """
 import os, sys, json, time, pathlib, urllib.request, yaml
 
+# Every network call gets an explicit timeout and every print is flushed.
+# gen_takes.py learned this the expensive way on record 1: a poll hung on a
+# socket with no timeout while a block-buffered log showed a state fifty
+# minutes stale, and the request id was lost with it.
+print = __import__('functools').partial(print, flush=True)
+
 CANDIDATES = 3
 SEEDS = [11, 22, 33]          # same three seeds for every anchor, so a
                               # difference between candidates is the prompt,
@@ -24,16 +30,21 @@ def env():
 def post(url, body, key):
     r = urllib.request.Request(url, data=json.dumps(body).encode(),
         headers={"Authorization": f"Key {key}", "Content-Type": "application/json"})
-    return json.load(urllib.request.urlopen(r))
+    return json.load(urllib.request.urlopen(r, timeout=60))
 
 def get(url, key):
     r = urllib.request.Request(url, headers={"Authorization": f"Key {key}"})
-    return json.load(urllib.request.urlopen(r))
+    return json.load(urllib.request.urlopen(r, timeout=60))
 
 def main():
     env()
     key = os.environ["FAL_API_KEY"]
     ep = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "episodes/ep-01-tishina-9")
+    # Optional comma-separated anchor ids. A rework pass usually needs two or
+    # three anchors, not the set — record 2 pass 3 reran A1, A2 and A3 and
+    # left the two that were already right alone, which is $0.18 not spent
+    # and, more to the point, two approved frames not accidentally replaced.
+    only = set(sys.argv[2].split(",")) if len(sys.argv) > 2 else None
     cfg = yaml.safe_load(pathlib.Path("config/models.yaml").read_text())
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
     model = cfg["image"]["anchor"]
@@ -41,6 +52,8 @@ def main():
 
     jobs = []
     for a in doc["anchors"]:
+        if only and a["id"] not in only:
+            continue
         for seed in SEEDS[:CANDIDATES]:
             dest = out / f"{a['id']}_s{seed}.jpg"
             if dest.exists():
@@ -64,7 +77,7 @@ def main():
         else:
             print(f"  TIMEOUT {dest.name}"); continue
         url = get(response_url, key)["images"][0]["url"]
-        dest.write_bytes(urllib.request.urlopen(url).read())
+        dest.write_bytes(urllib.request.urlopen(url, timeout=180).read())
         done += 1
         print(f"  saved  {dest.name}  ({dest.stat().st_size // 1024} KB)")
 

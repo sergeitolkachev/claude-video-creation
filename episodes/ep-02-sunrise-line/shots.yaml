@@ -54,25 +54,38 @@ hygiene:
 # instruction has been kept out.
 anchor_spine: &spine >
   The same world in every frame: a cold arid plain of fine grey-brown grit
-  and cracked pale clay, unbroken to the horizon. The sun sits exactly on the
-  horizon and never above it — a small pale disc in thin haze, giving level
-  raking light and shadows that run away to the edge of the frame. No clouds,
-  no sky detail, no stars, no second light source, no blue sky. Fine dust in
-  the air, drifting, never heaped on the ground. Desaturated palette: grey
-  brown ground, dull rust, pale blue-grey frost, dark olive low vegetation.
-  No saturated colour, no lush green, no daylight blue. No people, no
-  animals, no buildings, no machinery, no vehicles, no wheel ruts. No
-  lettering, no signage, no graphics of any kind anywhere in frame.
+  and cracked pale clay, unbroken to the horizon. The horizon line cuts
+  straight through the middle of the sun: the bottom half of the disc is
+  hidden behind the ground and only the top half of it shows, a small pale
+  half-disc resting on the line, dim enough to look at, with no flare and no
+  glow around it. The light comes in level along the ground. Where there
+  is a sky it is flat featureless pale haze, the same colourless grey-white
+  from the horizon to the top of the frame, with no gradient, no clouds, no
+  stars and no blue anywhere in it. Fine dust hangs in the air. The ground is
+  untouched: no ruts, no tread marks, no tyre prints, no paths, no roads.
+  Where vegetation appears it is a low dark olive crust of tiny wiry stems
+  lying flat against the ground, never bushes, never shrubs, never grass
+  tufts, never trees. Desaturated palette: grey-brown ground, dull rust, pale
+  blue-grey frost. No saturated colour, no lush green, no daylight blue. The
+  world is empty: no people, no animals, no buildings, no machinery, no
+  vehicles, no fences, no metal, no debris. Nothing manufactured is lying on
+  the ground: no barrel, no drum, no rusted ring, no pipe, no tank, no post.
+  No lettering, no numbers, no signage and no graphics of any kind anywhere
+  in frame.
 
 # Used for any shot routed to text-to-image instead of the edit tier. On this
 # episode that is the aerial pair, where an eye-height reference fights the
 # altitude harder than the prompt can win it back.
 exterior_spine: &exterior_spine >
-  Seen from very high altitude, looking down at a cold arid plain of fine
-  grey-brown grit and cracked pale clay. Level raking light from a sun on the
-  horizon, long shadows, thin haze. Desaturated grey-brown and rust palette,
-  no saturated colour, no blue sky in frame. No people, no animals, no
-  buildings, no machinery, no lettering of any kind.
+  Looking straight down from an aircraft at three thousand metres onto a cold
+  arid plain of fine grey-brown grit and cracked pale clay. The ground fills
+  the entire frame from edge to edge: no horizon, no sky, no sun and no
+  skyline anywhere in the picture. Level light from very low down rakes
+  across the surface, thin haze between the camera and the ground.
+  Desaturated grey-brown, rust and pale blue-grey palette, no saturated
+  colour. The land is untouched wilderness: no fields, no cultivated land, no
+  roads, no tracks of vehicles, no quarry, no mine, no buildings, no
+  machinery, no people, no animals. No lettering or graphics of any kind.
 
 # Appended to every image-to-video prompt. The approved still already carries
 # the subject, the light and the framing; the video prompt's only job is to
@@ -99,10 +112,18 @@ anchors:
     spine: *spine
     subject: >
       Camera: 35mm lens at standing eye height, level, horizon across the
-      lower third, the sun a small pale disc sitting on that horizon slightly
-      off centre. Wide establishing shot. Subject: open ground running
-      unbroken to the horizon, shadow bands from low ridges of grit stretching
-      toward the camera, thin haze softening the far distance.
+      lower third, the sun half sunk into that horizon slightly off centre.
+      Wide establishing shot. Subject: open flat ground running unbroken to
+      the horizon, its surface smooth and undisturbed with nothing standing on
+      it and nothing to cast a long shadow across it — the low light picks out
+      only the shallow relief of the ground itself. Thin haze softening the
+      far distance.
+    note: >
+      Pass 1: "shadow bands from low ridges of grit stretching toward the
+      camera" came back as five hard converging spokes that read as roads
+      meeting at the sun, with tyre ruts in the foreground. The frame has
+      nothing in it to cast a shadow, so asking for shadows asked the model to
+      invent the objects — and it invented infrastructure.
 
   - id: A2-boundary
     model: anchor
@@ -110,32 +131,75 @@ anchors:
     spine: *spine
     subject: >
       Camera: 50mm lens at chest height, looking across the ground rather than
-      along it, the three bands stacked in the frame. Mid shot. Subject: dry
+      along it, the three bands stacked in the frame, the near ground running
+      unbroken to the bottom edge with nothing lying on it. Mid shot. Subject: dry
       scorched cracked clay in the near ground, a narrow strip of dark olive
       low vegetation across the middle, pale blue-grey frost beyond it, the
       change from one to the next happening over a few metres.
+    note: >
+      A rusted metal ring keeps appearing in the near ground — pass 1 seed 33
+      and pass 2 seed 11, unprompted both times. The spine now forbids it by
+      name. Record 1 found the same behaviour: an enhancer fills an empty
+      foreground with whatever is statistically typical, and the fix is to say
+      which object, not to say "empty".
 
   - id: A3-ground-macro
     model: anchor
     covers: ["1.3", "3.1", "3.2", "3.3", "3.4", "4.1", "4.5", "5.4"]
     spine: *spine
     subject: >
-      Camera: 100mm macro, close down onto the ground, the frame filled by
-      about a metre of it, everything beyond dissolved into soft blur.
-      Subject: damp fine-grained soil, one broad shallow depression pressed
-      into it with a soft rounded rim, grit and fine cracks picked out by
-      raking light from the side.
+      Camera: 100mm macro directly overhead, pointing straight down at the
+      ground, perpendicular to it. The surface is parallel to the film plane,
+      so every part of the picture is the same distance from the lens: a flat
+      overhead view with no perspective, no receding ground, no vanishing
+      lines, no horizon, no sky and no sun anywhere in it. The frame covers
+      roughly one metre of surface and nothing else, the soil filling it edge
+      to edge. Subject: damp fine-grained soil, its surface
+      whole and undisturbed — bare grit, a faint sheen of moisture, hairline
+      cracks and the shallow relief of the grain itself, picked out by raking
+      light from one side. The ground is not dug and not broken: no hole, no
+      pit, no crater, no hollow, no dip, nothing scooped out of it. No painted
+      line, no white stripe, no kerb, no verge, no moss, no lichen.
+    note: >
+      Two passes lost to one word. "One broad shallow depression pressed into
+      it" returned a two-metre crater seen from standing height in all three
+      seeds of pass 1, and stating its size in centimetres in pass 2 made the
+      craters bigger — the model reads any dished ground as a pit and then
+      pulls the camera back far enough to show the whole thing, which takes
+      the anchor's distance with it.
+
+      So the anchor no longer contains a track at all. It carries the
+      distance, the soil and the light, which is what an anchor is for; the
+      tracks are described in the shots that need them (3.1, 3.2, 5.4, 6.2),
+      where a wrong one costs $0.04 instead of a whole anchor pass.
 
   - id: A4-aerial
     model: anchor
     covers: ["5.1", "5.2", "5.3"]
     spine: *spine
     subject: >
-      Camera: looking down from very high altitude, near vertical, a slight
-      lean so the horizon sits at the very top edge of the frame. Subject: the
-      plain seen from above, its surface reading as texture rather than
-      ground, two faint pale lines running roughly parallel across it, thin
-      haze between the camera and the surface.
+      Camera: looking straight down from an aircraft at three thousand metres,
+      perfectly vertical. The ground is parallel to the film plane and every
+      part of the picture is the same distance from the lens — a flat overhead
+      view, no perspective, no receding ground, no vanishing point. The ground
+      fills the entire frame edge to edge: no horizon, no skyline, no sun and
+      no sky in the picture at all. Subject:
+      the plain seen from directly above, its surface reading as flat texture,
+      two faint pale lines worn across it running roughly parallel and
+      disappearing off opposite edges of the frame, thin haze between the
+      camera and the surface.
+    note: >
+      Pass 1 read "a slight lean so the horizon sits at the top edge" as
+      permission to tilt, and returned a hillside in two seeds and an open-cut
+      mine with a bulldozer, sheds and invented lettering in the third. The
+      horizon is out of the frame entirely now, and the exterior spine names
+      the industrial furniture that has to stay out.
+
+      Pass 3 still put the sun and a band of haze along the top edge: "looking
+      straight down" was read as a steep oblique. Pass 4 states the geometry
+      instead of the intent — the ground parallel to the film plane, every
+      part of the frame equally distant — which is the same fix A3 needed, and
+      for the same reason.
 
   - id: A5-longlens-haze
     model: anchor
@@ -143,10 +207,12 @@ anchors:
     spine: *spine
     subject: >
       Camera: 400mm long lens at eye height, heavily compressed perspective,
-      shallow depth of field, focus on a band of ground in the middle
-      distance with drifting dust between camera and subject softening
-      everything. Subject: empty ground, a low ridge line, the compressed haze
-      stacking into flat pale layers.
+      shallow depth of field, focus on a band of ground in the middle distance
+      with drifting dust between camera and subject softening everything.
+      Ground occupies the lower two thirds of the frame; the horizon is
+      squeezed flat and sits high. Subject: empty ground and one low ridge
+      line, the compressed dust stacking into flat pale horizontal layers, no
+      vegetation of any kind in frame.
 
 # --- Shots ------------------------------------------------------------------
 # Locked-off shots are built from their approved stills in ffmpeg, per

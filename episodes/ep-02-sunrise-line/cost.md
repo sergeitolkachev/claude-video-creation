@@ -90,3 +90,7 @@ problem, not a model problem.
 | Date | Stage | Batch | Spent | Running total |
 |---|---|---|---:|---:|
 | 2026-09-09 | 1–2 — script, shot list | no spend | $0.00 | $0.00 |
+| 2026-09-09 | 3 — anchors | 15 candidates, pass 1 | $0.45 | $0.45 |
+| 2026-09-09 | 3 — anchors | 15 candidates, pass 2, sky and infrastructure fixed | $0.45 | $0.90 |
+| 2026-09-09 | 3 — anchors | 9 candidates, pass 3, A1/A2/A3 only | $0.27 | $1.17 |
+| 2026-09-09 | 3 — anchors | 6 candidates, pass 4, A3/A4 nadir geometry | $0.18 | $1.35 |
