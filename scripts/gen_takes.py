@@ -68,12 +68,19 @@ def main():
 
         if s["model"] == "workhorse":
             body = {"image_url": img, "prompt": prompt, "duration": str(gen),
+                    # Kling defaults this to true. Narration comes from
+                    # ElevenLabs and every take gets a local grade, so native
+                    # audio is waste we would strip anyway — and it was never
+                    # being sent, through all of record 01.
+                    "generate_audio": False,
                     "negative_prompt":
                         # every item here is something a probe actually produced
                         "fast motion, camera shake, dolly, rapid push in, zoom, "
                         "water, wet floor, puddles, reflections on the floor, "
                         "morphing geometry, changing architecture, brightening, "
-                        "blur, distortion, low quality, people, text, watermark"}
+                        "blur, distortion, low quality, people, text, watermark"
+                        + (", " + " ".join(s["negative_extra"].split())
+                           if s.get("negative_extra") else "")}
             price = tier["price_10s_usd"] if gen == 10 else \
                     tier["price_base_usd"] + max(0, gen - 5) * tier["price_per_extra_second_usd"]
         else:

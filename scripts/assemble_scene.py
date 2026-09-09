@@ -9,11 +9,13 @@ centre-cropped to 1920x1080 rather than scaled, so nothing stretches.
 import os, sys, subprocess, pathlib, tempfile, yaml
 
 def main():
-    scene = int(sys.argv[1])
+    # "all" assembles the whole episode in shot order; a number does one scene.
+    arg = sys.argv[1]
+    scene = None if arg == "all" else int(arg)
     ep = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "episodes/ep-01-tishina-9")
     ff = os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
-    shots = [s for s in doc["shots"] if s["scene"] == scene]
+    shots = [s for s in doc["shots"] if scene is None or s["scene"] == scene]
 
     tmp = pathlib.Path(tempfile.mkdtemp())
     parts, missing = [], []
@@ -35,15 +37,17 @@ def main():
 
     lst = tmp / "list.txt"
     lst.write_text("".join(f"file '{p}'\n" for p in parts))
-    out = ep / "out" / f"scene-{scene}-rough.mp4"
+    out = ep / "out" / ("rough-cut.mp4" if scene is None
+                        else f"scene-{scene}-rough.mp4")
     subprocess.run([ff, "-y", "-v", "error", "-f", "concat", "-safe", "0",
                     "-i", str(lst), "-c", "copy", str(out)], check=True)
-    dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+    probe = str(pathlib.Path(ff).with_name("ffprobe"))
+    dur = subprocess.run([probe, "-v", "error", "-show_entries",
                           "format=duration", "-of", "default=nw=1:nk=1", str(out)],
                          capture_output=True, text=True).stdout.strip()
     want = sum(s["timeline_seconds"] for s in shots)
-    print(f"\n{out}  {float(dur):.2f}s (сценарий: {want}s)")
-    if missing: print("нет клипов для:", ", ".join(missing))
+    print(f"\n{out}  {float(dur):.2f}s (script says {want}s)")
+    if missing: print("no take for:", ", ".join(missing))
 
 if __name__ == "__main__":
     main()

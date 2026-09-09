@@ -750,6 +750,15 @@ shots:
   - id: "5.3"
     scene: 5
     motion_tier: model
+    negative_extra: >
+      saturated colour, orange, rust red, warm colour grade, colour shift,
+      increasing saturation, blue sky, sky, horizon, clouds, green
+      vegetation, grass, trees, foliage, water, lake
+    note_take: >
+      First take drifted the palette into orange over ten seconds and grew a
+      blue sky and green vegetation into the top corner — the anchor's world
+      does not survive a long aerial in this model without being told to.
+      Kling has no seed, so a retake is a fresh roll, not a variation.
     timeline_seconds: 9
     generate_seconds: 10
     trim_to: 9

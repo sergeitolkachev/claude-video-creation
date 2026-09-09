@@ -241,3 +241,9 @@ problem, not a model problem.
 | 2026-09-09 | 4 — stills | 7 debug probes chasing a 401 that was a local variable shadowing the API key | $0.28 | $6.56 |
 | 2026-09-09 | 4 — stills | 7.2 regenerated on the creature canon, 2 | $0.08 | $6.64 |
 | 2026-09-09 | 4 — stills | **approved:** 7.2 s22 — the legless body | — | $6.64 |
+| 2026-09-09 | 6 — takes | 20 local shots built in ffmpeg, incl. the 3.3 dissolve | $0.00 | $6.64 |
+| 2026-09-09 | 6 — takes | scene 1: 1.2, 1.4 | $1.40 | $8.04 |
+| 2026-09-09 | 6 — takes | scenes 2, 4, 5: 2.1, 2.2, 2.5, 4.3, 4.4, 4.6, 5.2, 5.3, 5.7 | $6.30 | $14.34 |
+| 2026-09-09 | 6 — takes | scenes 6, 7: 6.4, 7.1, 7.2 | $1.05 | $15.39 |
+| 2026-09-09 | 6 — takes | 5.3 retaken — first take drifted orange and grew a blue sky | $0.70 | $16.09 |
+| 2026-09-09 | 6 — takes | **stage 6 closed — 34/34 shots, 272.00 s** | — | $16.09 |
