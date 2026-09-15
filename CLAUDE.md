@@ -9,6 +9,8 @@ Language rule: everything in this repository is written in English —
 scripts, prompts, commit messages, notes. Never translate from another
 language into the narration; write it in English from the start.
 
+Channel URL: https://www.youtube.com/@fileclassnine
+
 ## Core Constraints
 
 - Audience: English-speaking. Narration is native English, not translated.
@@ -19,6 +21,19 @@ language into the narration; write it in English from the start.
   except the decision of which frame is good.
 - Do not build abstractions before the third episode. If something has
   not been done three times, it does not get a script.
+
+## The Scripting Contract
+
+Scripts are written outside this repository, by an agent that cannot read it.
+`SCENARIO-AGENT.md` is the brief handed to that agent: it restates, in full,
+every rule a script has to satisfy — runtime, motion tiers, card colour,
+prompt hygiene, arithmetic, verticals — so that a submitted script is
+buildable without a rewrite.
+
+**Any change here that affects what a script may contain goes into
+`SCENARIO-AGENT.md` in the same edit.** A model constraint, a runtime rule, a
+card colour, a motion rule. The two files drifting apart is how a rewrite
+becomes the normal state of stage 1.
 
 ## Repository Layout
 
@@ -40,7 +55,17 @@ scripts/              # only what has proven itself repetitive
 ```
 
 Never write generated media into git. Only `script.md`, `shots.yaml`,
-and the config files are versioned. Everything else is reproducible.
+`publish.md` and the config files are versioned. Everything else is
+reproducible.
+
+`publish.md` holds everything that gets pasted into YouTube: the title, the
+description with its disclaimer, the chapter list and the title and description
+of every vertical. It is versioned for the same reason the banner is — records
+01 and 02 have no such file and their descriptions exist only inside Studio,
+which means the "what is real" list, the one place this channel writes its
+credibility down, is not recoverable from the repository. Chapter timestamps in
+it are scene boundaries summed from `shots.yaml` and are checked against it,
+never copied from an older record.
 
 ## Pipeline Stages
 
@@ -114,8 +139,53 @@ The voice is a recording device, not a storyteller.
 - No adjectives doing emotional work: not "the terrifying silence",
   just "no response on the channel for six days".
 
-Target: roughly 900–1100 words for a 10-minute episode. Narration
-occupies well under half the runtime — silence is part of the format.
+### Runtime
+
+**Minimum 3 minutes, maximum 10. The script decides, not a target.** An
+episode runs as long as it holds, and not one shot longer. The question is
+never "have we reached length" but "does this still grip". A record that
+stops at 3:30 because it has said everything is finished; the same record
+padded to 8 minutes is a worse record and a more expensive one.
+
+Two tests, and both are the script's job before anything is generated:
+
+- **The first ten seconds.** Image first, no logo, no intro. If the opening
+  shot and the opening line do not make the viewer want the second line,
+  nothing later rescues it. The cold open is written first and cut hardest.
+- **No slack in the middle.** Every scene has to advance the arithmetic or
+  turn it. A scene that restates the previous scene in new pictures is cut,
+  not shortened — that is the only length control this channel uses.
+
+Word count follows from runtime, not the other way round. Narration runs at
+the measured **162 wpm** (see `config/voice.yaml`; never assume a rate) and
+must leave **at least a third of the runtime as silence**, per scene and
+overall. Above roughly **55% silence the episode is dragging** — records 01
+and 02 both landed near 40%, which is the shape that works. So for a given
+runtime the narration sits in a band:
+
+| Runtime | Narration | = speech |
+|---|---|---|
+| 3:00 (180 s) | 220–325 words | 81–121 s |
+| 4:30 (270 s) | 330–490 words | 122–181 s |
+| 7:00 (420 s) | 510–760 words | 189–281 s |
+| 10:00 (600 s) | 730–1085 words | 270–402 s |
+
+162 wpm is a planning figure, not a promise: per-request spread on this voice
+is 123–203 wpm, so the real takes decide the final runtime. Record 02 came in
+slower than planned and three scenes fell under the silence floor — the
+picture was lengthened and no line was cut. That is the direction the fix
+always goes.
+
+If a script comes in under the floor, the fix is to cut picture, never to
+pad the voice. If it comes in over the ceiling, the fix is to cut lines.
+Silence is the format; dead air is not the same thing, and the difference is
+the Motion Policy below.
+
+A closing card block, or a held silent shot before one, is exempt from the
+ceiling — but only by declaration: `coda: [7]` in the episode's `shots.yaml`
+names the scenes, `validate.py` then measures the body without them and prints
+the coda separately. An undeclared scene is measured like any other, which is
+the point: the exemption has to be a decision someone wrote down.
 
 ## Motion Policy
 
@@ -156,6 +226,13 @@ episode, never A/B tested.
 
 - **Font: Menlo**, the same face and tracking as the episode titles and the
   channel art. One computer font, everywhere. Never a second face.
+- **A card plate is sized to its card.** Text types at the rate in
+  `config/type.yaml` — 18 characters a second, 0.35 s between lines, and never
+  less than 2 s on screen after the last character. A four-line card of 120
+  characters needs about 9 s of plate. Record 02 cut three cards off mid-word
+  by setting a hold before anyone knew the typing time; record 03 caught the
+  same fault in text, before generation, by running `type_schedule` against
+  the shot lengths. Do that check as part of validation, not after the build.
 - **Phosphor green, at 40 px on a 1080p frame, with a halo and a glow.**
   Record 02 shipped its first cards in off-white at 26 px and they vanished
   into a salt pan: pale text on pale ground has only luminance to separate it,
@@ -165,6 +242,16 @@ episode, never A/B tested.
   which is the bloom off an analogue monitor. Neither is a scrim or a box —
   both are the shape of the glyphs, so the frame shows through everywhere the
   text is not. **A card may never be smaller than 40 px.**
+- **A card lands with the line it answers to.** A card is anchored to its
+  plate and a line is anchored to its scene, and nothing connects the two on
+  its own. Record 03 shipped a master where the card reading `LOG 114` typed
+  fourteen seconds after the voice said "Log one fourteen" — both files
+  individually correct, the beat broken, and every check that looked at one
+  file at a time passed it. Each card now names its paragraph with `with:` in
+  `cards.yaml` and `validate.py` measures the gap. The working range on record
+  03 is -1.5 s to +3.8 s: a card may reach the screen slightly before its line,
+  which reads as the instrument getting there first, and may follow by a few
+  seconds. It may not drift.
 - **A graphic says what it is measuring.** The first energy card drew two
   unlabelled rectangles under the numbers and they read as a progress bar for
   nothing. Every bar carries its own label inside it.
@@ -211,7 +298,22 @@ episode, never A/B tested.
   shorter clauses, a period where a comma was. Never reach for the speed
   parameter.
 - Room tone runs under the entire episode. Absolute digital silence
-  destroys the illusion of a recording.
+  destroys the illusion of a recording. **This includes the moments where a
+  sound-design layer is deliberately removed.** Record 03 gated its scrubber
+  fan off for scene 3 and under the closing cards, and because the fan was
+  also doing duty as the room tone, both fell to -90 dBFS: not silence, but a
+  file that has ended. The fan is the effect; a second ungated bed underneath
+  it is the floor, and it never stops.
+- **A level in `audio.yaml` is a trim applied to the file, not a target level
+  in the mix.** Measure the bed, then choose the trim. Record 03 set the fan
+  to -26 meaning "quiet" against a bed that was already -37.9 dBFS, landing it
+  at -64: present in the mix, correctly gated, and completely inaudible — the
+  same mistake twice in an hour, both times in the direction of a layer that
+  exists and cannot be heard. A bed that comes back quieter than the floor
+  wants is lifted, not cut; the sign follows the measurement.
+- **Judge a bed in the room, not in the numbers.** The first pass at record
+  03's levels was arithmetically defensible and read on a phone as having no
+  background at all — which makes a deliberate silence a silence from nothing.
 
 ## Post
 
@@ -238,6 +340,23 @@ ffmpeg handles everything after generation. No models involved.
   still input `-loop 1 -t <runtime>`: a bare PNG is one frame at t=0, so the
   overlay silently draws nothing and the titles vanish without an error.
 - Timecode and record-number titles burned in.
+- **Count the copies before fixing the bug.** Record 03 found that inline
+  pause markers — `*[2.5 s]*` — are directions to the assembly step and must
+  never reach the voice. The paragraph parser existed in three scripts, two
+  were fixed, and the third burned `*[2.5 s]*` into the captions of a finished
+  vertical **and** shifted every word timing in that paragraph by four tenths
+  of a second, because the alignment was requested for text the audio does not
+  contain. There is one parser now, in `build_audio.py`, imported by
+  everything that needs paragraphs. When a fix is found, the first question is
+  how many places have the same code, not whether this one now works.
+- **A step that lives in someone's memory is a step that will be skipped.**
+  Record 02's click bed — the track that makes every card type audibly — was
+  mixed by hand once and the fact was never written down. Record 03 built its
+  cards, mixed its audio, graded a master and passed every gate while shipping
+  a typewriter that made no sound, because nothing in the repository knew the
+  step existed. The bed is mixed by `build_cards.py` now. The general rule:
+  when a manual step is discovered, the fix is not to remember it, it is to
+  move it inside a script so that forgetting is impossible.
 - Do not upscale. Clean footage works against found-footage framing.
 - Verticals: centre-safe crop, hard cut mid-sentence at the end. **Captions
   are mandatory** — a vertical is watched muted first and read second, so a
@@ -245,6 +364,66 @@ ffmpeg handles everything after generation. No models involved.
   timings (`build_captions.py`, ElevenLabs with-timestamps, called with the
   same seed *and* the same previous_text as the take in the mix), never typed
   by hand and never auto-generated by the platform.
+- **A vertical opens on a voice inside one second.** Not on a held frame, not
+  on a title, not on a breath — the first thing that happens is somebody
+  talking, and it happens immediately. A vertical is scrolled past, not
+  started; the viewer decides in the first second whether there is anything
+  here, and a second of atmosphere is a second spent proving there is not.
+  `validate.py` checks that narration is audible within 1.0 s of every cut's
+  in-point. This is the one place where the channel's patience with silence
+  does not apply: the long record earns silence, a vertical has not earned
+  anything yet.
+- **A caption carries a scrim, and the scrim is part of the caption.** The
+  halo is the shape of the glyphs and it holds type over most plates, not all:
+  record 03's verticals run over lit grating, a white sheet under a work lamp
+  and a phosphor screen. Under the halo goes a soft vertical gradient —
+  transparent at the top, feathered over 180 px, no edge anywhere. Not a box:
+  a box has edges and edges read as a player overlay, which is why the channel
+  refused one. The whole block, gradient included, is lifted so the gradient's
+  bottom lands **on** the clear line, never inside it. The first build padded
+  it 28 px into the clear zone and the comment in the config said so, which is
+  a rule being documented as it is broken.
+- **A finished record is never touched again.** Once a record is published it
+  is frozen: no re-cut, no re-render, not even when a rule invented later makes
+  it non-compliant and the work would cost nothing. Record 02's verticals fail
+  three rules that record 03 created; record 02 ships as it is. A published
+  record is a fixed artefact with a public URL, a view history and thumbnails
+  in rotation, and re-rendering it changes something the audience has already
+  seen for a benefit only the maker can perceive. Report the finding as
+  evidence the rule is real, then stop. New rules take effect with the next
+  episode.
+- **A vertical closes on a card: `WATCH THE FULL RECORD ON THE CHANNEL`.** Two
+  seconds, after the last frame of picture, in the channel's own Menlo and
+  phosphor green, typed on like every other character on this channel. It is
+  furniture — same text, same duration, every vertical, every episode. A
+  vertical is the only place the channel asks for anything, and it asks once,
+  at the end, after the viewer has already decided.
+- **A word boundary in an alignment is not the end of the sound.** ElevenLabs
+  marks a word as ending where the next one begins, which on this voice can be
+  forty milliseconds later — so a cut placed just after a word's timestamp
+  severs its decay and is heard as a cut mid-word. Record 03 shipped two
+  verticals that way and the validator passed both, because the validator was
+  reading the same timestamps that were wrong. A cut needs **real silence after
+  it**: at least `VERT_TAIL` seconds between the last word and the next, or the
+  end of a paragraph. Measured, not assumed.
+- **A vertical stops mid-sentence, on a word boundary. Never mid-word.** A
+  severed word is not a withheld ending, it is a file that broke, and the
+  viewer reads a fault rather than a choice. Cut points come from the real word
+  timings in `audio/alignment/`, not from an estimate, and `validate.py`
+  rejects any `to:` that falls inside a word — **with no tolerance at all**. A
+  first version allowed 0.02 s either side and passed a cut that clipped the
+  last twenty milliseconds off "open": a margin the size of the fault it is
+  meant to catch is not a check.
+- **A caption never lands in a dead zone, on any platform.** Every vertical
+  platform parks furniture in the same places and none of them tells you
+  where: the bottom for the caption, handle, sound name and buttons, the right
+  edge for the action column. The caption block is centred inside
+  `captions.safe_width` and grows **upward** from `captions.bottom_clear`, so
+  a second line never reaches down into the pile. Both figures live in
+  `config/type.yaml`, both are channel-wide, and `validate.py` computes the
+  block's real pixel extent from the font metrics and fails if it crosses
+  either boundary. A caption that reads on one platform and is buried on
+  another is not a format, it is luck.
 - **The bottom 30% of a vertical stays clear.** Every platform parks its own
   furniture there — the caption, the handle, the sound name, the buttons — and
   record 01 left only 264 px of 1920 and still ended up underneath the pile.
@@ -312,6 +491,43 @@ like "low ceiling", "built for a single occupant", "rounded corners" read as
 framing instructions and push every shot to a wide. Camera, distance and lens
 belong in each shot's own block.
 
+**A spine may not name an object, not even to restrict it.** Record 03's spine
+said the station's only warm light was a portable work lamp "and it appears
+only in the shots that name it". The lamp then appeared in eight of fifteen
+anchor candidates, standing in frame, lighting shots that had never asked for
+it. The model reads the noun and discards the clause governing it. A
+restriction on where an object may appear is not a prompt — it belongs in
+`shots.yaml`, where only the shots that want it mention it, and the spine
+forbids it outright.
+
+**One spine per camera distance, not per episode.** The same record's spine
+opened "Interior of an orbital relay station", which is a framing instruction
+wearing a material's clothes: it put a room in every frame, and the macro and
+top-down anchors came back as mid-distance interiors in all six candidates.
+Splitting out a `macro_spine` with no room noun in it — no interior, no
+station, no wall, no ceiling — fixed the macro anchor on the next pass. If two
+anchors are at distances where the word "interior" is wrong, they need
+separate spines, the same way exteriors do.
+
+**A negation only works when the subject does not imply it.** Record 03 held
+"no lettering" and "no people" across sixty stills without a single failure,
+and lost "no portable lamp" in eight anchor candidates out of fifteen — because
+the shots that forbade the lamp were asking for hard raking light in the same
+breath. Forbid what the frame has no reason to contain; for anything the
+subject implies, fill the frame with something else instead. "One broad shallow
+depression" cannot be fixed by adding "no crater"; it is fixed by describing
+what is there.
+
+**Removing a detail removes the texture around it unless you put the texture
+back.** Record 03's handheld sensor was returning a lit display with lettering
+on it, so the display came out of the prompt — and so did every other surface
+cue, leaving "a plain dark case, nothing lit on it". The model returned a
+product render: clean, new, and belonging to no world, in a record where every
+other object is worn. Take out one property at a time, and when you take one
+out, name what occupies its place. Here: the case scuffed pale along every
+edge from being carried, dust worked into its seams and into the grating under
+it.
+
 **Exterior shots need their own spine.** An interior spine handed to a shot
 set in open space does not transfer style, it puts a bulkhead in the frame.
 And an edit endpoint that requires a reference image cannot do exteriors at
@@ -333,6 +549,16 @@ specific enough that there is nothing left to invent.
 **Some phrases break a model outright.** `shot on 35mm` makes Nano Banana
 return `no_media_generated` and produce nothing at all. Isolate a failure by
 removing one clause at a time rather than rewriting the whole prompt.
+
+**A non-default voice touches the whole audio chain, not one stage.** Record 03
+is the first told by its operator rather than the channel narrator, and three
+separate scripts broke on it in turn: `gen_narration.py`, `build_audio.py`'s
+caller and `build_captions.py` each read `config/voice.yaml` independently and
+each had `narrator` written into it. The third was the dangerous one — captions
+timed against a voice that is not in the record place every word where it is
+not spoken. An episode names its voice once, in `shots.yaml` under `voice:`,
+and every stage reads that. Check the whole chain when a channel-level default
+changes, not the stage where the change was noticed.
 
 **ElevenLabs varies wildly between requests.** The same paragraph at the same
 settings came back anywhere from 123 to 203 wpm. Generating everything in one
@@ -386,6 +612,14 @@ thumbnail, and it is never part of what an A/B test is varying.
 `thumbnails.yaml`. Plates are **approved stills, never new generations** — the
 frame is already in the episode, and a thumbnail promising a frame the episode
 does not contain is the reliable way to lose watch time.
+
+**Judge a thumbnail at 210 px, which is what YouTube renders in a grid.** It is
+the only size that decides anything and the one nobody looks at while building
+a 1280 px plate. Record 03 built three variants that all read at full size; at
+grid size one had its second line smeared into the slug and another had it
+crossing a ceiling light. `validate.py` checks blocks against the slug's band,
+and `build_thumbs.py` output should be looked at as a row of 210 px tiles
+before anything is approved.
 
 Variants are for swapping in Studio a week at a time, so each one has to sell
 a different thing — a number, a view, a person. Three plates with the same

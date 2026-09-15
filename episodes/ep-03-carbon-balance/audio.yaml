@@ -1,0 +1,105 @@
+# Record 03's mix. Scene boundaries are not here — they are summed from
+# shots.yaml, which is the only place a shot's duration is allowed to live.
+runtime_seconds: 220
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+
+# Extra air before specific lines, per the pause table in script.md. Each is a
+# beat where the sentence before has to be allowed to land.
+hold:
+  s3p3: 2.5    # "I measured zero point two nine." — the hum is already gone
+  s4p4: 2.5    # "Cargo: zero point four three." — three zeroes have just been read
+  s6p3: 2.0    # "I am not going to open it."
+
+# --- Layers -----------------------------------------------------------------
+# One layer, and it is the record's only deliberate sound-design element: the
+# scrubber fan.
+#
+# Establish it in scene 1 — it is the first sound in the record, before any
+# voice. Take it away for the whole of scene 3, because the operator has
+# switched the scrubber off and the room genuinely sounds different. Give it
+# back on the cut into scene 7, which is the only comfort in the episode. Then
+# cut it at the first closing card, so the cards land in nothing.
+#
+# Most viewers will not consciously notice and will feel all four moments.
+#
+# The layer is named `hum` because that is the key build_audio.py gates with
+# silence_at. Scenes 1+2 run 0-50 s and scene 3 is 50-90 s, both summed from
+# shots.yaml rather than written down again here.
+# A level here is an ATTENUATION applied to the bed, not a target level in the
+# mix. fan.mp3 comes out of ElevenLabs at -37.9 dBFS RMS on its own, so the
+# first attempt at -26 put the room tone at roughly -64 dBFS: present in the
+# file, gated correctly by silence_at, and completely inaudible. Measure the
+# bed first, then choose the trim. -6 lands it near -44 dBFS — audible in a
+# quiet room, well under a voice that peaks around -10.
+# Both trims are arithmetic, not taste. Measured on the beds themselves:
+# fan.mp3 sits at -36.7 dBFS through its steady middle, tone.mp3 at -60.1.
+# First pass targeted -47 for the fan and -56 for the tone. Correct on paper
+# and too quiet in the room: watched on a phone the record read as having no
+# background at all, which makes scene 3's silence a silence from nothing.
+# Lifted to about -41 and -52 — the fan now sits roughly where a real room
+# tone sits, still about ten decibels over the floor so its absence is felt,
+# and still far under a voice peaking near -3.
+#
+# Note the sign on tone: the bed came back quieter than the floor wants, so it
+# is lifted, not cut. A level here is a trim applied to the file, and it goes
+# whichever way the measurement says.
+levels: {hum: -4, tone: 8, clicks: 0}
+silence_at: [50, 40]           # scene 3: the scrubber is off in-fiction
+layers:
+  # Room tone proper, and it never stops — not in scene 3, not under the cards.
+  # The first build had only the fan, which meant the two places where the fan
+  # is deliberately absent fell to -90 dBFS: true digital silence, which is
+  # exactly what CLAUDE.md forbids, because it stops sounding like a recording
+  # and starts sounding like a file that ended. The fan is the sound-design
+  # element; this is the floor under it, and it is not gated by anything.
+  tone:
+    file: sfx/tone.mp3
+    loop_to_fill: true
+
+  hum:
+    file: sfx/fan.mp3
+    loop_to_fill: true
+    fade_out: [192.5, 1.0]     # cuts on the first closing card
+    # loop_crossfade is NOT set. Combined with loop_to_fill it produces
+    # silence: aloop makes the stream infinite and acrossfade waits for its
+    # first input to end, which never happens. Record 02's wind layer uses
+    # loop_to_fill alone, which is the combination that works.
+
+# Regenerable from here: nothing under audio/ is versioned.
+#
+# The bed is deliberately dull. It is a small fan in a duct, not a machine room
+# — anything with a rhythm or a rise in it starts telling its own story under a
+# man reading numbers, and the whole point of this layer is that it is noticed
+# only when it goes away.
+sfx:
+  tone:
+    file: sfx/tone.mp3
+    seconds: 22
+    prompt: >
+      Very quiet empty room tone inside a small sealed metal compartment, the
+      faint hiss of still air and a distant structural hum far below, almost
+      nothing, completely even and unchanging, no fan, no ventilation, no
+      airflow, no rhythm, no pulsing, no creaking, no clicking, no footsteps,
+      no voices, no music, a flat continuous noise floor
+
+  fan:
+    file: sfx/fan.mp3
+    seconds: 22
+    prompt: >
+      Steady quiet ventilation fan running continuously behind a metal grille
+      in a small enclosed room, even and unchanging, a soft low airflow hiss
+      with a faint steady motor tone under it, no rhythm, no pulsing, no
+      rattling, no clicking, no squeaking, no change in speed, no machinery
+      starting or stopping, no voices, no music, a continuous flat bed of
+      recorded air
+
+# The click bed: one click per glyph, for all 622 of them across 13 cards.
+#
+# build_cards.py mixes this now. It did not before — record 02's bed was made
+# by hand once and the step was never written down, so record 03 built its
+# cards, mixed its audio, graded a master and shipped a typewriter that made no
+# sound. The channel signature is that each character lands with a click; a
+# card typing in silence is not the signature with a fault in it.
+clicks_bed: cards/clicks-bed.m4a

@@ -45,11 +45,24 @@ def main():
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
     tail_static = " ".join(doc["motion_tail_static"].split())
     tail_moving = " ".join(doc["motion_tail_moving"].split())
+
+    def tail_for(s):
+        """The constraint paragraph appended to a shot's motion prompt.
+
+        Two tails were not enough. `motion_tail_moving` says the movement
+        "covers only a very short distance across the whole shot", which is
+        right for drifting dust and wrong for a hatch swinging closed — record
+        3's 4.1 asked for a traverse and would have been told, in the same
+        prompt, not to traverse. A shot may name its own tail key instead.
+        """
+        if s.get("motion_tail"):
+            return " ".join(doc[s["motion_tail"]].split())
+        return tail_static if s["motion"].strip() == "static" else tail_moving
     out = ep / "takes"; out.mkdir(exist_ok=True)
     cache = ep / "approved" / "urls.json"
 
     shots = [s for s in doc["shots"]
-             if s["scene"] == scene and s.get("source") != "ffmpeg"
+             if s["scene"] == scene and not s.get("source", "").startswith("ffmpeg")
              and (only is None or s["id"] == only)]
 
     jobs = []
@@ -64,14 +77,19 @@ def main():
         motion = s.get("video_prompt") or (
             "Hold the frame exactly as it is." if static
             else f"A {s['motion']} on the scene already in frame.")
-        prompt = " ".join(f"{motion} {tail_static if static else tail_moving}".split())
+        prompt = " ".join(f"{motion} {tail_for(s)}".split())
 
         if s["model"] == "workhorse":
             body = {"image_url": img, "prompt": prompt, "duration": str(gen),
-                    # Kling defaults this to true. Narration comes from
-                    # ElevenLabs and every take gets a local grade, so native
-                    # audio is waste we would strip anyway — and it was never
-                    # being sent, through all of record 01.
+                    # Re-checked against fal's published schema 2026-09-14:
+                    # this endpoint has NO generate_audio parameter at all. It
+                    # exists on Kling v2.6 Pro and v3, not on v2.5 Turbo Pro,
+                    # so the earlier note here — "Kling defaults this to true"
+                    # — was simply wrong, and record 01 was never paying for
+                    # native audio it then stripped. The field is left in
+                    # because fal ignores unknown keys and because the day a
+                    # tier here is swapped for one that does have it, the
+                    # audio-off rule must already be in the body.
                     "generate_audio": False,
                     "negative_prompt":
                         # every item here is something a probe actually produced

@@ -1,0 +1,102 @@
+# Thumbnail variants for A/B. Three plates, three different promises — the test
+# measures nothing if all three sell the same thing with the text moved around.
+# Record 01's split was a number, a view, a person; record 02's was a number, a
+# world, a body. This record has no people at all, so it is a number, a door,
+# and the man who is alone with both.
+#
+# Plates are approved stills. Nothing is generated for a thumbnail: the frame is
+# already in the episode, and promising a frame the episode does not contain is
+# the reliable way to lose watch time. All three plates below are frames the
+# viewer will actually meet — 5.2 at 2:11, 4.4 at 1:50, 6.4 at 2:52.
+#
+# Every character is burned in by scripts/build_thumbs.py in the channel's
+# Menlo. Positions are fractions of the frame so they hold if the export size
+# changes. Variant ids never get renamed — the id is what a conversion figure is
+# attached to later.
+#
+# The slug is constant across all three. It is channel furniture and is never
+# part of what a test is varying.
+
+episode: ep-03-carbon-balance
+slug: "FC9-003 // Carbon Balance"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the number. Two figures that cannot both be true, in the operator's own
+  # voice. Nothing here says what the difference is; the whole promise is that
+  # the arithmetic does not close and somebody aboard has noticed.
+  #
+  # The plate is the phosphor monitor, which is the brightest thing in the
+  # record. Off-white type on a lit screen disappears at the 210 px YouTube
+  # actually renders, so the screen is dimmed under the text rather than the
+  # text recoloured — record 02 established that fix.
+  - id: a-arithmetic
+    plate: "5.2"
+    crop: {zoom: 0.80, bias_y: 0.48}
+    dim: {x0: 0.0, y0: 0.0, x1: 1.0, y1: 0.44, strength: 0.38, feather: 0.22}
+    blocks:
+      - lines: ["1.39 kg/day"]
+        size: 132
+        tracking: 4
+        x: 0.05
+        y: 0.09
+        anchor: left
+        scrim: true
+      - lines: ["I PRODUCE 0.98"]
+        size: 40
+        tracking: 10
+        x: 0.05
+        y: 0.34
+        anchor: left
+        scrim: true
+
+  # B — the door. States the premise and no consequence of it. The only variant
+  # that shows the thing the record refuses to open, and it shows it shut, with
+  # every latch closed, which is the entire content of scene 6.
+  - id: b-section-d
+    plate: "4.4"
+    crop: {zoom: 0.86, bias_y: 0.46}
+    blocks:
+      - lines: ["SECTION D"]
+        size: 104
+        tracking: 8
+        x: 0.05
+        y: 0.49
+        anchor: left
+        scrim: true
+      - lines: ["SEALED AT DEPARTURE"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.72
+        anchor: left
+        scrim: true
+
+  # C — the man, who is never in frame. An empty seat in front of a lit console
+  # sells the one fact the other two leave out: he is alone with this, and
+  # nobody has answered. It is the closest this record comes to a face, and the
+  # risk is the opposite of a thumbnail with a person on it — it promises
+  # solitude and delivers exactly that.
+  #
+  # Checked at 210 px, which is the size YouTube actually renders in a grid and
+  # the only size that decides anything. At full size all three read; at 210 the
+  # first build had this variant's second line crossing a ceiling light and
+  # variant B's sitting inside the slug's band, smeared into it.
+  - id: c-alone
+    plate: "6.4"
+    crop: {zoom: 0.78, bias_x: 0.42, bias_y: 0.58}
+    blocks:
+      - lines: ["ONE OPERATOR"]
+        size: 88
+        tracking: 8
+        x: 0.05
+        y: 0.10
+        anchor: left
+        scrim: true
+      - lines: ["NINE DAYS, NO ANSWER"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.31
+        anchor: left
+        scrim: true

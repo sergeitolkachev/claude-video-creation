@@ -37,6 +37,9 @@ def main():
 
     lst = tmp / "list.txt"
     lst.write_text("".join(f"file '{p}'\n" for p in parts))
+    # mkdir, because a new episode has no out/ yet and the concat then fails
+    # with a bare exit 254 that says nothing about a missing directory.
+    (ep / "out").mkdir(exist_ok=True)
     out = ep / "out" / ("rough-cut.mp4" if scene is None
                         else f"scene-{scene}-rough.mp4")
     subprocess.run([ff, "-y", "-v", "error", "-f", "concat", "-safe", "0",

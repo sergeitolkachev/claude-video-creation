@@ -1,0 +1,164 @@
+# Data cards — record 3.
+#
+# Rules carried from the channel, all of them enforced elsewhere and repeated
+# here because this is the file someone edits at two in the morning:
+#
+#   - Every character comes out of Pillow in Menlo, phosphor green, at the
+#     size in config/type.yaml. Never white, never below 40 px. Record 02
+#     shipped its first cards off-white at 26 px and they vanished into a salt
+#     pan.
+#   - Cards go UNDER the grain pass, like the titles, so they belong to the
+#     recording instead of looking captioned onto it.
+#   - Characters type on one at a time with a click per glyph. Nothing slides,
+#     fades, bounces or wipes.
+#   - Every card sits on a plate framed for it — see `card:` in shots.yaml and
+#     the "lower left of the frame empty" clause in each of those prompts. If a
+#     plate comes back busy where the card goes, the plate is wrong, not the
+#     card.
+#   - A graphic says what it is measuring. There are no unlabelled rectangles
+#     in this record; there is no bar and no plot at all, because every figure
+#     here is a rate and a rate reads better as a number than as a stub of a
+#     bar.
+#
+# `with:` names the narration paragraph the card answers to, and validate.py
+# checks they land together. A card is anchored to a plate and a line is
+# anchored to a scene, and until record 3 nothing connected the two: the card
+# reading LOG 114 sat on the third shot of scene 2 and typed 14 seconds after
+# the voice had said "Log one fourteen". Both halves were individually correct
+# and the beat was broken, which is the kind of fault that survives every check
+# made of one file at a time.
+#
+# Times are seconds **from the start of the card's own shot**, never absolute.
+# The closing block is in titles.yaml, which is absolute, because it belongs
+# to the record rather than to a plate.
+#
+# Two shots deliberately carry no card: 3.3 and 5.2, the phosphor monitors.
+# The channel's cards are phosphor green, and a green card over a screen that
+# is already green in-fiction stops reading as the record's own layer.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  # The opening card states the nominal figure, which is the only number in
+  # the record that is not a problem. Everything after it is measured against
+  # this line.
+  - id: log-112
+    with: s1p1
+    shot: "1.2"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 7.0
+    lines:
+      - "LOG 112 / PERIGON-4"
+      - "CO2: 3.1 mmHg — NOMINAL"
+
+  # --- Scene 2 -------------------------------------------------------------
+  # Spec against actual, on the same card, because the whole scene is the gap
+  # between them. The plate is a macro of ruled paper with nothing legible on
+  # it — the figures are here, not in the generation.
+  #
+  # It sits on the SECOND shot of the scene, not the third. It was on the third
+  # and the card typed at 37.8 s while the voice had said "Log one fourteen" at
+  # 24 — fourteen seconds apart, which reads as a fault and not as a choice.
+  # The paper plate and the grille swapped places, and the corridor gave five
+  # of its ten seconds to the rack, so the card now lands 3.8 s after the line.
+  # That is the same distance scene 1 has, and scene 1 is the one that works.
+  - id: log-114
+    with: s2p1
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 7.0
+    lines:
+      - "LOG 114 / CARTRIDGE LIFE: 46 H"
+      - "SPEC: 62 H"
+
+  # --- Scene 3 -------------------------------------------------------------
+  # The card the record is built around. Both rows stay on screen through the
+  # delivery of the measured figure and past it — the delta has to sit before
+  # the cut, which is why 3.5 is an 11 s plate and not the 8 s the draft gave
+  # it. The card at its full four lines needs 8.3 s to type; on an 8 s plate
+  # it would still have been typing when the shot ended.
+  #
+  # Units on the card are mmHg/h, the instrument's own units, with the
+  # conversion spelled out on the same row. The voice does the arithmetic out
+  # loud; the card shows what the sensor actually recorded.
+  - id: measurement
+    with: s3p3
+    shot: "3.5"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 10.8
+    lines:
+      - "LOG 117 / SCRUBBER OFFLINE — 6 H"
+      - "V 84 m3     T 295 K"
+      - "PREDICTED  0.21 mmHg/h  = 1.00 kg/day"
+      - "MEASURED   0.29 mmHg/h  = 1.39 kg/day"
+
+  # --- Scene 4 -------------------------------------------------------------
+  # Three sections on the sensor plate, and the fourth alone on the hatch.
+  # The draft had all four rows building on one plate with D arriving last,
+  # which reads as a table filling in. Split across two plates it reads as a
+  # search with an answer at the end of it — and the answer gets its own
+  # frame, on the door it is behind.
+  - id: sections
+    with: s4p2
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 9.6
+    lines:
+      - "LOG 118 / BULKHEADS SEALED"
+      - "A COMMAND   22 m3   0.98 kg/day"
+      - "B GALLEY    18 m3   0.00"
+      - "C CORRIDOR  14 m3   0.00"
+
+  - id: sections-d
+    with: s4p4
+    shot: "4.4"
+    pos: lower-left
+    build: line
+    at: 0.4
+    hold_until: 4.7
+    lines:
+      - "D CARGO     30 m3   0.43 kg/day"
+
+  # --- Scene 5 -------------------------------------------------------------
+  # Two dates and two figures. No plot: a two-point exponential drawn as a
+  # curve would be a graphic asserting more than the data supports, and the
+  # curve that matters is already on the monitor in 5.2, in frame, in-fiction.
+  - id: recalc
+    with: s5p1
+    shot: "5.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 11.0
+    lines:
+      - "LOG 119 / RECALCULATED FROM CARTRIDGE RECORD"
+      - "SECTION D"
+      - "D-11    0.28 kg/day"
+      - "D-00    0.43 kg/day"
+
+  # --- Scene 6 -------------------------------------------------------------
+  # The last card before the close. Three flat statements, none of which is
+  # the conclusion.
+  - id: manifest
+    with: s6p1
+    shot: "6.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 9.0
+    lines:
+      - "LOG 120 / SECTION D"
+      - "MANIFEST: EMPTY"
+      - "SEALED AT DEPARTURE — SEAL INTACT"

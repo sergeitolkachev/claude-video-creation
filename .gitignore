@@ -13,6 +13,7 @@ __pycache__/
 # Contents are ignored; the empty directories stay in the tree so the layout
 # is visible without running anything.
 episodes/*/anchors/*
+episodes/*/cards/*
 episodes/*/stills/*
 episodes/*/approved/*
 episodes/*/takes/*

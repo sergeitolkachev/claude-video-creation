@@ -91,3 +91,39 @@ captions:
   bottom_clear: 0.30        # fraction of frame height kept clear underneath
   line_chars: 30
   cue_chars: 58
+
+  # A scrim under the caption block, because a halo alone is not a guarantee.
+  #
+  # The halo is the shape of the glyphs and it holds type over most plates. It
+  # does not hold it over all of them: record 03's verticals run over a lit
+  # grating, a white sheet of paper under a work lamp and a phosphor screen,
+  # and a caption has to be legible on every frame of every cut without anyone
+  # checking frame by frame.
+  #
+  # This is NOT a box. A box has edges, and edges read as a player overlay
+  # rather than as part of the recording — which is why the channel refused one
+  # in the first place. This is a soft vertical gradient, transparent at the
+  # top and darkest at the bottom of the caption band, feathered over 180 px so
+  # it has no boundary anywhere. On a dark plate it is invisible; on a bright
+  # one it is the only reason the type survives.
+  # The card every vertical closes on. Same text, same length, every cut and
+  # every episode — furniture, like the slug. The channel asks for one thing
+  # and it asks once, at the end, after the viewer has already stayed.
+  end_card:
+    # Two lines, not one. On one line this is 36 characters, which at Menlo 46
+    # with the channel's tracking is about 1100 px — wider than the 1080 px
+    # frame, never mind the 900 px safe width. The first build shipped it
+    # clipped at both ends. The renderer now shrinks to fit as a last resort,
+    # but the right answer is to break the line where the sentence breaks.
+    lines:
+      - "WATCH THE FULL RECORD"
+      - "ON THE CHANNEL"
+    seconds: 2.0
+    size: 46
+    tracking: 3
+
+  scrim_alpha: 110          # darkest point, 0-255
+  scrim_feather: 180        # px of fade above the block, so there is no edge
+  scrim_pad: 28             # px of scrim below the last line; the whole
+                            # block is lifted by this, so the gradient ends
+                            # ON the clear line rather than inside it

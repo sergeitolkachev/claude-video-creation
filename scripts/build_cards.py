@@ -515,6 +515,33 @@ def main():
         manifest.sort(key=lambda m: m["at"])
     (ep / "cards" / "manifest.json").write_text(json.dumps(manifest, indent=2))
 
+    # The click bed, mixed here rather than by hand.
+    #
+    # Every card writes its own wav of glyph clicks, and something has to place
+    # those wavs on the episode timeline and hand build_audio.py one file. For
+    # record 02 that something was a person, once, and the fact was never
+    # written down — so record 03 built its cards, mixed its audio, graded its
+    # master and shipped a silent typewriter. The channel signature is "each
+    # character lands with a short click"; a card that types in silence is not
+    # the signature with a small fault in it, it is a different channel.
+    runtime = yaml.safe_load((ep / "shots.yaml").read_text())["runtime_seconds"]
+    beds = [m for m in manifest if (ep / "cards" / m["wav"]).exists()]
+    if beds:
+        ins, fc = [], []
+        for i, m in enumerate(beds):
+            ins += ["-i", str(ep / "cards" / m["wav"])]
+            d = int(m["at"] * 1000)
+            fc.append(f"[{i}:a]adelay={d}|{d},apad,atrim=0:{runtime}[c{i}]")
+        fc.append("".join(f"[c{i}]" for i in range(len(beds))) +
+                  f"amix=inputs={len(beds)}:normalize=0:dropout_transition=0,"
+                  f"aformat=sample_rates=44100:channel_layouts=stereo[out]")
+        bed = ep / "cards" / "clicks-bed.m4a"
+        subprocess.run([ff, "-y", "-v", "error", *ins, "-filter_complex",
+                        ";".join(fc), "-map", "[out]", "-c:a", "aac",
+                        "-b:a", "192k", str(bed)], check=True)
+        print(f"\n  clicks bed: {len(beds)} cards, "
+              f"{sum(m['clicks'] for m in beds)} clicks -> {bed.name}")
+
     if preview:
         cut = ep / "out" / "rough-cut.mp4"
         dst = ep / "out" / "rough-cut-cards.mp4"

@@ -5,7 +5,7 @@ Anchors are always passed as references, which is the whole point of stage 3.
 Shots with no anchor listed are object studies that carry no location; they
 get the spine as text instead, so they still read as the same station.
 
-Usage: gen_stills.py <scene number> [episode dir]
+Usage: gen_stills.py <scene number> [episode dir] [--only <shot id>]
 Scene at a time on purpose: 87 stills in one go is over the batch threshold in
 CLAUDE.md, and a bad anchor would only show up after all of it had been paid for.
 """
@@ -62,8 +62,16 @@ def upload(path, key, cache):
 
 def main():
     env(); key = os.environ["FAL_API_KEY"]
-    scene = int(sys.argv[1])
-    ep = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else "episodes/ep-01-tishina-9")
+    args = list(sys.argv[1:])
+    # --only <shot id>, the same flag gen_takes.py has. A scene is the right
+    # batch size for a normal run, but it is the wrong one for proving a new
+    # routing: record 3 needed one text-to-image shot generated on its own
+    # before committing the three shots that reference it.
+    only = None
+    if "--only" in args:
+        i = args.index("--only"); only = args[i + 1]; del args[i:i + 2]
+    scene = int(args[0])
+    ep = pathlib.Path(args[1] if len(args) > 1 else "episodes/ep-01-tishina-9")
     cfg = yaml.safe_load(pathlib.Path("config/models.yaml").read_text())
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
     still_model = cfg["image"]["still"]
@@ -73,8 +81,24 @@ def main():
     ext_spine = " ".join(doc["exterior_spine"].split())
     out = ep / "stills"; out.mkdir(exist_ok=True)
 
+    # Which shots need a still. Nearly all of them do, and the `source` field
+    # does NOT decide it — a locally built shot still needs the frame it is
+    # built from, and a Kling shot needs the frame it animates. Only two kinds
+    # are skipped here:
+    #
+    #   ffmpeg        a multi-plate shot. It has no still of its own; its
+    #                 plates are queued by the `plates:` block below.
+    #   ffmpeg_cards  a card block composed on black. There is no picture.
+    #
+    # `ffmpeg_still` is emphatically NOT in that list. Excluding it — which a
+    # startswith("ffmpeg") test does, and which is the right test in
+    # gen_takes.py where those shots must never reach a video model — silently
+    # drops fifteen of record 3's twenty-seven plates and prints "nothing to
+    # generate". The two scripts want opposite answers from the same field.
+    NO_PLATE = {"ffmpeg", "ffmpeg_cards"}
     shots = [s for s in doc["shots"]
-             if s["scene"] == scene and s.get("source") != "ffmpeg"]
+             if s["scene"] == scene and s.get("source") not in NO_PLATE
+             and (only is None or s["id"] == only)]
 
     # A shot with `plates:` is not generated as video at all, but it still
     # needs stills — record 2's shot 3.3 is one patch of ground photographed

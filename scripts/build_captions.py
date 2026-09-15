@@ -3,14 +3,21 @@
 
 Word timings come from ElevenLabs' with-timestamps endpoint, called with the
 same seed AND the same previous_text as the take that is actually in the
-episode. Both are needed: with the seed alone a paragraph came back a full
-second shorter, because previous_text changes the delivery. With both, the
+episode. Both matter: with the seed alone a paragraph came back a full second
+shorter, because previous_text changes the delivery. With both, the
 regenerated audio matches the stored file to the millisecond, so the alignment
 is valid for the file already in the mix.
+
+Unless the model refuses previous_text, which eleven_v3 does — it rejects the
+request outright. That is not a problem here, it is a requirement: the takes on
+that voice were themselves generated without it, so an alignment call that sent
+it would be describing a delivery the episode does not contain. The rule is the
+same either way — ask for exactly what the stored take was asked for.
 
 Alignments are cached — the API is only asked once per paragraph.
 """
 import os, sys, json, base64, subprocess, pathlib, re, urllib.request, yaml
+import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 sys.path.insert(0, "scripts")
@@ -34,29 +41,37 @@ def dur(p):
     return float(subprocess.run(["ffprobe","-v","error","-show_entries","format=duration",
         "-of","default=nw=1:nk=1",str(p)], capture_output=True, text=True).stdout)
 
-def paragraphs(script):
-    order, paras = [], {}
-    for sc, blk in enumerate(
-            re.findall(r"\*\*Narration:\*\*\n+((?:>.*\n|\n(?=>))+)", script), 1):
-        txt = re.sub(r"^> ?", "", blk, flags=re.M)
-        for i, p in enumerate([x.strip() for x in txt.split("\n\n") if x.strip()], 1):
-            pid = f"s{sc}p{i}"; order.append(pid); paras[pid] = " ".join(p.split())
-    return order, paras
+# The parser lives in build_audio.py and is shared. This file had its own copy
+# and it was the copy that never learned to strip stage directions.
+paragraphs = ba.narration_paragraphs
 
 def alignment(pid, text, prev, seed, voice, key, cache_dir):
     cache = cache_dir / f"{pid}_s{seed}.json"
     if cache.exists():
         return json.loads(cache.read_text())
-    body = {"text": text, "model_id": voice["model_id"],
-            "voice_settings": voice["settings"], "seed": seed}
+    body = {"text": text, "model_id": voice["model_id"], "seed": seed}
+    if voice.get("settings"):
+        body["voice_settings"] = voice["settings"]
     if prev:
         body["previous_text"] = prev
-    r = urllib.request.Request(
-        f"https://api.elevenlabs.io/v1/text-to-speech/{voice['voice_id']}"
-        f"/with-timestamps?output_format={voice['output_format']}",
-        data=json.dumps(body).encode(),
-        headers={"xi-api-key": key, "Content-Type": "application/json"})
-    d = json.load(urllib.request.urlopen(r, timeout=180))
+
+    def send(b):
+        r = urllib.request.Request(
+            f"https://api.elevenlabs.io/v1/text-to-speech/{voice['voice_id']}"
+            f"/with-timestamps?output_format={voice['output_format']}",
+            data=json.dumps(b).encode(),
+            headers={"xi-api-key": key, "Content-Type": "application/json"})
+        return json.load(urllib.request.urlopen(r, timeout=180))
+    try:
+        d = send(body)
+    except urllib.error.HTTPError as e:
+        detail = e.read()[:400].decode(errors="replace")
+        if "previous_text" in detail and "previous_text" in body:
+            body.pop("previous_text")
+            d = send(body)          # the stored take was made this way too
+        else:
+            print(f"  HTTP {e.code} on {pid}\n    {detail}")
+            raise
     a = d["alignment"]
     words, cur, t0 = [], "", None
     for c, s, e in zip(a["characters"], a["character_start_times_seconds"],
@@ -160,8 +175,13 @@ def render(text):
 
     def paint(fill, layer):
         d = ImageDraw.Draw(layer)
-        # the block grows upward, so the clear space below never shrinks
-        y0 = VH - BOTTOM_CLEAR - LINE_H * len(lines)
+        # The block grows upward, so the clear space below never shrinks — and
+        # the scrim is part of the block, not an extra under it. The whole
+        # thing is lifted by scrim_pad so the gradient's bottom edge lands on
+        # the clear line instead of 28 px inside it, which is where the first
+        # version put it.
+        y0 = (VH - BOTTOM_CLEAR - C.get("scrim_pad", 0)
+              - LINE_H * len(lines))
         for i, l in enumerate(lines):
             w = sum(d.textlength(c, font=f) + TRACK for c in l)
             x = (VW - w) / 2
@@ -175,6 +195,24 @@ def render(text):
     halo = Image.new("RGBA", (VW, VH), (0, 0, 0, 0))
     paint((0, 0, 0, C["halo_alpha"]), halo)
     halo = halo.filter(ImageFilter.GaussianBlur(C["halo_radius"]))
+
+    # The scrim: a gradient, not a box. See config/type.yaml. It sits under
+    # both the halo and the type, covers exactly the band the lines occupy,
+    # and fades to nothing over `scrim_feather` px above them, so it has no
+    # edge for the eye to find.
+    a0, fade = C.get("scrim_alpha", 0), C.get("scrim_feather", 180)
+    if a0:
+        pad = C.get("scrim_pad", 28)
+        top = VH - BOTTOM_CLEAR - pad - LINE_H * len(lines) - fade
+        bot = VH - BOTTOM_CLEAR          # exactly the clear line, never past it
+        col = np.zeros(VH, dtype=np.uint8)
+        for y in range(max(0, top), min(VH, bot)):
+            k = (y - top) / fade
+            col[y] = int(a0 * min(1.0, k) ** 2 if k < 1 else a0)
+        scrim = Image.fromarray(np.repeat(col[:, None], VW, axis=1), mode="L")
+        layer = Image.new("RGBA", (VW, VH), (0, 0, 0, 0))
+        layer.putalpha(scrim)
+        return Image.alpha_composite(Image.alpha_composite(layer, halo), im)
     return Image.alpha_composite(halo, im)
 
 def main():
@@ -188,7 +226,12 @@ def main():
         if "=" in line and not line.strip().startswith("#"):
             k, v = line.split("=", 1); os.environ.setdefault(k.strip(), v.strip())
     key = os.environ["ELEVENLABS_API_KEY"]
-    voice = yaml.safe_load(pathlib.Path("config/voice.yaml").read_text())["narrator"]
+    # Which voice is an episode fact — see gen_narration.py. Reading "narrator"
+    # here regardless would have timed record 3's captions against a voice that
+    # is not in the record.
+    which = (yaml.safe_load((ep / "shots.yaml").read_text()).get("voice")
+             or "narrator")
+    voice = yaml.safe_load(pathlib.Path("config/voice.yaml").read_text())[which]
     picks = yaml.safe_load((ep / "audio" / "narration.yaml").read_text())["picks"]
     order, paras = paragraphs((ep / "script.md").read_text())
     prev_of = {order[i]: (paras[order[i-1]] if i else None) for i in range(len(order))}

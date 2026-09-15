@@ -1,0 +1,833 @@
+# Record No. 3 — "CARBON BALANCE"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompts here are already cleaned per the Prompt Hygiene section of
+# script.md. Do not copy prompt text out of script.md into a generation call
+# by hand — that text is laid out for a human reader, and the parenthetical
+# notes under some shots are not part of the prompt.
+
+episode: ep-03-carbon-balance
+runtime_seconds: 220
+aspect: "16:9"
+
+# This record is told by its own operator, not by the channel narrator, so
+# stage 7 uses the character voice in config/voice.yaml. Records 1 and 2 have
+# no such key and default to narrator. The voice is an episode decision; the
+# voice_ids themselves are channel property and are never regenerated.
+voice: character
+
+# Per-scene runtime, read by scripts/validate.py.
+#
+# The submitted draft ran 4:20 on the same 260 words — 60% silence, and under
+# the Motion Policy every silent second is a paid clip, so the length was
+# buying dead air at the most expensive rate on the board. Thirty seconds of
+# picture came out and no narration was cut. Scene 7 is a declared coda: 6 s
+# under the last line, a 10 s silent hold on the porthole, and 27 s of cards.
+scene_runtime: {1: 22, 2: 28, 3: 40, 4: 25, 5: 32, 6: 30, 7: 43}
+
+# Scene 7 is the close: 6 s under the last line, a 10 s silent hold on the
+# porthole, and 27 s of closing cards — four record cards and the channel
+# closer, which record 02 established and which is furniture, not an
+# episode decision. It is 92% silent by construction, so it
+# is declared here rather than allowed to drag the body average around. The
+# silent shot in it is motion_tier model — a coda is exempt from the silence
+# ceiling, never from the Motion Policy.
+coda: [7]
+
+# Prompt hygiene the validator enforces, beyond the pipeline-wide rules.
+# Everything here was decided in the script and is repeated as a pattern so
+# that a later edit to a prompt cannot quietly break it.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(phosphor|monitor|crt|cathode|tube|screen)\b'
+      except: ["3.3", "5.2"]
+      why: >
+        The channel's cards are phosphor green. A green card over a screen
+        that is already green in-fiction stops reading as the record's own
+        layer and becomes set dressing, so the glow lives in exactly two
+        shots and neither of them carries a card.
+    - pattern: '\b(amber|warm light|tungsten|orange)\b'
+      except: ["1.3", "2.2", "5.1", "5.4"]   # 2.2 was 2.3 before the scene 2 swap
+      why: >
+        The draft carried four different palettes across seven scenes. There
+        is one warm light source on this station, a portable work lamp, and
+        it appears only where a shot names it.
+    - pattern: '\b(text|lettering|writing|written|handwritten|label|labelled|inscription|stencil|stencilled|serial|legible|numerals?|digits?)\b'
+      except: []
+      why: >
+        Three shots have written paper as their subject and every model
+        invents garbage glyphs out of anything resembling one. They are
+        prompted as texture — ruled lines, ink strokes, the clip of a board —
+        and the figures arrive afterwards as a card. "Blurred and unreadable"
+        is not a defence: the draft's 4.4 asked for stencilled markings out of
+        focus, which the enhancer reads as permission to letter the hatch.
+    - pattern: '\b(man|woman|person|crew|operator|figure|silhouette|shoulder|arm|finger)\b'
+      except: []
+      why: >
+        No people, ever, in a record about one man alone. "Operator's seat"
+        was in the draft twice and is exactly the phrase that puts an
+        operator in the seat.
+
+# Material, light and palette only. No camera, no distance, no lens, no
+# framing words — those belong to each shot and to the anchor subjects below.
+# "Small", "cramped" and "low" are absent on purpose: record 01 established
+# that they read as framing instructions and drag every shot to a wide.
+anchor_spine: &spine >
+  Interior of an orbital relay station. Painted metal surfaces in pale
+  grey-green, worn through to bare aluminium on every edge that gets touched.
+  Exposed fasteners, ribbed panel joints, insulated cable runs and conduit
+  clipped along every surface. The light is weak and even, from recessed
+  fluorescent panels behind yellowed plastic diffusers, pale green-white.
+  Shadows are soft and dirty rather than black. The palette is grey-green,
+  aluminium and dust, and nothing else. Fine dust hangs in the air. Nothing is
+  new and nothing is broken. No people, no hands, no faces. No lettering, no
+  markings and no graphics of any kind. No portable lamp, no lantern, no
+  torch, no light fitting standing on the floor or on a surface: the only
+  light comes from the panels in the ceiling.
+
+# The two close distances get their own spine. Pass 1 put A3 and A4 through
+# anchor_spine and got back a gauge on a wall in a room and a workbench in a
+# room — mid-distance interiors, both of them, in all six candidates. The
+# cause is the spine's own first sentence: "Interior of an orbital relay
+# station" is a framing instruction, and record 01's lesson is that framing
+# words in a spine beat the shot's own camera block. This spine names no room,
+# no station and no interior, so there is nothing in it for the model to
+# build a room out of.
+macro_spine: &macro_spine >
+  Painted metal in pale grey-green, worn through to bare aluminium on every
+  edge that gets touched, fine grey dust settled into every seam and scratch.
+  Weak pale green-white light, soft, falling away into darkness at the edges
+  of the picture. The palette is grey-green, aluminium and dust, and nothing
+  else. No people, no hands. No lettering, no markings, no numbers and no
+  graphics of any kind. No portable lamp, no lantern and no light fitting
+  anywhere in the picture.
+
+# The third distance, and the one the anchor set never had: an object mounted
+# on a bulkhead, seen at the distance where the object is the subject and the
+# station is only the surface behind it. A1 is a wide and pulled shot 1.2 —
+# the cartridge rack — back until the rack read as three small circular ports
+# on a far wall; the other seed gave up the station's fabric entirely. Five
+# shots were sitting on the wrong distance, which is record 01's anchor lesson
+# arriving through the front door rather than the side.
+#
+# Two rules from the passes already paid for are built into the wording:
+#
+#   - no room noun. Not interior, not station, not module, not room. The
+#     surface is described as filling the frame, so there is nothing left over
+#     for a room to be built in.
+#   - the negations that survive are the ones the subject does not imply.
+#     "No lettering" and "no people" have held in twelve of twelve stills.
+#     "No lamp" did not, because the prompts asking for hard raking light were
+#     asking for a lamp in the same breath. So the frame is filled positively
+#     instead of emptied by instruction.
+fitting_spine: &fitting_spine >
+  A flat painted metal surface in pale grey-green filling the frame from edge
+  to edge behind the fitting mounted on it, worn through to bare aluminium
+  along every edge that gets touched, with exposed fasteners, ribbed panel
+  joints and insulated cable runs clipped across it. Weak even pale
+  green-white light falling from above, soft, with shadows that are dirty grey
+  rather than black. Fine grey dust settled into every seam. The palette is
+  grey-green, aluminium and dust, and nothing else. The surface and the
+  fitting on it are at the same distance from the lens and fill the whole
+  picture between them, so there is no floor, no ceiling, no corner and no
+  receding plane anywhere in it. Nothing is new and nothing is broken. No
+  people, no hands, no faces. No lettering, no markings, no numbers and no
+  graphics of any kind.
+
+# This record has no exteriors. Every shot is inside the station, including
+# 7.2, which is an interior shot of a window.
+#
+# `exterior: true` in this file does not mean outdoors. In gen_stills.py it
+# selects the text-to-image path — no reference image, style carried in words
+# — and four shots use it with spine_key: macro_spine because the anchor that
+# should have carried them could not be made. The flag is misnamed for what it
+# now does; renaming it would touch records 01 and 02, so it is documented
+# here instead.
+#
+# This key still has to exist: gen_stills.py reads it unconditionally. Nothing
+# resolves to it, and a shot that needs a real exterior spine gets one written
+# rather than falling through to this.
+exterior_spine: &exterior_spine >
+  Unused in this record. Every shot with exterior: true names macro_spine
+  through spine_key instead.
+
+motion_tail_static: &motion_tail_static >
+  The camera does not move at all. This is a locked-off tripod shot: the
+  framing at the last frame is identical to the framing at the first. No
+  dolly, no push in, no pull back, no pan, no tilt, no drift, no parallax.
+  Only light and airborne dust change. Nothing enters the frame, no new
+  objects appear, no hatch opens and no person appears.
+
+# For the shots where a named thing genuinely travels: a hatch closing, a fan
+# turning. motion_tail_moving forbids exactly that — it was written for drifting
+# dust and says the movement covers only a very short distance — so a shot that
+# asks for a traverse and then appends it is arguing with itself, and the model
+# resolves the argument by holding the frame. Which is a frozen shot we paid
+# for.
+motion_tail_event: &motion_tail_event >
+  The one movement named above happens and completes within the shot, at a
+  steady unhurried speed. Everything else in the frame is still. The camera
+  itself does not move at all: no dolly, no push in, no pull back, no pan, no
+  tilt, no parallax. No cuts, no speed changes, no zoom snaps. Nothing enters
+  the frame, no new objects appear and no person appears.
+
+motion_tail_moving: &motion_tail_moving >
+  The movement is extremely slow, continuous and even, and covers only a very
+  short distance across the whole shot. The camera itself stays where it is.
+  Nothing else in the frame moves. No cuts, no speed changes, no zoom snaps.
+  Nothing enters the frame, no new objects appear, no hatch opens and no
+  person appears.
+
+# --- Anchors ----------------------------------------------------------------
+# Four, one per camera distance that survived. An anchor locks composition as
+# hard as it locks palette, so handing A1 to a macro shot returns a wide
+# interior — that is the failure that cost pass 2 of record 01.
+#
+# All four are interiors, so the reference-driven still tier works normally
+# and this record has none of record 01's exterior problem.
+#
+# There was a fifth. A4-surface-topdown was cut after three passes; the block
+# where it used to sit records why, and which four shots it used to carry.
+#
+# approved_seed plus the prompt in this file reproduces the approved image
+# exactly. Do not regenerate an approved anchor — every still in the record is
+# built against these four frames. All candidates from all three passes are
+# kept under anchors/pass-N/.
+anchors:
+  - id: A1-module-wide
+    model: anchor
+    approved_seed: 11          # pass 2, approved 2026-09-14
+    approved_file: anchors/A1-module-wide.jpg
+    covers: ["1.2", "2.4", "3.2", "3.4", "3.6", "4.3", "5.3", "6.4", "7.1", "7.2"]
+    spine: *spine
+    subject: >
+      Camera: 28mm lens at seated eye height, level, the far bulkhead square
+      to the frame. Wide interior shot. Subject: the command module of the
+      station, instrument panels running along one wall with their readouts
+      dark except for a few small indicator lamps, insulated cable runs
+      secured along the ceiling, a seat in front of the panels with its
+      restraint straps hanging slack and nobody in it. The lower left quarter
+      of the frame is empty painted bulkhead with nothing on it.
+
+  - id: A2-corridor-deep
+    model: anchor
+    approved_seed: 22          # pass 2, approved 2026-09-14
+    approved_file: anchors/A2-corridor-deep.jpg
+    covers: ["2.1", "5.4"]
+    spine: *spine
+    subject: >
+      Camera: 35mm lens at standing eye height, level, pointing straight down
+      the axis of the passage so the walls converge to a point near the centre
+      of the frame. Deep perspective shot. Subject: a narrow corridor running
+      away from the camera, ventilation grilles set into one wall at regular
+      intervals, recessed panel lights along the ceiling, the far end of the
+      passage darker than the near end. The floor is bare grating and runs
+      unbroken to the bottom edge of the frame with nothing lying on it.
+
+  - id: A3-instrument-macro
+    model: anchor
+    approved_seed: 11          # pass 2, approved 2026-09-14
+    approved_file: anchors/A3-instrument-macro.jpg
+    covers: ["1.1", "2.2", "3.1", "3.3", "3.5", "5.2", "6.2"]
+    spine: *macro_spine
+    subject: >
+      Camera: 100mm macro lens twenty centimetres from the subject and
+      perpendicular to it. The round dial fills the whole picture from edge to
+      edge and is cut off by the top and the bottom of the frame. Everything
+      behind it is out of focus and almost black. There is no room, no wall,
+      no ceiling, no floor, no corner, no doorway and no vent anywhere in the
+      picture, and nothing in it is further away than the dial. Subject: the
+      face of one round instrument — a brushed metal bezel, a glass cover with
+      fine scratches across it and no crack in it, a thin black needle resting
+      low on a plain scale with no numbers and no marks written on it. Raking
+      light from one side picks out the scratches in the glass.
+    note: >
+      Pass 1 returned a gauge on a wall at mid distance in all three seeds,
+      with lockers, vents and ceiling lights around it, the dial filling about
+      a sixth of the frame. Two seeds also cracked the glass: "a scratched
+      glass cover" is read as damage, so pass 2 says scratched and not cracked
+      in the same breath.
+
+  # --- A4-surface-topdown — RETIRED, three passes, not approved ------------
+  #
+  # The top-down distance has no anchor. Seedream does not render an
+  # orthographic overhead texture study, and three passes established that the
+  # failure is structural rather than a wording problem:
+  #
+  #   Pass 1  anchor_spine. Came back as a three-quarter wide of a room with a
+  #           bench in it, walls, ceiling, lockers and the work lamp standing
+  #           in frame, in all three seeds. Two causes, both in the spine:
+  #           "Interior of an orbital relay station" built the room, and naming
+  #           the lamp at all put the lamp in the picture — in a sentence whose
+  #           entire purpose was to restrict where it may appear. A spine may
+  #           not mention an object, not even to forbid it somewhere.
+  #
+  #   Pass 2  macro_spine, no room noun, no lamp. The room and the lamp went
+  #           away and the angle did not: a three-quarter view of the edge of a
+  #           bench, with legs, a rim and live perspective, in all three seeds.
+  #           "Fine grey dust caught in the scratches" came back as heaps of
+  #           grit banked along the edges, which is record 01's grit failure
+  #           word for word.
+  #
+  #   Pass 3  Furniture noun dropped entirely — "a flat sheet of scuffed steel"
+  #           with the absence of its own edges spelled out and the grit
+  #           forbidden by name. Every forbidden thing was rendered: grit along
+  #           the edges, the rim drawn in, a background invented behind it, and
+  #           in one seed an open yard with gravel piles in it. Naming the
+  #           sheet made the sheet an object, and an object has edges and
+  #           something to rest on.
+  #
+  # The rule this leaves behind: a negation is a noun to this model. Every
+  # "no X" in a prompt is a request for X, and the only reliable way to keep
+  # something out of frame is to give the frame something else to be full of.
+  #
+  # What the four shots do instead: each is generated text-to-image against
+  # macro_spine, with no reference image at all. 4.2 was in this set by a
+  # mistake in the shot list — its own prompt is a low-angle study of a sensor
+  # on floor grating, not an overhead — and it goes to A3.
+  #
+  # Where a reference IS right: 1.2, 2.4, 7.1 and 1.3 are one cartridge rack in
+  # four states — four cartridges with one slot empty, two slots empty seen
+  # from below, a fresh cartridge seated in the slot that was empty, and the
+  # spent cartridge itself on a bench. Everything except the state of the rack
+  # has to be identical, down to the grain of the absorbent, so 1.2 is
+  # approved first and the other three reference it. That is the same field
+  # the paper shots could not use, applied where it belongs.
+  #
+  # Binding them to the approved 5.1 with ref_shot was the first plan and was
+  # wrong. The four are nominally the same desk, which looked like exactly the
+  # case CLAUDE.md describes. It is not: that field holds the whole object, and
+  # what differs between these four is the thing it holds hardest. 5.1 is a
+  # page covered in ink; 2.3 shows only ruled lines and the edge of a clip;
+  # 6.1 shows rows with nothing entered in them, which is the entire point of
+  # the shot. Handing an inked page to the shot that has to prove a page is
+  # empty is the same class of error as handing a wide anchor to a macro. Use
+  # a reference where nothing changes; here everything that matters changes,
+  # and the spine carries the common material, light and palette instead.
+
+  - id: A5-hatch-frontal
+    model: anchor
+    approved_seed: 11          # pass 2, approved 2026-09-14
+    approved_file: anchors/A5-hatch-frontal.jpg
+    covers: ["4.1", "4.4", "6.3"]
+    spine: *spine
+    subject: >
+      Camera: 50mm at chest height, square on to the hatch, the hatch centred
+      and filling most of the frame with a margin of bulkhead around it. Mid
+      shot. Subject: a heavy internal hatch in a painted metal bulkhead, a
+      locking wheel at its centre, a row of latches closed across it, the paint
+      worn through to bare metal in a ring around each latch. Cold light from
+      one side only. The lower left of the frame is empty bulkhead.
+
+shots:
+
+  # SCENE 1 — COLD OPEN (22 s)
+
+  - id: "1.1"
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: slow fan turning behind the mesh, dust lifting off the wires
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The fan blade behind the mesh turns slowly and evenly, and the dust
+      caught on the wires lifts away and settles again. The camera does
+      not move.
+    anchors: [A3-instrument-macro]
+    prompt: >
+      Close view of a ventilation intake mesh on a painted metal panel, a
+      slow fan blade turning behind the mesh, fine dust drawn against the
+      wires and lifting away again, weak even light from above, shallow
+      focus, dark surround
+
+  - id: "1.2"
+    scene: 1
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    card: log-112
+    prompt: >
+      Row of four cylindrical scrubber cartridges seated in a metal rack
+      on a bulkhead, one slot empty and unlit, small indicator lamps
+      beside each cartridge, pale green panel light from a diffuser above,
+      the lower left quarter of the frame empty painted bulkhead with
+      nothing on it, static shot, no people
+
+  - id: "1.3"
+    scene: 1
+    motion_tier: local
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.2"            # the same rack, another day — see the note
+    prompt: >
+      Spent cylindrical filter cartridge lying on a steel workbench beside
+      an open disposal bin, scuffed casing, one portable work lamp with an
+      amber bulb throwing a hard pool of light across the steel, top-down
+      view, clean industrial surface, no people
+
+
+  # SCENE 2 — SECOND DEFECT (28 s)
+
+  - id: "2.1"
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 10      # paid for 10, cut to 5 — see the note below
+    motion: failing panel light and dust moving along the passage
+    video_prompt: >
+      The panel light at the far end dims and steadies once, slowly. Dust
+      drifts along the length of the corridor. The camera does not move.
+    anchors: [A2-corridor-deep]
+    prompt: >
+      Narrow station corridor during night cycle, ventilation grilles
+      along one wall, one panel light at the far end failing and steadying
+      again, faint movement of dust in the air along the length of the
+      passage, long perspective, cool grey-green palette, no people
+
+  - id: "2.2"
+    scene: 2
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # "no reference image", not "outdoors"
+    spine_key: macro_spine
+    card: log-114
+    prompt: >
+      Macro top-down view of a sheet of pale ruled paper on a steel desk,
+      only the ruled horizontal lines and the edge of a metal clip in
+      frame, the sheet cropped by the frame on all four sides, hard angled
+      light from a single amber work lamp, shallow focus, the lower left
+      of the frame falling into shadow, no hands
+
+  - id: "2.3"
+    scene: 2
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-instrument-macro]
+    prompt: >
+      Ventilation intake grille with dust drawn against the mesh in a
+      faint radial pattern, close framing, low angle light raking across
+      the metal, shallow focus
+
+  - id: "2.4"
+    scene: 2
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.2"            # the same rack, another day — see the note
+    prompt: >
+      Rack of scrubber cartridges seen from below, two slots empty,
+      indicator lamps unlit, tight framing on the underside of the rack,
+      weak green-white panel light
+
+
+  # SCENE 3 — THE MEASUREMENT (40 s)
+
+  - id: "3.1"
+    scene: 3
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    prompt: >
+      Control panel with a single toggle switch under a hinged metal guard
+      cover, the cover raised, the indicator ring around the switch unlit,
+      the painted panel filling the frame behind it, extreme shallow
+      focus, no hands
+
+  - id: "3.2"
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: dust drifting through the panel light
+    video_prompt: >
+      Fine dust drifts slowly through the light of the instrument panel.
+      Nothing else changes. The camera does not move.
+    anchors: [A1-module-wide]
+    prompt: >
+      Dark station interior during night cycle, the only light the glow of
+      one instrument panel low in frame, fine dust drifting slowly through
+      the light, wide shot, no people
+
+  - id: "3.3"
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the plotted line advancing one step to the right
+    video_prompt: >
+      The line on the screen advances a short way further to the right and
+      stops. The phosphor glow breathes very slightly. The camera does not
+      move.
+    anchors: [A3-instrument-macro]
+    prompt: >
+      Small monochrome monitor in a metal surround showing a single
+      shallow line climbing slowly to the right across a plain grid,
+      coarse phosphor green glow blooming off the tube, dark room, the
+      screen filling most of the frame
+
+  - id: "3.4"
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: restraint straps stirring in the still air
+    video_prompt: >
+      The slack restraint straps stir very slightly in the still air and
+      come to rest. The camera does not move.
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    prompt: >
+      Empty sleeping bunk strapped to a bulkhead, restraint straps hanging
+      slack and stirring very slightly in the still air, one dim wall
+      lamp, no people
+
+  - id: "3.5"
+    scene: 3
+    motion_tier: static
+    timeline_seconds: 11
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    card: measurement
+    prompt: >
+      Analog gas sensor gauge on a bulkhead, fine needle resting just
+      above the lower mark, a scale of evenly spaced tick marks running
+      round the dial and the marks the only thing on the face, brushed
+      metal bezel, scratched glass cover, dim cold light, the lower left
+      of the frame empty painted metal, macro lens
+
+  - id: "3.6"
+    scene: 3
+    motion_tier: local
+    timeline_seconds: 4
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-module-wide]
+    prompt: >
+      Wide view of a cramped command module interior at night, instrument
+      glow only, cables secured in runs along the ceiling, the seat in
+      front of them empty, no people
+
+
+  # SCENE 4 — SECTIONING (25 s)
+
+  - id: "4.1"
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the hatch swinging closed
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The hatch swings slowly closed across the corridor and stops against
+      its frame. The camera does not move.
+    anchors: [A5-hatch-frontal]
+    prompt: >
+      Heavy internal bulkhead hatch swinging slowly closed across a
+      station corridor, locking wheel centred on the hatch, worn paint,
+      cold overhead light, no people
+
+  - id: "4.2"
+    scene: 4
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # text-to-image, no reference
+    spine_key: macro_spine
+    card: sections
+    prompt: >
+      Portable handheld gas sensor standing on a steel floor grating, its
+      dark case scuffed pale along every edge and corner from being
+      carried, fine grey dust worked into its seams and into the grating
+      under it, a single recessed round vent and a folded carrying handle,
+      nothing lit on it, low angle, tight framing, shallow focus, the
+      lower left of the frame empty grating in shadow, no hands
+
+  - id: "4.3"
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: a utensil drifting at the end of its tether
+    video_prompt: >
+      The metal utensil drifts slowly at the end of its slack tether and turns
+      a little as it goes. The hatch in the wall behind it stays shut for the
+      whole shot, its latches closed and its glass dark, exactly as it is in the
+      first frame. Nothing else moves. The camera does not move.
+    # Take 1 opened it. The hatch stood closed through two thirds of the clip
+    # and then became a black rectangle — in a record whose whole tension is
+    # that nothing has been opened. `no hatch opens` was already in the tail
+    # and was ignored. Same rule as everywhere else in this record: a hatch in
+    # frame implies a hatch that can open, and the only thing that holds it is
+    # saying what it does instead of what it must not do.
+    negative_extra: >
+      opening hatch, opening door, door swinging open, hatch ajar, dark opening
+      appearing, black rectangle appearing, revealing a space beyond
+    anchors: [A1-module-wide]
+    prompt: >
+      Empty galley module, sealed food containers strapped to a shelf, a
+      single metal utensil drifting slowly at the end of a slack tether,
+      still air, weak green-white panel light, no people
+
+  - id: "4.4"
+    scene: 4
+    motion_tier: static
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    anchors: [A5-hatch-frontal]
+    card: sections-d
+    prompt: >
+      Sealed cargo bay hatch seen head-on, heavy latches closed across it,
+      the paint worn through to bare metal in a ring around each latch,
+      cold light from one side only, the lower left of the frame empty
+      bulkhead, no people
+
+
+  # SCENE 5 — THE BACK-CALCULATION (32 s)
+
+  - id: "5.1"
+    scene: 5
+    motion_tier: static
+    timeline_seconds: 13
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # "no reference image", not "outdoors" — this is
+    spine_key: macro_spine     # the text-to-image path, and the only shot on it
+    card: recalc
+    prompt: >
+      Macro top-down view of pale ruled paper on a steel desk under a
+      single amber work lamp, dense dark ink strokes filling the ruled
+      lines, the sheet cropped by the frame so no complete line is in
+      view, one stroke of the ink pressed twice as hard as the rest, hard
+      angled light, deep shadow across the lower left of the frame, no
+      hands
+
+  - id: "5.2"
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the curve resolving point by point
+    video_prompt: >
+      Two further points resolve onto the curve, one after the other, and
+      the line joins them. The camera does not move.
+    anchors: [A3-instrument-macro]
+    prompt: >
+      Small monochrome monitor showing a shallow upward curve resolving
+      point by point across a plain grid, coarse phosphor green glow
+      blooming off the tube, dark room, the screen filling the frame
+
+  - id: "5.3"
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: dust moving in the light of the console
+    video_prompt: >
+      Fine dust moves slowly in the light of the console panel. The unlit
+      indicator stays unlit. Nothing else changes. The camera does not
+      move.
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    prompt: >
+      Communications console with an unlit incoming-signal indicator, a
+      receiver seated in its cradle, a layer of settled dust on the panel
+      surface, fine dust moving slowly in the light of the panel, dim
+      room, no people
+
+  - id: "5.4"
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 4
+    model: workhorse
+    generate_seconds: 5
+    motion: dust drifting through the lamp beam
+    video_prompt: >
+      Dust drifts slowly across the beam of the work lamp. The lamp burns at
+      exactly the same brightness in the last frame as in the first, the pool of
+      light on the floor keeps exactly the same size and the same edge, and the
+      shadow does not move. The camera does not move.
+    # Take 1 bloomed: by the end the lamp had flooded the whole corridor, which
+    # reads as somebody turning it up, and nobody on this station touches
+    # anything. `brightening` is in the shared negative prompt and did not hold
+    # it — the shot asks for a lamp beam, and a lamp beam implies a lamp that
+    # can brighten.
+    #
+    # It failed twice. Take 2 was worse than take 1: it did not just bloom the
+    # lamp, it switched on a ceiling fixture that is not lit in the first frame.
+    #
+    # The fallback written here before the second roll — rebuild 5.4 as
+    # motion_tier local — was wrong, and wrong in the way this record has spent
+    # a day arguing against. Narration in scene 5 ends at 21.8 s, inside 5.3.
+    # 5.4 runs entirely under silence, and a shot under silence has to be a
+    # video clip: there is no voice and no text holding the picture up. A local
+    # push there is exactly the frozen frame the Motion Policy exists to
+    # prevent. The fallback should have been checked against the clock before
+    # it was written down.
+    #
+    # What was done instead costs nothing. Luminance sampled every quarter
+    # second showed take 1 flat for a full four seconds and blowing out only in
+    # the fifth: 35.1 -> 37.7 over four seconds, which is dust crossing the
+    # beam, then 53.7 and 69.1. So take 1 is reinstated and the shot is cut to
+    # 4 s, which `assemble_scene.py` takes from the head of the clip. The
+    # second goes to 5.1, a static card plate whose card finishes typing at
+    # 11.0 s and which holds 13 s without changing anything. Scene 5 stays 32 s,
+    # the record stays 220 s, and 5.4 is still a model clip under silence.
+    #
+    # The first rejection was correct for a five second cut and wrong for a
+    # four second one. Worth measuring where a fault starts before paying for
+    # another roll of a clip that has no seed.
+    negative_extra: >
+      brightening, light growing, glow expanding, lamp flaring, beam widening,
+      exposure change, fade in, fade up
+    anchors: [A2-corridor-deep]
+    prompt: >
+      Sealed cargo hatch at the far end of a dark corridor, a single
+      portable work lamp with an amber bulb aimed at it from the near
+      side, a long shadow thrown across the floor toward camera, dust
+      drifting through the lamp beam, no people
+
+
+  # SCENE 6 — THE SEAL (30 s)
+
+  - id: "6.1"
+    scene: 6
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    exterior: true             # "no reference image", not "outdoors"
+    spine_key: macro_spine
+    card: manifest
+    prompt: >
+      Macro view of a printed sheet clipped to a metal board, ruled rows
+      running across the frame with nothing entered in them, the sheet
+      cropped by the frame on every side, the sprung clip of the board at
+      the top edge, hard side lighting, the lower left of the frame in
+      deep shadow, no hands
+
+  - id: "6.2"
+    scene: 6
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-instrument-macro]
+    prompt: >
+      Seal indicator on a hatch photographed from a hard angle, a thin
+      twisted locking wire in place through the fitting, deep shadow,
+      scratched metal, macro lens, cold light
+
+  - id: "6.3"
+    scene: 6
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: dust moving in the spill of corridor light
+    video_prompt: >
+      Fine dust moves slowly through the faint spill of light along the
+      lower edge of the hatch. The hatch does not move and nothing opens.
+      The camera does not move.
+    anchors: [A5-hatch-frontal]
+    prompt: >
+      Dark cargo bay hatch with the work lamp switched off, the only light
+      a faint spill of corridor light along the lower edge of the hatch,
+      fine dust moving slowly through that spill, deep shadow filling the
+      rest of the frame, no people
+
+  - id: "6.4"
+    scene: 6
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-module-wide]
+    prompt: >
+      Empty seat in the command module, restraint straps hanging loose
+      over the arms, instrument glow falling across the headrest, no
+      people
+
+
+  # SCENE 7 — CLOSE (35 s)
+
+  - id: "7.1"
+    scene: 7
+    motion_tier: local
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.2"            # the same rack, another day — see the note
+    prompt: >
+      Life support rack with a fresh cylindrical cartridge seated in the
+      slot that was empty, its indicator lamp lit green, tight framing,
+      weak green-white panel light, no people
+
+  - id: "7.2"
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the star field drifting across the porthole
+    video_prompt: >
+      The field of stars drifts slowly and evenly across the opening as
+      the station turns. The reflection on the inner frame of the glass
+      stays where it is. The camera does not move.
+    exterior: true             # text-to-image, no reference
+    spine_key: fitting_spine
+    prompt: >
+      A circular porthole filling most of the frame in a painted metal
+      bulkhead, a heavy ring of bolts around the glass, a field of stars
+      in the black beyond it and nothing else out there, a cold reflection
+      of the room across the inner edge of the glass, no people
+
+  # The closing card block. No plate and no still: the cards are composed on
+  # black by build_cards.py. It is motion_tier static because it is nothing
+  # but text, which is the one case the Motion Policy allows.
+  - id: "7.3"
+    scene: 7
+    motion_tier: static
+    timeline_seconds: 27
+    source: ffmpeg_cards
+    motion: static
+    card: closing
+    prompt: >
+      No plate. Black frame; the closing cards are composed on it directly.

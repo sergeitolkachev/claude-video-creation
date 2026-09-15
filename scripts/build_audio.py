@@ -13,7 +13,7 @@ shots.yaml, which is the only place a shot's duration is allowed to live.
 
 Usage: build_audio.py [episode dir]
 """
-import os, random, subprocess, sys, pathlib, yaml
+import os, random, re, subprocess, sys, pathlib, yaml
 
 print = __import__('functools').partial(print, flush=True)
 
@@ -23,6 +23,30 @@ def dur(p):
         ["/usr/local/opt/ffmpeg-full/bin/ffprobe", "-v", "error",
          "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(p)],
         capture_output=True, text=True).stdout)
+
+
+def narration_paragraphs(script):
+    """The narration, split into paragraphs, exactly as the voice says it.
+
+    The canonical copy. There were three — here, in gen_narration.py and in
+    build_captions.py — and they drifted: inline pause markers like *[2.5 s]*
+    are directions to the assembly step and not words, and when that was
+    found, two of the three copies were fixed. The third burned "*[2.5 s]*"
+    into the captions of a finished vertical and shifted every word timing in
+    that paragraph by four tenths of a second, because the alignment was asked
+    for text the audio does not contain.
+
+    One parser. Everything that needs paragraphs imports this.
+    """
+    order, paras = [], {}
+    for sc, blk in enumerate(
+            re.findall(r"\*\*Narration:\*\*\n+((?:>.*\n|\n(?=>))+)", script), 1):
+        txt = re.sub(r"^> ?", "", blk, flags=re.M)
+        txt = re.sub(r"\*\[[^\]]*\]\*", " ", txt)      # stage directions, not speech
+        for i, para in enumerate([x.strip() for x in txt.split("\n\n") if x.strip()], 1):
+            pid = f"s{sc}p{i}"
+            order.append(pid); paras[pid] = " ".join(para.split())
+    return order, paras
 
 
 def scene_bounds(shots):

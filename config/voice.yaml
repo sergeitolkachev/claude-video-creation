@@ -15,7 +15,24 @@ narrator:
     # purpose. Nothing has been measured about them yet, and an unmeasured
     # number written down here reads as a decision.
 
-# Not used in episode 01 — that record has a narrator only, no character.
+# The operator. First person, present tense, the man whose record it is rather
+# than a narrator describing one. Unused in records 01 and 02, which have a
+# narrator only; record 03 is the first told in this voice and it was approved
+# against picture on 2026-09-15. Treat it as channel property from here: a
+# first-person record uses this voice, and it is never regenerated.
+#
+# An episode names which voice it wants under `voice:` in its own shots.yaml.
+# No key there means narrator, which is what records 01 and 02 rely on.
+#
+# eleven_v3 does NOT accept previous_text — the API rejects the request outright
+# with unsupported_model. So prosody does not carry across a paragraph boundary
+# on this voice, and gen_narration.py retries without the field rather than
+# failing the run. The loss is small here: every boundary has at least 1.2 s of
+# silence in it, and most have three to five.
+#
+# It also carries no settings block, deliberately. Nothing has been measured
+# about stability or style on this voice, and an unmeasured number written down
+# reads as a decision.
 character:
   voice_id: EiVTLiipxYldU5SJvo5d      # "Character footage"
   model_id: eleven_v3

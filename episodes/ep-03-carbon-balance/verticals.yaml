@@ -1,0 +1,71 @@
+# The vertical cuts. Three, carved from EPISODE-clean.mp4 — the graded master
+# with no overlays on it and no click track under it.
+#
+# **No data cards in a vertical.** A card is composed for the lower left of a
+# 16:9 frame, and a 9:16 crop takes 608 px of width out of 1920: the labels
+# survive and the numbers do not, which is the half worth keeping. All three
+# cuts here run over plates that carry cards in the long record — 3.5, 4.2,
+# 4.4, 6.1 — and that is exactly what the clean master is for. The clicks come
+# out with the cards, because a typing sound over nothing typing is a fault.
+#
+# Every figure in all three cuts is spoken aloud, so nothing is lost when the
+# cards are dropped. That was checked when the script was written, not here.
+#
+# Each cut opens on a voice inside one second and stops mid-SENTENCE, on a
+# word boundary. Not mid-word.
+#
+# The first build stopped mid-word and all three were wrong: "I am not
+# produc—", "zero point four thr—", "I am not going to o—". A severed word is
+# not a withheld ending, it is a file that broke, and the viewer reads it as a
+# fault rather than as a choice. The cut points now come from the real word
+# timings in audio/alignment/ and land in the gap between two words:
+#
+#   b  85.75  after "producing"  — he is not producing it; the figure is gone
+#   c 112.10  after "three."     — the number is the payload, it lands whole
+#   d 173.62  after "open"       — what he will not open is what is withheld
+#
+# validate.py checks every `to:` against the alignments and fails if one falls
+# inside a word. It is checked with no tolerance at all: the first version
+# allowed 0.02 s either side and passed 173.58, which clipped the last twenty
+# milliseconds off "open". A margin the size of the fault is not a check.
+
+source: out/EPISODE-clean.mp4
+audio: audio/episode-mix-noclicks.mp3
+crop: centre                 # 608x1080 out of 1920x1080, scaled to 1080x1920
+slug: "FC9-003 // CARBON BALANCE"
+
+cuts:
+  - id: fc9-003-b-the-measurement
+    from: 51.5
+    to: 87.40
+    covers: ["3.1", "3.2", "3.3", "3.4", "3.5"]
+    opens_on: "I ran the scrubber off for six hours tonight."
+    ends_on: "I am not producing one point three nine."
+    note: >
+      The scene the record is built around, and the only one whose opening line
+      is a hook on its own: a man says he switched off the machine that keeps
+      him alive, and then explains why. Ends inside the word before the figure
+      is repeated, so the arithmetic lands and the conclusion does not.
+
+  - id: fc9-003-c-the-sectioning
+    from: 91.2
+    to: 112.40
+    covers: ["4.1", "4.2", "4.3", "4.4"]
+    opens_on: "Four sections. Four bulkheads."
+    ends_on: "Cargo: zero point four three."   # the figure lands whole
+    note: >
+      Four rooms, four numbers, and the fourth is the record. Every figure is
+      spoken, which is what makes this one survive the loss of its cards — the
+      section table is on screen in the long version and in the voice here.
+
+  - id: fc9-003-d-the-seal
+    from: 148.2
+    to: 174.30
+    covers: ["6.1", "6.2", "6.3", "6.4"]
+    opens_on: "Cargo manifest, section D: empty."
+    ends_on: "I am not going to open it."
+    note: >
+      The one decision in the record, cut inside the word that would complete
+      it. Carries 6.3 — ten seconds of a dark hatch with dust moving in the
+      spill of corridor light — which is the strongest image in the episode and
+      needs no caption to work.

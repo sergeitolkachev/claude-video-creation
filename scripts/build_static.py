@@ -59,6 +59,23 @@ def main():
             print(f"  {s['id']:<5} {secs}s  dissolve {k} plates "
                   f"{dst.stat().st_size // 1024:>6} KB")
             continue
+        # A card block has no plate: it is text composed on black by
+        # build_cards.py, and the black underneath it has to exist as a clip
+        # like any other shot or the cut simply stops short. Record 3's rough
+        # cut came out 193 s against a 220 s record for exactly this reason,
+        # and grade.py then had nothing to lay the closing cards over.
+        if s.get("source") == "ffmpeg_cards":
+            dst = out_dir / f"{s['id']}.mp4"
+            secs = s["timeline_seconds"]
+            subprocess.run([ff, "-y", "-v", "error", "-f", "lavfi", "-i",
+                            f"color=c=black:s=1920x1080:r=24:d={secs}",
+                            "-c:v", "libx264", "-crf", "18", "-pix_fmt",
+                            "yuv420p", str(dst)], check=True)
+            built += 1
+            print(f"  {s['id']:<5} {secs}s  black     "
+                  f"{dst.stat().st_size // 1024:>6} KB")
+            continue
+
         if s.get("source") != "ffmpeg_still":
             continue
         # A shot with a composited screen is built from that plate, so the
