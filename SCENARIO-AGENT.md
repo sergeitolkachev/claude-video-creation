@@ -431,6 +431,23 @@ Constraints that change how the script is written:
 
 ---
 
+## 10b. The teaser
+
+Thirty seconds, vertical, out before the record. **You write nothing new for
+it** — it is assembled from lines the script already contains — but you decide
+which lines, and that decision belongs in the script.
+
+Nominate **four or five lines that escalate on their own**, in order, with no
+connective tissue between them. Record 03's are: a cartridge is spent early, a
+measured figure, what that figure means, the figure from the empty room, and a
+refusal. Nothing explains anything; each one is just stranger than the last.
+
+They must be lines that survive having no context, because the teaser gives
+none. A line that needs the sentence before it is not a teaser line.
+
+The teaser ends on `SOON`, so the last nominated line does not have to resolve
+anything — and must not.
+
 ## 11. Pre-submission checklist
 
 Run this before handing the script over. Each line is checked mechanically on
@@ -463,6 +480,8 @@ the production side and each failure costs a rewrite.
       rates and dates. Appendix lists real and invented separately.
 - [ ] Pacing section lists every non-default gap with a reason.
 - [ ] Three vertical candidates nominated, each with its figures spoken aloud.
+- [ ] Four or five teaser lines nominated, in order, each one strange without
+      context and none of them explaining another.
 
 ---
 

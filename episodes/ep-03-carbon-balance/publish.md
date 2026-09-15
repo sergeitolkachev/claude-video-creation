@@ -1,7 +1,8 @@
 # Publication — FC9-003 // CARBON BALANCE
 
-Everything that gets pasted into YouTube lives here, versioned like the script
-and for the same reason: a description re-typed from memory in a year is a
+Everything that gets pasted into YouTube lives here — the record, the teaser
+and the three vertical cuts — versioned like the script and for the same
+reason: a description re-typed from memory in a year is a
 different description, and the "what is real" section is the only place the
 channel puts its credibility in writing.
 
@@ -86,6 +87,43 @@ at 2.0 kg/day, the operator's 81 kg, and the nine-day silence from control.
   retimed, they move — do not copy them from an older record.
 - No links in the first two lines. The disclaimer has to be what is visible
   before "show more".
+
+---
+
+## TEASER
+
+Posted **before** the record, so nothing in it may be written as though the
+record is already up. That includes the description: no "watch the full
+version", because there is nothing to watch yet.
+
+```
+Title:  One man aboard. 1.39 kg of CO2 a day. // FC9-003
+
+Fiction. Relay station PERIGON-4. The scrubber cartridges are running out
+ahead of specification, so the operator runs the scrubber offline for six
+hours and measures the rise himself.
+
+The arithmetic is real and can be checked. He is the only one aboard.
+
+FC9-003 // CARBON BALANCE — soon on the channel.
+```
+
+### Notes
+
+- The title is the whole record in one line and explains none of it: one man,
+  and a figure that a single man cannot produce. It states a fact rather than
+  asking a question, like every title on this channel.
+- **"1.39 kg of CO2", never "oxygen".** The record is about carbon dioxide
+  arriving faster than the scrubber removes it. A teaser that contradicts the
+  episode in its first line costs more than the hook is worth, and the
+  "figures check out" promise is the only thing separating this channel from
+  any other.
+- The disclaimer is one word here rather than a paragraph — a thirty-second
+  vertical has no room for the long form, and "Fiction." in the first line does
+  the same job.
+- When the record goes up, this description is **not** edited to point at it.
+  The teaser has done its job and is left alone; the verticals carry the
+  instruction instead.
 
 ---
 

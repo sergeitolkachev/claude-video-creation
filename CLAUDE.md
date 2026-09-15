@@ -383,6 +383,40 @@ ffmpeg handles everything after generation. No models involved.
   bottom lands **on** the clear line, never inside it. The first build padded
   it 28 px into the clear zone and the comment in the config said so, which is
   a rule being documented as it is broken.
+## The Teaser
+
+Thirty seconds, vertical, posted before the record exists. It is the only piece
+on this channel that is allowed to sound composed, and the only one built from
+scratch rather than cut out of something finished.
+
+- **It is a vertical, so every vertical rule applies to it**: captions burned
+  in from real word timings, the bottom 30% clear, and a voice inside the first
+  second. A teaser competes with a scrolling thumb, not with a home page.
+- **Assembled, not excerpted.** The verticals are carved out of the record and
+  keep its order. The teaser takes the shots where something physically moves —
+  a hatch closing, dust in a beam, a trace climbing a screen — and reorders
+  them freely. `teaser.yaml` holds the shot list, the line list and the levels.
+- **Every line is already in the record.** Nothing is generated for a teaser.
+  A sentence the episode does not contain is the audio version of a thumbnail
+  promising a frame that is not there, and the trim points come from
+  `audio/alignment/` so a paragraph can give its first sentence and no more.
+- **Music is generated, and only here.** ElevenLabs' music endpoint, not the
+  sound-effect one — two prompts at the effect endpoint returned 15 dB and then
+  20 dB of variation, because a sound-effect model makes material, not beds,
+  while the music endpoint returns a cue with its own build and its own tail.
+  It does not draw on the character quota. **Music never goes under the record
+  itself.** That rule is not relaxed for anything: a man reading numbers under
+  music is an actor in a film, and the whole record depends on him not being
+  one.
+- **Never a licensed track.** A Content ID claim on a channel built out of
+  recovered recordings costs more than any cue is worth, and generated audio
+  has no rights-holder to file one.
+- **The closing card says `SOON`, not `FULL RECORD`.** Two cards exist and they
+  are not interchangeable: a vertical cut goes out after the record and its
+  card is an instruction; the teaser goes out before and a card promising
+  something that does not exist yet is the one promise a channel cannot take
+  back.
+
 - **A finished record is never touched again.** Once a record is published it
   is frozen: no re-cut, no re-render, not even when a rule invented later makes
   it non-compliant and the work would cost nothing. Record 02's verticals fail

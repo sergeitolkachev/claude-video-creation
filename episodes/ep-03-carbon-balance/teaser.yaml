@@ -1,0 +1,75 @@
+# The thirty-second teaser. Built from scratch, not cut from the record.
+#
+# It exists to do one job the record cannot do for itself: stop a thumb in the
+# first second. So it takes the shots where something physically moves — the
+# hatch swinging closed, the fan, dust in a beam, a trace climbing a screen —
+# and the five lines of the operator's own arithmetic that escalate on their
+# own, and it ends before the answer.
+#
+# Three rules it does not break:
+#
+#   Voice   Nothing new is generated. Every line here is a take already in the
+#           record, already approved, already reproducible from its seed. A
+#           teaser that speaks a sentence the episode does not contain is the
+#           audio version of a thumbnail promising a frame that is not there.
+#
+#   Facts   The record is about carbon dioxide, not oxygen. The whole episode
+#           is the arithmetic of 1.39 against 0.98, and a teaser that
+#           contradicts it in its first sentence costs more than it earns.
+#
+#   Music   Generated, never licensed. A drone that rises, with no melody, no
+#           rhythm and no instrument: the tension is a level going up. Stock
+#           libraries get claimed, and a Content ID claim on a channel built on
+#           recovered recordings is worse than the music was ever worth.
+#
+# Timing is absolute, in seconds, on the teaser's own timeline.
+
+runtime_seconds: 30.0
+source: out/EPISODE-clean.mp4          # graded and grained, no cards, no clicks
+aspect: "9:16"          # a teaser competes with a thumb, not a home page
+slug: "FC9-003 // CARBON BALANCE"
+
+# Two different closing cards exist on this channel and they must never be
+# swapped. The vertical CUTS carry "FULL RECORD ON THE CHANNEL", because by the
+# time a cut is posted the record is up and the card is an instruction. The
+# TEASER carries "SOON", because it goes out before the record exists and a
+# card promising something that is not there yet is the one promise a channel
+# cannot take back.
+end_card:
+  at: 26.0
+  seconds: 4.0
+  lines: ["SOON", "ON THE CHANNEL"]
+
+# Shots, by their id in shots.yaml, with the seconds of each take to use.
+# `from` is an offset inside that take, so a ten second clip can give its best
+# three. Picture runs continuously; there are no gaps.
+shots:
+  - {id: "4.1", at: 0.0, from: 0.6, seconds: 3.2}   # the hatch swings shut
+  - {id: "1.1", at: 3.2, from: 0.8, seconds: 2.6}   # the fan, dust on the mesh
+  - {id: "3.2", at: 5.8, from: 2.0, seconds: 3.4}   # dust through the panel light
+  - {id: "5.2", at: 9.2, from: 0.4, seconds: 3.0}   # the trace climbing
+  - {id: "3.5", at: 12.2, from: 1.0, seconds: 2.6}   # the gauge
+  - {id: "4.4", at: 14.8, from: 0.5, seconds: 3.0}   # the sealed hatch, head on
+  - {id: "6.3", at: 17.8, from: 1.5, seconds: 4.8}   # dark hatch, light beneath
+  - {id: "7.2", at: 22.6, from: 3.0, seconds: 3.4}   # the porthole, stars moving
+
+# Lines, by paragraph id. `trim` takes the first N seconds of the take, cut on a
+# word boundary from audio/alignment/ — s3p4 is a 7.6 s paragraph and only its
+# first sentence is wanted.
+lines:
+  - {pid: s1p2, at: 0.4}   # "Cartridge four is spent. Fifteen hours early."
+  - {pid: s3p3, at: 6.2}   # "I measured zero point two nine."
+  - {pid: s3p4, at: 12.3, trim: 3.60}   # "That is one point three nine kilograms a day."
+  - {pid: s4p4, at: 16.2}   # "Cargo: zero point four three."
+  - {pid: s6p3, at: 20.6}   # "I am not going to open it."
+
+levels:
+  music: -15        # the generated cue; it carries its own build
+  hum: -19          # the scrubber fan, from the record, for continuity
+  voice: 0
+
+# The drone was the first attempt at a bed and is kept in audio.yaml because it
+# is still the right answer for anything that must not sound composed. The
+# teaser is the one thing on this channel that may sound composed, so it takes
+# the music instead.
+music: sfx/teaser-music.mp3

@@ -103,3 +103,62 @@ sfx:
 # sound. The channel signature is that each character lands with a click; a
 # card typing in silence is not the signature with a fault in it.
 clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser ------------------------------------------------------------------
+# The teaser is promotional material, not the record, and it is the one place
+# the channel's no-event rule is relaxed — by exactly one degree. Not music:
+# no melody, no rhythm, no instrument. A low drone that rises slowly across the
+# whole thirty seconds, so the tension comes from a level going up rather than
+# from notes.
+#
+# Generated, never licensed. Every stock library gets claimed eventually, and a
+# Content ID claim on a channel whose whole premise is that these are recovered
+# recordings is worse than the music was ever worth. Generated audio has no
+# rights-holder to file one.
+teaser_sfx:
+  drone:
+    file: sfx/drone.mp3
+    seconds: 22
+    prompt: >
+      A single very low sustained drone, dark and heavy, held at exactly the
+      same loudness from the first second to the last, deep sub bass with a
+      faint metallic resonance above it, completely even and unchanging, no
+      swell, no rise, no fall, no fade, no melody, no chords, no rhythm, no
+      pulse, no beat, no percussion, no instruments, no riser, no voices, a
+      flat unbroken bed of low sound
+    note: >
+      The first prompt asked for "one continuous tone with a slow swell in it"
+      and got exactly that: 15 dB of variation across 22 seconds, so the bed
+      was quieter at t=10 than at t=4 while the mix was ramping it up. The
+      swell belongs to the mix, where it can be controlled and measured. The
+      material has to be flat.
+
+      The rewrite then overran ElevenLabs' 450-character limit on a
+      sound-generation prompt — the list of forbidden things grew longer than
+      the description of the wanted thing. Both facts are worth keeping: the
+      limit is real and small, and a prompt that is mostly negations is a
+      prompt that has lost track of what it is asking for.
+
+  # Actual music, from ElevenLabs' music endpoint rather than the sound-effect
+  # one. It does not draw on the character quota — that is the text-to-speech
+  # meter — so length is not the constraint here; restraint is.
+  #
+  # The brief is the hard part. A trailer cue would wreck this: the record is a
+  # man reading numbers, and the moment the bed has a hook, a hit or a braam in
+  # it, the voice becomes a performance in a film instead of somebody filling
+  # in a form. What is wanted is a level that climbs and a room that gets
+  # colder, nothing that can be hummed.
+  #
+  # And it stays in the teaser. Music never goes under the record itself — that
+  # rule is not relaxed, it is the reason the record works.
+  music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold, sustained tension for a documentary about something going
+      wrong inside a sealed room. Low sustained strings and a deep synth pad,
+      one very gradual build across the whole piece, restrained and airless. No
+      drums, no percussion, no beat, no melody hook, no piano motif, no vocals,
+      no sudden hits, no risers, no cinematic braams, nothing that resolves. It
+      must sit under a calm speaking voice without ever competing with it.
