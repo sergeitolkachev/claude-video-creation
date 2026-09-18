@@ -61,7 +61,7 @@ Required structure, in this order:
 **Slug:** FC9-0NN // TITLE
 **Runtime:** M:SS (NNN s) — N shots, durations sum to NNN s exactly
 **Per-scene seconds:** {1: 34, 2: 42, ...}   (must sum to runtime)
-**Format:** 16:9 horizontal, three vertical cuts carved from it
+**Format:** 16:9 horizontal, three vertical cuts assembled out of it
 **Voice:** narrator | character (operator) — and the delivery note
 **Word count:** NNN. At 162 wpm that is NNN s of speech against NNN s of
   runtime — NN% silence. Per-scene silence table below.
@@ -389,8 +389,31 @@ target audience, not a hazard.
 
 ## 10. Verticals
 
-Three to four vertical cuts are carved out of the same footage. The script
-nominates the candidate moments.
+Three to four vertical cuts are built out of the same footage. The script
+nominates them.
+
+**A cut is assembled, not carved.** Up to record 03 a vertical was one window
+out of the finished episode: a start, an end, and the record's own order. From
+record 04 it is built the way the teaser is — a list of shots in whatever
+order works, and a list of lines the record already contains. What this changes
+for you:
+
+- **Nominate a cut as a line list plus a shot list**, not as a span. The lines
+  are the ones you want heard, in the order you want them heard; the shots are
+  the ones you want seen. Neither has to follow the episode's order, and a shot
+  may be used twice.
+- **The lines must be paragraphs the record already contains**, whole or
+  trimmed to their first sentences. Nothing is generated for a cut. If a
+  vertical wants a sentence the episode does not have, the episode needs it
+  first.
+- **Pick shots where something physically moves.** A cut runs 20 to 40 seconds
+  against a scrolling thumb, and a still frame does not hold that. The frame is
+  cropped to a 608 px window of the 1920, positionable, so a subject off to one
+  side is fine — say in the nomination which part of the frame matters.
+- **Hard cuts only. There are no transitions on this channel.** Nominate an
+  order that works on hard cuts. If a sequence needs a dissolve to hold
+  together, the order is wrong, not the build.
+- **No music under a cut.** Only the teaser gets a bed. Do not write one in.
 
 Constraints that change how the script is written:
 
@@ -479,7 +502,8 @@ the production side and each failure costs a rewrite.
 - [ ] Every number is consistent with every other number, including implied
       rates and dates. Appendix lists real and invented separately.
 - [ ] Pacing section lists every non-default gap with a reason.
-- [ ] Three vertical candidates nominated, each with its figures spoken aloud.
+- [ ] Three verticals nominated, each as a line list and a shot list, each
+      with its figures spoken aloud, each working on hard cuts alone.
 - [ ] Four or five teaser lines nominated, in order, each one strange without
       context and none of them explaining another.
 

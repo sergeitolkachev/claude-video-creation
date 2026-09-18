@@ -86,6 +86,77 @@ assets:
       standing height, symmetrical one-point perspective down the corridor.
       Nobody present. Empty, not staged.
 
+# Candidate marks for the avatar — the channel's nine, as a Roman IX, put on
+# the folder as ink rather than generated into it. Menlo, like every other
+# character on this channel, distressed and rotated off the grid so it reads
+# as something stamped on the object and not as a caption over a photograph.
+#
+# build_brand.py writes every candidate to brand/out/avatar-mark-<id>.png.
+# Setting `mark:` on the avatar asset promotes one into the real export;
+# until then the plain avatar is what ships.
+avatar_marks:
+  # Picked: the boxed stamp. The two rejected drafts and why — the number set
+  # inside the diamond already on the folder erased the ink blot, which was the
+  # plate's best texture; the large faint IX across the empty top left the
+  # folder carrying two competing marks that read as two smudges at 40 px.
+  #
+  # Open question the plate decides, not the prompt: the centre of this frame
+  # is already occupied by the blot stamp, so "bigger and centred" and "leave
+  # the blot alone" cannot both be true. Three answers below.
+
+  # C1, tried and dropped: the box set at dead centre over the blot. Stamps
+  # really are applied over each other on documents, but the blot is dense
+  # enough that the number disappeared into it at every size — not a mess, a
+  # mark that cannot be read at all.
+
+  # C2 — centred, with the blot cleared out from under it. One mark on the
+  # folder, as large as the frame allows. Costs the blot.
+  - id: c-centre-clear
+    text: "IX"
+    size: 150
+    tracking: 14
+    x: 0.50
+    y: 0.50
+    rotate: -9
+    alpha: 0.95
+    blur: 0.8
+    ink: 88          # more coverage: at 104 the wear read as stripes, not skips
+    seed: 73
+    box: {margin: 0.5, width: 9}
+    # Erased to the floor, not faded: at 0.92 the diamond's ghost still
+    # crossed behind the box. The lower bound stops short of 0.78 on purpose
+    # — past that the fill reaches the folder's bound edge and lights it.
+    # The blot is cloned out with clean paper from higher up the same folder,
+    # not filled. A flat fill matched the hue and still read as a painted
+    # square, because paper without grain is not paper.
+    # Two passes. The first clears the blot; the second takes the diamond's
+    # bottom tip, which survived inside the first patch's feathered edge —
+    # a feather wide enough to hide a seam is also wide enough to leave the
+    # thing it was covering. The second patch stops short of the folder's
+    # rolled edge, which must not be cloned over.
+    clone:
+      - {x0: 0.24, y0: 0.28, x1: 0.79, y1: 0.765, dy: -0.26, feather: 0.16}
+      - {x0: 0.34, y0: 0.60, x1: 0.68, y1: 0.775, dy: -0.34, feather: 0.22}
+
+  # C3 — as far toward the centre as the mark can go while the blot stays.
+  # Bigger than the corner draft, sitting on the open paper above the diamond.
+  - id: c-upper-centre
+    text: "IX"
+    # Sized and placed against two hard limits, both measured on the plate:
+    # the lower stamp's top vertex sits at y=316, and the circle crop cuts the
+    # box's upper corners above y~31. There is no room to go higher at 122 px,
+    # so the mark comes down a little in size to buy the clearance.
+    size: 110
+    tracking: 12
+    x: 0.51
+    y: 0.232
+    rotate: -9
+    alpha: 0.95
+    blur: 0.8
+    ink: 88          # more coverage: at 104 the wear read as stripes, not skips
+    seed: 73
+    box: {margin: 0.5, width: 8}
+
 # Burned in by scripts/build_brand.py. Same font and tracking as the episode
 # titles.
 text:

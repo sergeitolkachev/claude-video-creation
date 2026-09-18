@@ -271,76 +271,144 @@ def main(ep):
         if "*[" in text:
             fail.append(f"{pid}: stage direction left in narration text")
 
-    # 8. The verticals: they open on a voice, and their captions clear the
-    # platform furniture. Both are channel rules and both are decidable here,
-    # before anything is rendered.
-    vf = ep / "verticals.yaml"
-    if vf.exists() and at_full:
-        vcfg = yaml.safe_load(vf.read_text())
-        tspec = yaml.safe_load(pathlib.Path("config/type.yaml").read_text())
-        cap = tspec["captions"]
-        H, W = 1920, 1080
-        clear = H * cap["bottom_clear"]
-        block = cap["line_height"] * VERT_MAX_LINES
-        top = H - clear - block
-        print()
-        print(f"  captions: {VERT_MAX_LINES} lines of {cap['line_height']}px grow up "
-              f"from {clear:.0f}px clear — block sits {top:.0f}-{H - clear:.0f}px of {H}")
-        if cap["safe_width"] > W:
-            fail.append(f"captions.safe_width {cap['safe_width']} exceeds the {W}px frame")
-        if top < H * 0.25:
-            fail.append(f"a {VERT_MAX_LINES}-line caption reaches {top:.0f}px, "
-                        f"into the upper quarter of the frame")
-        # a cut may stop mid-sentence; it may not stop mid-word. Record 3
-        # shipped three verticals severed inside a word — "I am not produc—" —
-        # which reads as a broken file and not as a withheld ending.
-        align = ep / "audio" / "alignment"
-        pk_seed = yaml.safe_load(picks_f.read_text())["picks"]
-        import json as _json
-        words = []
-        for pid, _f, t0 in at_full:
-            j = align / f"{pid}_s{pk_seed[pid]}.json"
-            if j.exists():
-                words += [(t0 + w["t"], t0 + w["e"], w["w"])
-                          for w in _json.loads(j.read_text())]
-        for c in vcfg.get("cuts", []):
-            t1 = float(c["to"])
-            # No tolerance. A 0.02 s margin was tried and it passed a cut that
-            # clipped the last 20 ms off "open" — a tolerance of the same order
-            # as the error it is meant to catch is not a check.
-            inside = [w for a_, b_, w in words if a_ < t1 < b_]
-            if inside:
-                print(f"  {c['id']:<22} ends at {t1:7.1f}s  inside \"{inside[0]}\"  FAIL")
-                fail.append(f"{c['id']}: `to: {t1}` falls inside the word "
-                            f"\"{inside[0]}\" — cut between words")
-            elif words:
-                before = [(b_, w) for a_, b_, w in words if b_ <= t1]
-                last_e, last = before[-1] if before else (0, "?")
-                after = [a_ for a_, _, _ in words if a_ > t1]
-                # silence available at the cut: to the next word, or to the end
-                gap = (min(after) - last_e) if after else 99.0
-                ok = gap >= VERT_TAIL
-                print(f"  {c['id']:<22} ends at {t1:7.1f}s  after \"{last}\"  "
-                      f"silence {gap:4.2f}s  {'ok' if ok else 'FAIL'}")
-                if not ok:
-                    fail.append(f"{c['id']}: only {gap:.2f}s of silence after "
-                                f"\"{last}\" — needs {VERT_TAIL}s, or the word "
-                                f"is heard being cut")
+    # 8. The 9:16 pieces — the vertical cuts and the teaser.
+    #
+    # Records 01 to 03 carved a cut out of the master as one window, `from`
+    # and `to`, and these checks read those two numbers against the episode's
+    # own timeline. From record 04 a cut is assembled the way the teaser
+    # always was — a shot list out of takes/ and a line list out of the
+    # paragraphs — so the timeline a cut has to be checked against is its own,
+    # and the teaser is no longer a special case. One function checks both,
+    # because they are the same object under every rule that matters here: a
+    # voice inside the first second, captions off the platform furniture,
+    # picture that covers the runtime, and an ending on a word boundary with
+    # real silence after it.
+    #
+    # Both this and build_verticals.py read the word timings through
+    # scripts/vertical.py, so a cut cannot be placed by one rule and checked
+    # by another. That was the shape of the record 03 fault: the validator
+    # passed two severed words because it was reading the same timestamps the
+    # builder had trusted.
+    tspec = yaml.safe_load(pathlib.Path("config/type.yaml").read_text())
+    cap = tspec["captions"]
+    H, W = 1920, 1080
+    clear = H * cap["bottom_clear"]
+    block = cap["line_height"] * VERT_MAX_LINES
+    top = H - clear - block
+    print()
+    print(f"  captions: {VERT_MAX_LINES} lines of {cap['line_height']}px grow up "
+          f"from {clear:.0f}px clear — block sits {top:.0f}-{H - clear:.0f}px of {H}")
+    if cap["safe_width"] > W:
+        fail.append(f"captions.safe_width {cap['safe_width']} exceeds the {W}px frame")
+    if top < H * 0.25:
+        fail.append(f"a {VERT_MAX_LINES}-line caption reaches {top:.0f}px, "
+                    f"into the upper quarter of the frame")
 
-        # narration has to be running inside the first second of every cut
-        spans = [(t, t + dur_of(f)) for _, f, t in at_full]
-        for c in vcfg.get("cuts", []):
-            t0 = float(c["from"])
-            live = [s_ for s_, e_ in spans if s_ < t0 + VERT_OPEN and e_ > t0]
-            if live:
-                d = max(0.0, min(s_ for s_ in live) - t0)
-                print(f"  {c['id']:<22} opens at {t0:7.1f}s  voice in {d:4.1f}s  ok")
-            else:
-                nxt = min((s_ for s_, _ in spans if s_ >= t0), default=None)
-                gap = f"{nxt - t0:.1f}s" if nxt else "never"
-                print(f"  {c['id']:<22} opens at {t0:7.1f}s  voice in {gap:>5}  FAIL")
-                fail.append(f"{c['id']}: no narration inside the first "
-                            f"{VERT_OPEN}s — first voice {gap} in")
+    import importlib.util as _ilu
+    _s = _ilu.spec_from_file_location("vertical",
+                                      pathlib.Path(__file__).parent / "vertical.py")
+    Vmod = _ilu.module_from_spec(_s); _s.loader.exec_module(Vmod)
+    shot_by_id = {str(s["id"]): s for s in shots}
+    pk_seed = (yaml.safe_load(picks_f.read_text())["picks"]
+               if picks_f.exists() else {})
+
+    def check_piece(kind, pid_, body, shots_, lines_, card_s):
+        """One assembled 9:16 piece against its own timeline."""
+        # The picture covers the runtime exactly. A gap is a frame of black in
+        # the middle of a cut and an overrun is a shot that never arrives.
+        ssum = sum(float(s["seconds"]) for s in shots_)
+        ok = abs(ssum + card_s - body) < 0.05
+        print(f"  {pid_:<28} picture {ssum:5.1f}s + {card_s:.0f}s card "
+              f"vs runtime {body:5.1f}s  {'ok' if ok else 'FAIL'}")
+        if not ok:
+            fail.append(f"{pid_}: shots sum to {ssum:.2f}s + {card_s:.0f}s card, "
+                        f"runtime is {body:.2f}s")
+        for s in shots_:
+            sid = str(s["id"])
+            src = shot_by_id.get(sid)
+            if src is None:
+                fail.append(f"{pid_}: shot {sid} is not in shots.yaml"); continue
+            have = float(src.get("generate_seconds",
+                                 src.get("timeline_seconds", 0)))
+            need = float(s.get("from", 0)) + float(s["seconds"])
+            if src.get("source") == "ffmpeg":
+                continue          # built to length, so it is as long as asked
+            if need > have + 0.05:
+                fail.append(f"{pid_}: shot {sid} wants {need:.1f}s of a "
+                            f"{have:.1f}s take")
+            for k in ("crop_x", "crop_to"):
+                if s.get(k) is not None and not 0.0 <= float(s[k]) <= 1.0:
+                    fail.append(f"{pid_}: shot {sid} {k}={s[k]} is not a "
+                                f"fraction of the frame width")
+
+        if not pk_seed:
+            print(f"  {pid_:<28} lines need narration.yaml, checked at stage 7")
+            return
+
+        # A voice inside the first second. This is the one place the channel's
+        # patience with silence does not apply: the long record earns silence,
+        # a vertical has not earned anything yet.
+        first = None
+        for ln in lines_:
+            ws = Vmod.line_words(ep, ln, pk_seed)
+            if ws:
+                t = float(ln["at"]) + ws[0][0]
+                first = t if first is None else min(first, t)
+        if first is None:
+            fail.append(f"{pid_}: no alignment for any line — "
+                        f"run build_captions.py")
+        else:
+            ok = first <= VERT_OPEN
+            print(f"  {pid_:<28} opens on a voice at {first:4.2f}s  "
+                  f"{'ok' if ok else 'FAIL'}")
+            if not ok:
+                fail.append(f"{pid_}: first word at {first:.2f}s — a {kind} has "
+                            f"{VERT_OPEN}s before the thumb moves")
+
+        # Every line finishes inside the picture, or the mix truncates it.
+        for ln in lines_:
+            ws = Vmod.line_words(ep, ln, pk_seed)
+            if not ws:
+                continue
+            end = float(ln["at"]) + (float(ln["trim"]) if ln.get("trim")
+                                     else ws[-1][1])
+            if end > body + 0.05:
+                fail.append(f"{pid_}: {ln['pid']} ends at {end:.2f}s, past the "
+                            f"{body:.1f}s of picture")
+
+        # A trimmed line stops mid-sentence, on a word boundary, with real
+        # silence after it. Checked with no tolerance at all.
+        for ln in lines_:
+            why = Vmod.trim_fault(ep, ln, pk_seed, VERT_TAIL)
+            if why:
+                print(f"  {pid_:<28} {ln['pid']}: {why}  FAIL")
+                fail.append(f"{pid_}: {ln['pid']} {why}")
+            elif ln.get("trim"):
+                print(f"  {pid_:<28} {ln['pid']} trimmed at {ln['trim']}s  ok")
+
+    card_s = float(cap["end_card"].get("seconds", 2.0))
+    vf = ep / "verticals.yaml"
+    if vf.exists():
+        vcfg = yaml.safe_load(vf.read_text())
+        legacy = [c for c in vcfg.get("cuts", []) if "to" in c]
+        if legacy:
+            # Records 01 to 03 are published and frozen; their files stay as
+            # they are and are not checked against a rule invented after them.
+            print(f"\n  verticals.yaml is the pre-04 window form "
+                  f"({len(legacy)} cuts) — not checked")
+        else:
+            print()
+            for c in vcfg.get("cuts", []):
+                check_piece("vertical", c["id"], float(c["runtime_seconds"]),
+                            c["shots"], c["lines"], card_s)
+
+    tf_ = ep / "teaser.yaml"
+    if tf_.exists():
+        tdoc_ = yaml.safe_load(tf_.read_text())
+        print()
+        check_piece("teaser", "teaser", float(tdoc_["runtime_seconds"]),
+                    tdoc_["shots"], tdoc_["lines"],
+                    float(tdoc_["end_card"]["seconds"]))
 
     # 9. Thumbnails: a text block may not land in the slug's band.
     #

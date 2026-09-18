@@ -246,8 +246,28 @@ def main():
     cache_dir = ep / "audio" / "alignment"; cache_dir.mkdir(parents=True, exist_ok=True)
 
     verticals = yaml.safe_load((ep / "verticals.yaml").read_text())
+
+    # This stage burns captions into a cut that was carved out of the master as
+    # one window — records 01 to 03. From record 04 a cut is assembled, and its
+    # captions are laid on by build_verticals.py through the shared assembler
+    # in scripts/vertical.py, off the same alignments. Running this over an
+    # assembled cut would put a second set of captions on top of the first.
+    #
+    # What still lives here and is not duplicated anywhere: `alignment()`,
+    # which is the one caller of the ElevenLabs with-timestamps endpoint and
+    # the only thing that writes audio/alignment/, and `chunk()` and
+    # `render()`, which the assembler imports rather than reimplements. This
+    # module remains the owner of caption text and caption timing; it has
+    # simply stopped being the thing that draws them onto a 9:16 file.
+    assembled = [c["id"] for c in verticals["cuts"] if "to" not in c]
+    if assembled:
+        print(f"  {len(assembled)} assembled cut(s) — captions come out of "
+              f"build_verticals.py, not from here")
+
     for cut in verticals["cuts"]:
         if only and cut["id"] != only:
+            continue
+        if "to" not in cut:
             continue
         vid, a, b = cut["id"], cut["from"], cut["to"]
         src = ep / "out" / "verticals" / f"{vid}.mp4"
