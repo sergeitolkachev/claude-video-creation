@@ -60,13 +60,39 @@ def scene_bounds(shots):
     return start, end
 
 
-def place(picks, A, start, end, cfg):
+def card_anchors(ep, shots):
+    """When each carded paragraph's card starts typing, in absolute seconds.
+
+    A card is anchored to a plate and a line is anchored to a scene, and
+    nothing connected the two: record 03 shipped a card fourteen seconds from
+    its line and `with:` was added to *detect* that. This is the other half —
+    the line waits for its card instead of drifting away from it.
+    """
+    f = ep / "cards.yaml"
+    if not f.exists():
+        return {}
+    cards = (yaml.safe_load(f.read_text()) or {}).get("cards") or []
+    at, acc = {}, 0
+    for sh in shots:
+        at[str(sh["id"])] = acc; acc += sh["timeline_seconds"]
+    return {c["with"]: at[str(c["shot"])] + c.get("at", 0)
+            for c in cards if c.get("with") and str(c.get("shot")) in at}
+
+
+def place(picks, A, start, end, cfg, anchors=None):
     """Spread each scene's paragraphs across the scene rather than running them
     off the top. Front-loading leaves one long dead stretch at the end of every
     scene; spreading turns that into even, deliberate silences that track the
-    images."""
+    images.
+
+    A paragraph that owns a card never starts before that card does: the card
+    is the instrument arriving, the line is the operator reading it, and the
+    beat only exists when they land together. A card that sits *later* than its
+    line cannot be fixed here — that is a shot order problem and validate.py
+    says so."""
     lead, tail, min_gap = cfg["lead_in"], cfg["tail"], cfg["min_gap"]
     hold = cfg.get("hold") or {}
+    anchors = anchors or {}
     by_scene = {}
     for pid, seed in picks.items():
         by_scene.setdefault(int(pid[1]), []).append(
@@ -75,17 +101,28 @@ def place(picks, A, start, end, cfg):
     placed = []
     for scene in sorted(by_scene):
         items = sorted(by_scene[scene], key=lambda x: int(x[0].split("p")[1]))
-        span = end[scene] - start[scene] - lead - tail
-        speech = sum(dur(f) for _, f in items)
-        holds = sum(hold.get(pid, 0) for pid, _ in items)
-        gaps = max(len(items) - 1, 1)
-        gap = max(min_gap, (span - speech - holds) / gaps)
+        # The gap is recomputed after every paragraph against what is left of
+        # the scene, rather than once against the whole of it. With a fixed
+        # gap, a paragraph that waits for its card pushes every later gap past
+        # the end of the scene — the last line of scene 3 landed a second on
+        # top of the first line of scene 4, two voices at once. Recomputing
+        # spends the remaining time on the paragraphs that are still to come.
         t = start[scene] + lead
-        for pid, f in items:
+        gap = min_gap
+        for idx, (pid, f) in enumerate(items):
             t += hold.get(pid, 0)
+            if pid in anchors and anchors[pid] > t:
+                t = anchors[pid]          # wait for the card to reach the screen
             placed.append((pid, f, t))
-            t += dur(f) + gap
-        last = t - gap
+            t += dur(f)
+            rest = items[idx + 1:]
+            if rest:
+                rem = sum(dur(f2) for _, f2 in rest)
+                rem_holds = sum(hold.get(p2, 0) for p2, _ in rest)
+                gap = max(min_gap,
+                          (end[scene] - tail - t - rem - rem_holds) / len(rest))
+                t += gap
+        last = t
         print(f"  scene {scene}: {len(items)} paragraphs, gap {gap:4.1f}s, "
               f"ends {last:6.1f}s of {end[scene]}s"
               f"{'   OVERRUN' if last > end[scene] else ''}")
@@ -108,7 +145,7 @@ def main():
     start, end = scene_bounds(shots)
     total = cfg["runtime_seconds"]
 
-    placed = place(picks, A, start, end, cfg)
+    placed = place(picks, A, start, end, cfg, card_anchors(ep, shots))
     print(f"  narration ends at {max(t + dur(f) for _, f, t in placed):.1f}s "
           f"of {total}s")
 
@@ -151,8 +188,16 @@ def main():
         if layer.get("delay"):
             d = int(layer["delay"] * 1000)
             chain.append(f"adelay={d}|{d},")
-        s0 = cfg.get("silence_at")
-        if s0 and name == "hum":
+        # The window where this layer is deliberately absent. It belongs to the
+        # layer, not to the episode: this read `name == "hum"` — record 03's
+        # layer name, hard-coded — so record 04's pump was never gated at all.
+        # The scene it is supposed to vanish from measured 0.25 dB quieter than
+        # the scene before it, which is what a sound-design decision looks like
+        # when it silently does not happen. The top-level key still works for
+        # record 03, which is frozen and must keep building.
+        s0 = layer.get("silence_at") or (cfg.get("silence_at")
+                                         if name == "hum" else None)
+        if s0:
             chain.append(f"volume='if(between(t,{s0[0]},{s0[0] + s0[1]}),0,1)':"
                          f"eval=frame,")
         if layer.get("fade_out"):

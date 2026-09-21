@@ -122,13 +122,23 @@ def main():
                   f"apad,atrim=0:{total}[drone]")
         mixed.append("[drone]")
 
-    fan = ep / "audio" / "sfx" / "fan.mp3"
-    if fan.exists():
-        i = add(fan)
-        fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,volume={lv['hum']}dB,"
+    # The record's own beds, by name, so the teaser sounds like the record it
+    # is advertising. This read `audio/sfx/fan.mp3` and `lv['hum']` — record
+    # 03's layer names written into the script — which is the same fault as the
+    # silence gate in build_audio.py: record 04's beds are called tone and
+    # pump, and a teaser built from it would have had no room tone at all under
+    # the music. A layer is named by the episode, never by the code.
+    for name, trim in lv.items():
+        if name in ("music", "drone", "voice"):
+            continue
+        f = ep / "audio" / "sfx" / f"{name}.mp3"
+        if not f.exists():
+            print(f"  no bed for level '{name}' — {f} is not there"); continue
+        i = add(f)
+        fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,volume={trim}dB,"
                   f"afade=t=out:st={ec['at'] - 0.5:.2f}:d=0.6,"
-                  f"apad,atrim=0:{total}[fan]")
-        mixed.append("[fan]")
+                  f"apad,atrim=0:{total}[{name}bed]")
+        mixed.append(f"[{name}bed]")
 
     vins, vfc, vlabels, idx = V.voice_chains(ep, cfg["lines"], picks, total,
                                              lv["voice"], idx)

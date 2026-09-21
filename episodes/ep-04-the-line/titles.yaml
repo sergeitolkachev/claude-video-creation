@@ -1,0 +1,67 @@
+# Burned-in titles — channel furniture only. The episode's data graphics are in
+# cards.yaml; these are the slug and the closing block, in the same Menlo, the
+# same phosphor and the same corner as every other record.
+#
+# Times are absolute seconds on the 279 s timeline. A title is not tied to a
+# plate the way a data card is — the slug belongs to the record, not to the shot
+# it happens to land on — so these stay absolute. Shot boundaries, for reading
+# these numbers against:
+#
+#   1.1   0–10
+#   7.1 248–255   7.2 255–260   7.3 260–267   7.4 267–271   7.5 271–279
+#
+# These moved once already: scenes 3 and 5 grew by nine seconds after the
+# narration was recorded, and every absolute time in this file was nine
+# seconds early until validate.py's plate check caught all three of them. That
+# is the cost of a file that measures in absolute seconds while the shots
+# measure in their own — worth it for the closing block, which belongs to the
+# record rather than to a plate, and worth re-deriving from shots.yaml every
+# time a duration anywhere changes.
+#
+# Rendered by build_cards.py --titles.
+
+cards:
+  # The slug types itself into the corner over the opening shot and is gone
+  # before the cut. Image first: no ident, no title sequence. It shares shot
+  # 1.1 with the depth readout, which sits in the lower left — the slug is
+  # upper right, the way it is on every record.
+  - id: slug
+    at: 0.8
+    hold: 4.0
+    lines: ["FC9-004 // THE LINE"]
+
+  # --- Close ---------------------------------------------------------------
+  # Two record cards and then the channel closer. Room tone alone under all
+  # three: the pump stops on the cut into the coda, which is the point of
+  # having established it in scene 1 and taken it away in scene 4. The click
+  # track stays — these are characters arriving on a monitor like every other
+  # character on the channel.
+  #
+  # The last figure in the record is not spoken. It is these two cards, side by
+  # side, and the reader does the subtraction.
+  - id: close-1
+    at: 260.5
+    hold: 6.5
+    lines:
+      - "DEEPEST CONFIRMED    9,450 m"
+      - "LANDER RATED         9,600 m"
+
+  - id: close-2
+    at: 267.3
+    hold: 3.7
+    lines: ["THE LIMIT IS THE INSTRUMENT'S"]
+
+  # The channel closer, the same shape records 02 and 03 use. Centre, not lower
+  # left: there is no plate under it and nothing to sit beside. At 40 px, not
+  # the 34 record 03 used — a card may never be smaller than 40.
+  - id: close-3
+    at: 271.3
+    hold: 7.7
+    size: 40
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-004 // THE LINE"
+      - ""
+      - "Work of fiction. No such specimen is on record."

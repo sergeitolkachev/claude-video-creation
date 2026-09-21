@@ -1,0 +1,98 @@
+# The vertical cuts — record 04, and the first on this channel that are
+# assembled rather than carved.
+#
+# Records 01 to 03 took one window out of the master: a `from`, a `to`, the
+# record's own order and a centre crop that was not a choice. That throws away
+# the two things that decide whether a cut is watched. The record's order is
+# paced for somebody who has already chosen to watch; a cut has four seconds to
+# earn that. And the centre of a 16:9 frame is not where the subject is.
+#
+# So each cut below is a shot list out of takes/ in whatever order works, each
+# shot framed where its subject is with `crop_x`, and a line list out of the
+# paragraphs the record already contains. Nothing is generated for a vertical:
+# every shot is a take that is already in the record and every line is a
+# paragraph already approved and reproducible from its seed.
+#
+# What every cut here obeys:
+#
+#   - A voice inside the first second. Every cut opens on its hardest sentence,
+#     not on atmosphere: "there are no fish", "it is wrong", "it comes apart".
+#   - It stops mid-SENTENCE or at a paragraph end, always on a word boundary
+#     with real silence after it. Never mid-word — a severed word is not a
+#     withheld ending, it is a file that broke.
+#   - Hard cuts only. No dissolves, no dips.
+#   - No data cards, no click bed, no music. Every figure that matters is
+#     spoken aloud, which is what makes the cards droppable.
+#   - The closing card, from config/type.yaml, same two lines every time.
+#
+# `runtime_seconds` is the whole piece, closing card included.
+# Trim points below come from audio/alignment/ and every one of them was
+# checked for real silence after the last word:
+#
+#   s1p3  7.20  after "metres."   0.32 s of silence follows
+#   s2p2  8.73  paragraph end
+#   s6p2 14.91  paragraph end, and the consequence is the next paragraph
+
+# The slug plate, top left of every cut — the same furniture as the record's
+# own, in the same font and the same phosphor.
+slug: "FC9-004 // THE LINE"
+
+cuts:
+  # ---------------------------------------------------------------- b -------
+  # The line itself. Opens on the flattest, hardest fact in the record and
+  # closes on the figure, withholding what the figure means — "a boundary that
+  # flat is not set by the animals" is the next sentence and it is not in here.
+  - id: fc9-004-b-the-line
+    runtime_seconds: 21.0
+    shots:
+      - {id: "1.1", at:  0.0, from: 1.0, seconds: 4.0, crop_x: 0.36}
+      - {id: "1.2", at:  4.0, from: 1.0, seconds: 4.0, crop_x: 0.50}
+      - {id: "1.3", at:  8.0, from: 2.0, seconds: 4.0, crop_x: 0.55}
+      - {id: "1.4", at: 12.0, from: 0.5, seconds: 3.0, crop_x: 0.40}
+      # The animal, last: the cut has just said there are none below the line.
+      - {id: "3.1", at: 15.0, from: 0.0, seconds: 4.0, crop_x: 0.30,
+         crop_to: 0.42}
+    lines:
+      - {pid: s1p1, at: 0.2}                 # "...there are no fish. Not fewer. None."
+      - {pid: s1p2, at: 5.8}                 # same depth in both oceans
+      - {pid: s1p3, at: 10.3, trim: 7.20}    # stops on "Eight thousand two hundred metres."
+    ends_on: "Eight thousand two hundred metres."
+
+  # ---------------------------------------------------------------- c -------
+  # Pressure is not the barrier. Opens on the crustaceans moving, because the
+  # first line calls the obvious answer wrong and the picture has to agree
+  # immediately.
+  - id: fc9-004-c-not-pressure
+    runtime_seconds: 28.0
+    shots:
+      - {id: "2.2", at:  0.0, from: 1.0, seconds: 5.0, crop_x: 0.42}
+      - {id: "2.1", at:  5.0, from: 1.0, seconds: 4.0, crop_x: 0.50}
+      - {id: "2.4", at:  9.0, from: 1.0, seconds: 5.0, crop_x: 0.36}
+      - {id: "5.3", at: 14.0, from: 1.0, seconds: 4.0, crop_x: 0.50}
+      - {id: "2.3", at: 18.0, from: 1.0, seconds: 4.0, crop_x: 0.55}
+      # back to the animals on "it applies to vertebrates, and only to
+      # vertebrates" — they are the half of the sentence that is still alive
+      - {id: "2.2", at: 22.0, from: 5.0, seconds: 4.0, crop_x: 0.45}
+    lines:
+      - {pid: s2p1, at: 0.2}     # "The first answer is pressure, and it is wrong."
+      - {pid: s2p2, at: 8.4}     # the sediment at the bottom of the Challenger Deep
+      - {pid: s2p3, at: 18.3}    # "...and only to vertebrates, and it is chemical."
+    ends_on: "...and it is chemical."
+
+  # ---------------------------------------------------------------- d -------
+  # The ascent. Opens on the only appearance of the animal and stops one
+  # sentence before the consequence: "nothing has reached the surface alive"
+  # is in the record and not in this cut.
+  - id: fc9-004-d-the-ascent
+    runtime_seconds: 24.5
+    shots:
+      - {id: "6.1", at:  0.0, from: 0.0, seconds: 5.0, crop_x: 0.30,
+         crop_to: 0.40}
+      - {id: "6.2", at:  5.0, from: 0.5, seconds: 5.0, crop_x: 0.36}
+      - {id: "5.1", at: 10.0, from: 2.0, seconds: 4.0, crop_x: 0.36}
+      - {id: "6.4", at: 14.0, from: 1.0, seconds: 4.5, crop_x: 0.40}
+      - {id: "7.2", at: 18.5, from: 0.5, seconds: 4.0, crop_x: 0.40}
+    lines:
+      - {pid: s6p1, at: 0.2}     # "The chain is held together by pressure."
+      - {pid: s6p2, at: 6.4}     # "...no version of the ascent that does not do this."
+    ends_on: "There is no version of the ascent that does not do this."

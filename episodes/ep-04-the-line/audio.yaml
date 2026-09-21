@@ -1,0 +1,152 @@
+# Record 04's mix. Scene boundaries are not here — they are summed from
+# shots.yaml, which is the only place a shot's duration is allowed to live.
+runtime_seconds: 279
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+
+# Extra air before specific lines, from the pause table in script.md. The cold
+# open is not in here: the ten seconds before the first line are shot 1.1
+# itself, with the depth readout counting up and no voice, and lead_in plus the
+# placement in build_audio.py already put the first paragraph after it.
+hold:
+  # The cold open is ten seconds of shot 1.1 with the depth readout counting up
+  # and no voice, and `lead_in` alone put the first line at 2.0 s — under the
+  # readout, which is the one thing the opening is built to leave alone. The
+  # hold is what makes the picture-first rule real in the mix; the pacing table
+  # in script.md calls the gap 10 s and this is where those 10 s live.
+  s1p1: 8.0
+  s1p2: 1.8    # after "Not fewer. None." — the hook needs air behind it
+  s3p4: 1.2    # the two lines are still drawing when the figure is spoken
+  s5p4: 2.5    # "It is, osmotically, a shallow-water fish." Flattest line here
+  # Shot 6.1 is the only appearance of the animal and it is silent for its
+  # whole ten seconds. lead_in alone started the scene's first line two seconds
+  # into it, which is the same fault the cold open had: a rule that lives in
+  # the script and nowhere in the mix.
+  s6p1: 8.0
+  s6p3: 2.4    # "Nothing has reached the surface alive." Last spoken line
+
+# --- Layers -----------------------------------------------------------------
+# Two beds, and the difference between them is the whole of record 03's
+# expensive lesson: `tone` is the floor and never stops; `pump` is the sound
+# design and is allowed to go away.
+#
+# The pump is the lander's, a slow dull mechanical pulse roughly every four
+# seconds, very low in the mix. Established in scene 1, present through 2 and
+# 3, removed for the whole of scene 4 — the scene where nothing has been
+# recorded below the line and nothing is on the plain — and returned at the
+# first frame of scene 5, under the descent past the line. It stops on the cut
+# into the coda, so the last thirty-one seconds are water and nothing else.
+#
+# Scene boundaries, summed from shots.yaml: scene 4 runs 154-189 s, the coda
+# starts at 239 s.
+#
+# Levels here are TRIMS APPLIED TO THE FILE, not target levels in the mix, and
+# the sign follows the measurement. Measured on the beds themselves, 2026-09-20:
+#
+#   tone.mp3   -48.1 dBFS RMS      pump.mp3   -37.2 dBFS RMS
+#
+# tone is lifted, not cut. It is the only continuous sound in this record —
+# there is no machine room, no fan, nothing but water — so it has to sit where
+# a real room tone sits rather than where a floor sits: +5 lands it near
+# -43 dBFS, which is about where record 03's fan ended up after the same
+# mistake was made and corrected in the other direction.
+#
+# pump is cut by 10 to about -47 dBFS RMS, four decibels under the bed. It is a
+# transient every four seconds, so its peaks sit well above that figure; the
+# RMS is measured across the gaps and understates what is heard. It has to be
+# felt in scene 1 and missed in scene 4, and nothing more.
+#
+# Both numbers are arithmetic against a measurement, which is the part that can
+# be checked. What cannot be checked here is the room: CLAUDE.md's rule is to
+# judge a bed on a phone, not in a meter, and that judgement is still owed.
+# Second pass, measured in the mix rather than on the files — which is the
+# only way to find a layer that is present and inaudible:
+#
+#   pump -10  ->  scene 3 with the pump ran -40.97 dBFS and scene 4 without it
+#                 -41.21. A quarter of a decibel. The whole sound design of
+#                 this record is that the pump goes away in scene 4, and it
+#                 went away from a mix that never had it. Lifted to -3, which
+#                 puts the pulses about 3 dB over the bed and makes the
+#                 difference between the two scenes about 5 dB.
+#   clicks 0  ->  the click bed sat at -47.6 dBFS through the cold open,
+#                 4.6 dB UNDER the room tone, in ten seconds whose only event
+#                 is a depth readout ticking. Lifted 12 dB: about -35, which
+#                 is 17 dB under the voice and 8 dB over the bed.
+#
+# Both numbers still owe the phone test. A mix that measures correctly and
+# reads as having no background is record 03's fault, and no meter catches it.
+levels: {tone: 5, pump: -3, clicks: 12}
+layers:
+  # The floor. Deep water is not quiet — it is a wide, featureless hiss with
+  # nothing in it — and this never stops, including under the closing cards,
+  # because a record that falls to digital silence stops being a recording.
+  tone:
+    file: sfx/tone.mp3
+    loop_to_fill: true
+
+  pump:
+    file: sfx/pump.mp3
+    loop_to_fill: true
+    # Absent for the whole of scene 4, 125-160 s. This lives on the layer
+    # rather than at the top of the file because the gate used to apply only to
+    # a layer literally named `hum` — record 03's name, written into
+    # build_audio.py — and this record's pump ran straight through the scene it
+    # is supposed to disappear from.
+    silence_at: [125, 35]
+    fade_out: [248.0, 1.5]     # stops on the cut into the coda
+    # loop_crossfade is NOT set: with loop_to_fill it produces silence, because
+    # aloop makes the stream infinite and acrossfade waits for its first input
+    # to end. Record 02 found this; record 03 wrote it down.
+
+# Regenerable from here: nothing under audio/ is versioned.
+#
+# Both beds are deliberately dull. Anything with a rise or a rhythm in it
+# starts telling its own story under a voice reading numbers, and the pump is
+# only meant to be noticed in scene 4, where it is gone.
+sfx:
+  tone:
+    file: sfx/tone.mp3
+    seconds: 22
+    prompt: >
+      Very quiet deep underwater ambience far below the surface, a wide even
+      hiss of water pressure with a faint distant low rumble under it, almost
+      nothing, completely flat and unchanging, no bubbles, no sonar, no pings,
+      no whale song, no waves, no splashing, no machinery, no rhythm, no
+      pulsing, no swell, no voices, no music, a continuous unbroken noise floor
+
+  pump:
+    file: sfx/pump.mp3
+    seconds: 22
+    prompt: >
+      A slow dull mechanical pulse from a small pump inside a sealed housing
+      underwater, one soft muffled thud roughly every four seconds, even and
+      unchanging, heavily damped by water, no rattling, no squeaking, no
+      speeding up, no slowing down, no motor whine, no bubbles, no voices, no
+      music, recorded through metal at a distance
+
+# The click bed: one click per glyph, across every card and title in the
+# record. build_cards.py mixes it — record 03 shipped a silent typewriter
+# because that step lived in somebody's memory instead of in a script.
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser ------------------------------------------------------------------
+# The teaser is the one piece on this channel allowed a cue under it, and the
+# rule that it never spreads to the record is the reason the record works: a
+# man reading numbers under music is an actor in a film.
+#
+# Generated, never licensed. A Content ID claim on a channel built out of
+# recovered recordings costs more than any cue is worth.
+teaser_sfx:
+  music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold, sustained tension for a documentary about something found
+      far underwater. Low sustained strings and a deep synth pad over a quiet
+      sub-bass, one very gradual build across the whole piece, airless and
+      restrained. No drums, no percussion, no beat, no melody hook, no piano
+      motif, no vocals, no sudden hits, no risers, no cinematic braams,
+      nothing that resolves. It must sit under a calm speaking voice without
+      ever competing with it.

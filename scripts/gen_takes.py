@@ -10,6 +10,25 @@ import os, sys, json, time, pathlib, urllib.request, urllib.error, yaml
 
 print = __import__('functools').partial(print, flush=True)
 
+# A queued request is money already spent. Record 04 lost $0.70 to a poll that
+# hung on a clip whose request id existed only inside the running process: the
+# job had to be killed, and with it went the only handle on a request fal had
+# already accepted and was still working on. The id is written to disk the
+# moment the request is accepted, and a rerun resumes from it instead of
+# queueing — and paying for — the same clip twice. CLAUDE.md has warned about
+# exactly this since record 01; the stills script was fixed and this one was
+# not, which is the "count the copies" rule arriving late again.
+POLL_CEILING_S = 1800     # wall clock, not an iteration count
+
+
+def pending_load(ep):
+    f = ep / "takes" / "pending.json"
+    return (json.loads(f.read_text()) if f.exists() else {}), f
+
+
+def pending_write(ep, data):
+    (ep / "takes" / "pending.json").write_text(json.dumps(data, indent=2))
+
 def env():
     for line in pathlib.Path(".env").read_text().splitlines():
         if "=" in line and not line.strip().startswith("#"):
@@ -43,8 +62,6 @@ def main():
     ep = pathlib.Path(args[1] if len(args) > 1 else "episodes/ep-01-tishina-9")
     cfg = yaml.safe_load(pathlib.Path("config/models.yaml").read_text())
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
-    tail_static = " ".join(doc["motion_tail_static"].split())
-    tail_moving = " ".join(doc["motion_tail_moving"].split())
 
     def tail_for(s):
         """The constraint paragraph appended to a shot's motion prompt.
@@ -57,7 +74,17 @@ def main():
         """
         if s.get("motion_tail"):
             return " ".join(doc[s["motion_tail"]].split())
-        return tail_static if s["motion"].strip() == "static" else tail_moving
+        # The two defaults are record 01 and 03's, and they are not channel
+        # property: record 04 names a tail on every model shot and defines
+        # neither. Reading them at the top of main() made that record crash
+        # before it queued anything, on a key it has no use for. Looked up
+        # only when a shot actually falls back to one, and loudly if missing.
+        key = ("motion_tail_static" if s["motion"].strip() == "static"
+               else "motion_tail_moving")
+        if key not in doc:
+            raise SystemExit(f"{s['id']} names no motion_tail and this episode "
+                             f"has no {key}: give the shot its own tail key")
+        return " ".join(doc[key].split())
     out = ep / "takes"; out.mkdir(exist_ok=True)
     cache = ep / "approved" / "urls.json"
 
@@ -65,11 +92,21 @@ def main():
              if s["scene"] == scene and not s.get("source", "").startswith("ffmpeg")
              and (only is None or s["id"] == only)]
 
+    pend, pend_f = pending_load(ep)
+
     jobs = []
     for s in shots:
         dest = out / f"{s['id']}.mp4"
         if dest.exists():
             print(f"  skip   {dest.name} (already there)"); continue
+        if s["id"] in pend:
+            # Already paid for on an earlier run that did not collect it.
+            j = pend[s["id"]]
+            print(f"  resume {s['id']:<5} id={j.get('request_id')}  "
+                  f"(queued {int(time.time() - j['queued_at'])}s ago, "
+                  f"${j['price']:.2f} already spent)")
+            jobs.append((dest, j["status_url"], j["response_url"], 0.0, s))
+            continue
         tier = cfg["video"][s["model"]]
         img = upload(ep / "approved" / f"{s['id']}.jpg", key, cache)
         gen = s["generate_seconds"]
@@ -108,15 +145,28 @@ def main():
             price = gen * tier["price_per_second_usd"]
 
         r = req(f"https://queue.fal.run/{tier['id']}", key, body)
+        # Written before anything is polled: from here on the request exists on
+        # fal's side whatever happens to this process.
+        pend[s["id"]] = {"request_id": r.get("request_id"),
+                         "status_url": r["status_url"],
+                         "response_url": r["response_url"],
+                         "price": price, "queued_at": time.time()}
+        pending_write(ep, pend)
         jobs.append((dest, r["status_url"], r["response_url"], price, s))
         print(f"  queued {s['id']:<5} {s['model']:<10} {gen}s  "
-              f"camera_fixed={body.get('camera_fixed', '-')}  ${price:.2f}")
+              f"camera_fixed={body.get('camera_fixed', '-')}  ${price:.2f}  "
+              f"id={r.get('request_id')}")
 
     print(f"\nscene {scene}: {len(jobs)} clips, ${sum(j[3] for j in jobs):.2f}\n")
 
     spent = 0.0
     for dest, status_url, response_url, price, s in jobs:
-        for _ in range(300):
+        # Wall clock, so a poll that answers slowly cannot quietly stretch the
+        # ceiling: 300 iterations of a 60 s socket timeout is five hours, not
+        # the fifteen minutes the number looked like.
+        deadline = time.time() + POLL_CEILING_S
+        st = None
+        while time.time() < deadline:
             try:
                 st = req(status_url, key)["status"]
             except Exception as e:          # a dropped poll is not a dead job
@@ -124,14 +174,33 @@ def main():
                 time.sleep(5); continue
             if st == "COMPLETED": break
             time.sleep(3)
-        else:
-            print(f"  TIMEOUT {dest.name}"); continue
+        if st != "COMPLETED":
+            print(f"  TIMEOUT {dest.name}  — request kept in pending.json, "
+                  f"rerun resumes it without paying again"); continue
         try:
             r = req(response_url, key)
         except urllib.error.HTTPError as e:
             print(f"  FAIL   {dest.name}  {e.read().decode()[:160]}"); continue
-        dest.write_bytes(urllib.request.urlopen(r["video"]["url"], timeout=300).read())
+        # The download is the last place this can fail and it is not the model
+        # failing: record 04 lost a completed 7.1 to a socket that stopped
+        # feeding mid-file, and the traceback took the rest of the run with it.
+        # The clip is paid for and finished either way, so this retries rather
+        # than dying, and leaves the request in pending.json if it cannot.
+        for attempt in range(3):
+            try:
+                dest.write_bytes(
+                    urllib.request.urlopen(r["video"]["url"], timeout=300).read())
+                break
+            except Exception as e:
+                print(f"  ... download failed for {s['id']} "
+                      f"({type(e).__name__}), attempt {attempt + 1} of 3")
+                time.sleep(5)
+        else:
+            print(f"  FAIL   {dest.name} — generated and paid for, still in "
+                  f"pending.json; rerun downloads it again")
+            continue
         spent += price
+        pend.pop(s["id"], None); pending_write(ep, pend)
         print(f"  saved  {dest.name}  ({dest.stat().st_size // 1024} KB)")
 
     print(f"\nSpent ${spent:.2f}.")

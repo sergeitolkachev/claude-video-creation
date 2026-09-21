@@ -38,8 +38,17 @@ def post(url, body, key):
         raise
 
 def get(url, key):
-    return json.load(urllib.request.urlopen(
-        urllib.request.Request(url, headers={"Authorization": f"Key {key}"})))
+    try:
+        return json.load(urllib.request.urlopen(
+            urllib.request.Request(url, headers={"Authorization": f"Key {key}"})))
+    except urllib.error.HTTPError as e:
+        # The same fix post() already had, in the copy that did not have it.
+        # A 422 here is fal saying the generation itself failed, and the reason
+        # is in the body — without it the script dies on an unreadable
+        # traceback in the middle of a batch that has already been paid for.
+        print(f"  HTTP {e.code} from {url}\n    "
+              f"{e.read()[:400].decode(errors='replace')}")
+        raise
 
 def upload(path, key, cache):
     """Put an approved still into fal storage so a later shot can reference it.
@@ -210,7 +219,13 @@ def main():
             time.sleep(2)
         else:
             print(f"  TIMEOUT {dest.name}"); continue
-        r = get(response_url, key)
+        try:
+            r = get(response_url, key)
+        except urllib.error.HTTPError:
+            # One generation failing is not the batch failing. Record 04 lost
+            # the tail of two scenes to a single 422 that killed the loop: the
+            # jobs after it were queued, billed and never collected.
+            print(f"  FAILED  {dest.name}  — see the body above"); continue
         if not r.get("images"):
             print(f"  EMPTY   {dest.name}  {str(r)[:120]}"); continue
         dest.write_bytes(urllib.request.urlopen(r["images"][0]["url"]).read())

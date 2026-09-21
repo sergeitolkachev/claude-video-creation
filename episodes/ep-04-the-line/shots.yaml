@@ -1,0 +1,1151 @@
+# Record No. 4 — "THE LINE"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompt text here is already cleaned for the hygiene rules below. Do not copy
+# prompt prose out of script.md into a generation call by hand — that text is
+# laid out for a human reader and carries the camera move in the same sentence
+# as the subject, which is the split this file exists to keep.
+
+episode: ep-04-the-line
+runtime_seconds: 279
+aspect: "16:9"
+
+# The channel narrator, third person. Record 03 was the first told by its own
+# operator; this one goes back to the narrator, which is the default and needs
+# no key — it is written down because record 03 proved that three separate
+# scripts read this value independently, and a silent default is what made that
+# expensive.
+voice: narrator
+
+# Per-scene runtime, read by scripts/validate.py. Every figure is summed from
+# the shots below, never from the prose.
+# Scenes 3 and 5 are longer than the script planned. The narration came back
+# slower than the channel's 162 wpm planning figure on exactly the paragraphs
+# that carry the chemistry — "trimethylamine N-oxide" and the long spoken
+# numbers run at 114 to 127 wpm on this voice, against 208 for the plain
+# sentences in scene 1 — so both scenes fell under the 33% silence floor with
+# every one of their three takes, not just the picked ones. Record 02 hit this
+# and set the direction: lengthen the picture, cut no lines. The seconds come
+# from retiming three plates that were already generated, so this costs
+# nothing and generates nothing.
+scene_runtime: {1: 34, 2: 40, 3: 51, 4: 35, 5: 48, 6: 40, 7: 31}
+
+# Scene 7 is the coda: one paragraph over 7.1 running off into 7.2, then three
+# card plates with no voice at all. 74% silent by construction, so it is
+# declared here rather than dragging the body average around. Declared, not
+# waived: validate.py measures the body without it and prints it separately.
+#
+# Inside the scene, 7.1 is 7 s and 7.5 is 8 s, where the submitted draft had
+# 10 and 5. The closer is four lines at 40 px, which needs 7.5 s to type and
+# hold; the scene stays 31 s. See script.md, corrections on intake.
+coda: [7]
+
+# Prompt hygiene. Everything here was decided in the script and is repeated as
+# a pattern so a later edit to a prompt cannot quietly break it. Each rule is
+# a failure someone has already paid for, on this record or an earlier one.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(flour|powder|powdered|snow-white powder)\b'
+      except: []
+      why: >
+        "Almost silt flour" — an accurate sedimentological term — came back
+        from nano-banana as a content_policy_violation on one seed out of two,
+        while the other seed rendered it. A fine pale powder described in close
+        macro is what the content checker is built to catch, and it does not
+        care what the powder is. The sediment is described by how it settles
+        instead. The nondeterminism is the part to remember: the same prompt
+        passing once is not the prompt being safe.
+    - pattern: '\b(bioluminescen\w*|glow\w*|luminous|phosphorescen\w*|lantern|firefly)\b'
+      except: []
+      why: >
+        Every image model answers "deep sea" with blue-green bioluminescence,
+        because that is what the training data is full of. This record has
+        exactly one light source and it is a hard white artificial one; an
+        animal that lights itself is a different genre, and a glow in the water
+        also collides with the channel's own phosphor green, which is the one
+        colour on screen that belongs to the record rather than to the world.
+    - pattern: '\b(blue|teal|turquoise|cyan|amber|warm light|tungsten|orange|red|colourful|colorful)\b'
+      except: []
+      why: >
+        The palette is black water, cold white light, grey-brown silt and
+        off-white tissue. Nothing else. Record 03's draft carried four palettes
+        across seven scenes and the fix was to name one and forbid the rest.
+    - pattern: '\b(sunlight|daylight|sunbeam|sun|sky|shore|horizon|water surface|sea surface|surface of the (sea|water|ocean))\b'
+      except: []
+      why: >
+        The record never reaches the surface and never shows one. A horizon
+        anywhere in frame is the record contradicting its own claim that
+        nothing has come up, and "below the surface" in a prompt is read as
+        permission to draw one. The bare word "surface" is not in the pattern
+        on purpose: nine prompts use it for the surface of the sediment, which
+        is the floor and the opposite of the thing being forbidden. A rule that
+        fires on the right word in the wrong sense gets switched off.
+    - pattern: '\b(diver|submarine|submersible|rov|lander|vehicle|robotic|manipulator|thruster|propeller|cable|tether)\b'
+      except: ["5.2"]
+      why: >
+        The instrument is present in exactly one shot, seen as a worn surface
+        and nothing else. A vehicle in frame gives the record a crew, and the
+        thing this file never shows is the people doing the survey.
+    - pattern: '\b(coral|reef|kelp|seaweed|weed|plant|boulder|rock formation|cliff|wreck|shipwreck|bones?|skull)\b'
+      except: []
+      why: >
+        A hadal sediment plain has none of this on it, and every one of these
+        nouns is what a model reaches for when a frame of silt looks empty to
+        it. Empty is the subject. 4.1 to 4.3 are three consecutive shots whose
+        whole job is that nothing is there.
+    - pattern: '\b(eye|eyes|teeth|tooth|jaws?|mouth|face|fangs?|monster|creature)\b'
+      except: []
+      why: >
+        No faces in focus, ever, and a deep-sea animal prompted with a mouth
+        comes back as a monster from a nature documentary. The animal in this
+        record is unpigmented tissue seen side-on with its head out of frame,
+        and that is the whole of it.
+    - pattern: '\b(text|lettering|writing|written|label|labelled|inscription|stencil\w*|serial|legible|numerals?|digits?|readout|display|screen|monitor|gauge|dial)\b'
+      except: []
+      why: >
+        Every character on screen comes out of Pillow. Seedream invents garbage
+        glyphs out of anything resembling a label, and the depth readout the
+        script asks for on 1.1 and 5.1 is a card drawn by build_cards.py, not
+        something in the water. 5.2 is an instrument housing with nothing lit
+        behind its window, prompted as worn acrylic and depth in the material.
+    - pattern: '\b(man|woman|person|crew|operator|figure|silhouette|shoulder|arm|finger|hands)\b'
+      except: []
+      why: >
+        No people, in a record where the surveyors are never shown. The word
+        "people" is deliberately not in this pattern: every prompt ends with
+        the clause "no people", which has held in every still of records 01 to
+        03, and a rule that fires on its own remedy is a rule nobody can read
+        past. What this catches is the noun that arrives by accident, like
+        "operator's view".
+
+# --- Spines -----------------------------------------------------------------
+# Material, light and palette only. No camera, no distance, no lens, no framing
+# words, and no object named — not even to forbid it. Record 03's spine said
+# its work lamp "appears only in the shots that name it" and the lamp then
+# stood in eight of fifteen anchor candidates: the model reads the noun and
+# discards the clause governing it.
+#
+# One spine per camera distance, which is record 03's other lesson. "Open
+# water" is a framing instruction in the same way "interior of a station" was,
+# so the two close distances get spines with no water body in them at all.
+
+anchor_spine: &spine >
+  Black water. The only light is one hard white artificial source, and it falls
+  off to total black within a few metres, so that nothing it does not reach is
+  lit at all. Fine pale flecks of marine snow are suspended everywhere in the
+  water, catching the light one at a time. Animal tissue, where any is present,
+  is unpigmented and translucent off-white. The palette is black water, cold
+  white light and off-white tissue, and nothing else. No people.
+
+# The sediment distances. Silt is the material, and the light lands on it as
+# one pool with nothing at the edges of the picture.
+# Pass 1: "a single pool of light" came back three times out of three as a
+# hard-edged blown-out white ellipse painted on the floor, with the plain
+# ending in a visible far edge behind it — a sandbox under a spotlight. Both
+# faults are in the spine's own wording: a pool has an edge, and a plain that
+# is described as bounded by black gets an edge drawn where the black starts.
+sediment_spine: &sediment_spine >
+  Soft grey-brown silt, fine and unpolished, running out of every side of the
+  picture. One hard white artificial source lands on it from above and to one
+  side and the light fades away gradually in every direction into total black,
+  brightest where it lands and with no edge or boundary to it anywhere. Fine
+  pale flecks of marine snow are suspended in the water above the silt. The
+  surface is undisturbed and there is nothing lying on it. The palette is
+  grey-brown silt, cold white light and black, and nothing else. No people.
+
+
+# The macro distance, and the one record 03 could not make an anchor for. No
+# water body noun, no floor, no plain: the frame is filled with the material
+# itself, edge to edge, so there is nothing left over for a model to build a
+# receding surface out of.
+# Pass 1 returned coarse dry sand with pebbles, gravel and wind dunes in it,
+# seen at a three-quarter angle with a shaft of light across it, in all three
+# seeds — record 03's macro failure exactly. "The individual grains resolved"
+# is what asks for gravel, and a picture described as having a centre and
+# edges gets a receding surface. The material is now described by what it is
+# smooth of, and the geometry positively: one flat surface, seen from above,
+# cut off by the frame.
+macro_spine: &macro_spine >
+  A smooth unbroken surface of settled grey-brown mud, so fine that it has no
+  visible grains, marked only by the faint pitting where single particles have
+  landed on it. Every part of the picture is that surface, at exactly the same
+  distance from the lens as every other part, because the camera is directly
+  above it and pointing straight down. The picture is entirely full of the
+  surface and contains nothing whatever besides it. One hard white artificial
+  source comes from behind the camera, so the surface is evenly lit and the
+  only shadows in the picture are the ones the pitting casts. The palette is
+  grey-brown and cold white and black, and nothing else. No people.
+
+
+# One shot: the instrument seen as a worn surface. Record 03's fitting_spine,
+# rewritten for this material — the surface fills the frame behind the fitting
+# on it so the picture has no room in it to be in.
+# Pass 1 put the whole housing on a pale floor with a void behind it, three
+# seeds out of three: a product shot of a camera case. Naming an object makes
+# an object, and an object needs something to stand on — record 03's retired
+# top-down anchor, arriving from the other direction. The surface fills the
+# frame now and the acrylic is set into it rather than mounted on it.
+housing_spine: &housing_spine >
+  Scuffed dark anodised metal filling the whole picture from edge to edge and
+  cut off by all four sides of it, every worn edge in it rubbed down to bright
+  bare metal, the surface finely pitted and scratched all over, with a thick
+  piece of scratched acrylic set into it that has nothing lit behind it and
+  shows the depth of the material in its edge. The metal is at the same
+  distance from the lens across the whole picture, so there is nothing else in
+  it and nothing behind it. One hard white artificial source rakes across it at
+  a low angle. Fine pale flecks of marine snow drift in front of it. The
+  palette is dark metal, cold white light and black, and nothing else. No
+  people.
+
+
+# One shot: 3.2, the flank of the animal at macro distance, backlit. There is
+# no anchor at this distance — it happens once, and once is not a distance that
+# recurs, so it goes text-to-image against its own spine the way record 03's
+# top-down shots did.
+tissue_spine: &tissue_spine >
+  Unpigmented translucent off-white animal tissue filling the picture from edge
+  to edge, soft and loose, lit from behind by one hard white artificial source
+  so the light passes through it and the structure under the skin reads as soft
+  shadow. Everything around it is total black. Fine pale flecks of marine snow
+  drift in front of it. The palette is off-white tissue, cold white light and
+  black, and nothing else. No people.
+
+# gen_stills.py reads this key unconditionally. This record has no exteriors in
+# any sense — it is one set, all of it underwater — and every shot that takes
+# the text-to-image path names the spine it wants through spine_key. The flag
+# is misnamed for what it does; renaming it would touch records 01 to 03.
+exterior_spine: &exterior_spine >
+  Unused in this record. Every shot with exterior: true names another spine
+  through spine_key.
+
+motion_tail_drift: &motion_tail_drift >
+  Only the suspended particles move, slowly and evenly, and they keep moving
+  for the whole shot. The camera itself does not move at all: no dolly, no push
+  in, no pull back, no pan, no tilt, no parallax. The light source does not
+  move and the beam does not sweep. No cuts, no speed changes, no zoom snaps.
+  Nothing enters the frame and nothing new appears in it.
+
+motion_tail_event: &motion_tail_event >
+  The one movement named above happens and completes within the shot, at a
+  steady unhurried speed. Everything else in the frame is still except the
+  suspended particles. The camera itself does not move at all: no dolly, no
+  push in, no pull back, no pan, no tilt, no parallax. No cuts, no speed
+  changes, no zoom snaps. Nothing else enters the frame.
+
+# For the two shots where the camera genuinely travels — the descent and the
+# ascent. Kling holds a frame and it holds a single continuous move; what it
+# will not do is hold a frame while being told to, which is why the static
+# tier is built in ffmpeg instead and this tail exists for exactly two shots.
+motion_tail_travel: &motion_tail_travel >
+  The camera moves continuously and slowly in that one direction for the whole
+  shot and in no other: no pan, no tilt, no rotation, no reversal, no pause, no
+  zoom. The light source travels with the camera and the beam keeps its shape.
+  The suspended particles stream past in the opposite direction at a steady
+  rate. No cuts, no speed changes. Nothing enters the frame.
+
+# --- Anchors ----------------------------------------------------------------
+# Five, one per camera distance that recurs. An anchor locks composition as
+# hard as it locks palette, so handing A1 to a macro shot returns a wide — that
+# is the failure that cost record 01 a whole pass.
+#
+# approved_seed plus the prompt here reproduces the approved image exactly. Do
+# not regenerate an approved anchor: every still in the record is built against
+# these frames. All candidates from all passes stay under anchors/pass-N/.
+#
+# A3 is the distance record 03 could not anchor at all — three passes, never
+# approved, four shots rerouted to text-to-image against macro_spine. It is
+# attempted here because the material is different (loose silt rather than a
+# manufactured surface) and because three candidates cost nine cents. If pass 1
+# comes back as a mid-distance view of a sediment plain in every seed, the
+# documented fallback is what record 03 did: set `exterior: true` and
+# `spine_key: macro_spine` on 2.1, 2.2, 4.4 and 5.3 and generate them with no
+# reference at all.
+anchors:
+  - id: A1-open-water
+    model: anchor
+    approved_seed: 22         # pass 1, approved 2026-09-18
+    approved_file: anchors/A1-open-water.jpg
+    covers: ["1.1", "1.4", "3.3", "3.4", "3.5", "5.5", "6.2", "6.3", "6.4",
+             "7.3", "7.4", "7.5"]
+    spine: *spine
+    subject: >
+      Camera: 35mm lens, level, looking into open black water at mid distance
+      with nothing in reach of the lens. Subject: the water itself — one hard
+      white beam entering from outside the upper left of the frame and dying
+      into total black about four metres in, fine pale marine snow drifting
+      through it and catching it one fleck at a time. There is no floor and
+      nothing solid anywhere in the picture. The lower left quarter of the
+      frame is empty black water.
+
+  - id: A2-sediment-wide
+    model: anchor
+    approved_seed: 33         # pass 2, approved 2026-09-18
+    approved_file: anchors/A2-sediment-wide.jpg
+    covers: ["1.2", "1.3", "2.3", "4.1", "4.2", "4.3", "5.4", "7.1"]
+    spine: *sediment_spine
+    subject: >
+      Camera: 28mm lens half a metre above the silt, tilted down so the silt
+      fills the frame from the bottom edge to the top edge and continues past
+      all four sides of it. Wide shot. Subject: flat grey-brown silt, the
+      surface featureless and undisturbed with no tracks and no burrows in it,
+      brightest right of centre where the light lands and fading gradually
+      into black toward every side. The lower left quarter of the frame is
+      unlit silt going to black.
+
+  - id: A3-silt-macro
+    model: anchor
+    approved_seed: 33         # pass 3, approved 2026-09-18
+    approved_file: anchors/A3-silt-macro.jpg
+    covers: ["2.1", "2.2", "4.4", "5.3"]
+    spine: *macro_spine
+    subject: >
+      Camera: 100mm macro lens twenty centimetres above the mud, pointing
+      straight down, the lens parallel to the surface. A flat overhead texture
+      study. Subject: the settled surface itself, smooth and unbroken and so
+      fine it has no grain to it, its only texture the faint pitting where
+      single particles have landed and the softest undulations under them. The
+      surface continues in every direction past the picture, so the picture is
+      a piece of it and not a view of it.
+    note: >
+      The distance record 03 failed at three times. Pass 1 here: coarse sand
+      with pebbles and dunes at a three-quarter angle, all three seeds. Pass 2:
+      the material came right — fine settled mud — and the geometry went
+      somewhere new, a lit box with a visible rim and a room behind it, because
+      pass 2 changed the material and the geometry in the same edit and the new
+      geometry wording ("cut off by all four sides of the frame") is a request
+      for a frame. Record 01's rule, arriving late: take out one property at a
+      time.
+
+      Pass 3 therefore keeps pass 2's material word for word and changes only
+      the geometry. "Cut off by all four sides" is gone; the picture is now
+      declared to be a piece of a surface that continues past it, which is the
+      one thing a rim cannot be drawn around, and the light comes from behind
+      the camera so there is no fixture for the model to put in frame.
+
+      Pass 3 landed it: three flat overhead texture plates, no rim, no room,
+      no receding plane, in all three seeds. Seed 33 is approved — the evenest
+      and the closest to grey-brown. So the distance record 03 retired after
+      three passes is anchorable after all, and what made the difference was
+      not a better description but changing one property at a time.
+
+      One known fault, taken deliberately: the plate does not fall off to black
+      at its edges, because the light was moved behind the camera to stop the
+      model putting a fixture in frame. At twenty centimetres that is what a
+      lamp on the instrument would do anyway, and grade.py adds the vignette.
+
+      The fallback that is no longer needed, kept because it is the route to
+      take if a still off this anchor comes back enclosed: 2.1, 2.2, 4.4 and
+      5.3 get exterior: true and spine_key: macro_spine and are generated with
+      no reference at all, which is what record 03 did with its four top-down
+      shots.
+
+  - id: A4-animal-beam
+    model: anchor
+    approved_seed: 22         # pass 2, approved 2026-09-18
+    approved_file: anchors/A4-animal-beam.jpg
+    covers: ["3.1", "6.1"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens, level, one metre from the subject. Mid shot. Subject:
+      the middle section and long tapering tail of a pale unpigmented animal,
+      seen side-on and filling the picture from the left edge to the right edge
+      so that the body is cut off by the left edge and everything forward of
+      the middle of the body is outside the picture. Most of its length is
+      inside one hard white beam and the rest is outside the light in total
+      black. Total black above it and total black below it, with marine snow
+      drifting through the beam. Nothing else is in the picture.
+    note: >
+      Approved on pass 2, seed 22, with one known fault: the beam reads as a
+      solid white bar behind the body rather than as light in water. It was
+      taken as it is because the two shots it carries, 3.1 and 6.1, are Kling
+      takes where the water moves and the band breaks up, and because the two
+      things this anchor exists to hold — the head out of frame and no water
+      surface anywhere — are both right in this seed. If the bar survives into
+      the takes, it is fixed in the shot prompt, not by regenerating an
+      approved anchor.
+
+      Pass 1 broke two rules in all three seeds. The head was in frame with a
+      visible eye, because a prompt that says the head is outside the frame is
+      a prompt that names a head; the fix is to fill the frame with the part of
+      the body that is allowed to be in it. And all three drew a lit water
+      surface with ripples across the top of the picture, in a record whose
+      entire claim is that nothing has come up — "black water above and below"
+      gave the water a top, so the water has no top now, only black.
+
+  - id: A5-housing-close
+    model: anchor
+    approved_seed: 11         # pass 2, approved 2026-09-18
+    approved_file: anchors/A5-housing-close.jpg
+    covers: ["5.2"]
+    spine: *housing_spine
+    subject: >
+      Camera: 50mm lens twenty centimetres from the subject and square on to
+      it, so that the metal fills the picture completely and is cut off by all
+      four sides of the frame. Close shot. Subject: scuffed dark anodised metal
+      with a thick scratched acrylic window set flush into it and nothing lit
+      behind the window, the metal worn to bright bare metal along every ridge
+      in it and finely pitted everywhere else. One hard white source rakes
+      across it from the left at a low angle. There is no floor, no background
+      and nothing standing anywhere in the picture.
+    note: >
+      Pass 1 returned the whole housing standing on a pale floor with a void
+      behind it, in all three seeds — a product shot of a camera case. The
+      subject is a surface now, not an object, which is what record 03's
+      fitting_spine had to do for the same reason.
+
+# Two clauses were added to most prompts after scene 1's first batch came
+# back, and they are not in 1.1 and 1.3, which were generated before it and
+# approved as they are — an approved still is never regenerated, so those two
+# keep the prompt that made them.
+#
+#   - Open water carries "none of them is bigger than a grain of sand". Both
+#     candidates for 1.4 and one for 1.1 grew a drifting gelatinous animal;
+#     so did the A1 anchor in two of its three seeds. The model answers deep
+#     water with something translucent in it, and the fix is not to forbid an
+#     animal — that names one — but to say how big the only things in the
+#     water are.
+#   - Wide sediment carries "sharp and resolved right across the frame". Both
+#     candidates for 1.2 came back as one out-of-focus glowing blob with no
+#     sediment in them at all: the anchor's light now fades without an edge,
+#     and "a pool of light, black at every edge" on top of that reads as a
+#     defocused lamp rather than as a floor.
+
+# `approved_seed` is the candidate a human picked out of stills/, written down
+# for the same reason an anchor's is: stills/ and approved/ are media and are
+# not versioned, so without the seed an approved frame is only reproducible by
+# eye. Prompt plus seed brings it back exactly.
+
+shots:
+
+  # SCENE 1 — THE LINE (34 s)
+  #
+  # The cold open is ten seconds of water with a depth readout counting up in
+  # the corner and no voice. The beam enters from the upper left, not the lower
+  # left as the draft had it: the readout lives in the lower left and a card is
+  # held by its own halo rather than by a clear plate, so the corner is kept
+  # dark rather than lit.
+
+  - id: "1.1"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    card: depth-1
+    motion: marine snow drifting up and across the beam
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks in the water drift slowly upward and across the beam,
+      each one catching the light as it crosses and going out again. The water
+      moves and nothing else does. The camera does not move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam entering from outside the upper
+      left of frame and dying into total black about four metres in, fine pale
+      marine snow suspended through the beam, nothing solid anywhere in the
+      picture, the lower left quarter of the frame empty black water, no people
+
+  - id: "1.2"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 9
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks suspended in the water above the silt drift slowly and steadily across the frame and settle onto it. The sediment is undisturbed, nothing lies on it and nothing moves in it. The camera does not move.
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Flat grey-brown silt seen wide from a metre above it, one pool of hard
+      white light on the sediment and total black at every edge of frame,
+      the surface featureless and undisturbed with no tracks and no burrows,
+      the texture of the sediment sharp and resolved right across the frame,
+      no people
+
+  - id: "1.3"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks suspended in the near water drift slowly and steadily across the frame, each one catching the light as it crosses. The silt does not move and the camera does not move.
+    card: line-8200
+    anchors: [A2-sediment-wide]
+    prompt: >
+      The same flat grey-brown silt under one hard white source, the pool of
+      light sitting right of centre and the lower left of frame empty unlit
+      silt falling to black, marine snow suspended in the near water, no people
+
+  - id: "1.4"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: dense marine snow sinking through a shallow wedge of light
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The dense pale flecks sink steadily down through the shallow wedge of
+      light and out of it into black. Nothing else in the frame moves and the
+      camera does not move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam almost edge-on so the light
+      lies across the frame as a shallow wedge, dense pale marine snow
+      sinking through it, nothing else in the picture, the only things in
+      the water are the pale flecks and none of them is bigger than a grain
+      of sand, no people
+
+
+  # SCENE 2 — NOT PRESSURE (40 s)
+
+  - id: "2.1"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 2
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-silt-macro]
+    prompt: >
+      Grey-brown silt filling the frame seen straight down from twenty
+      centimetres under one hard white source at a steep angle, the individual
+      grains resolved sharp at the centre and falling out of focus toward the
+      edges, nothing in the picture further from the lens than the silt, no
+      people
+
+  - id: "2.2"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the crustaceans working across the sediment, constant and unhurried
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The small pale animals work across the sediment and over each other
+      continuously and without hurry for the whole shot, feeding as they go.
+      The camera does not move and the light does not move.
+    anchors: [A3-silt-macro]
+    prompt: >
+      Close top-down view of grey-brown silt under one hard white source at a
+      steep angle, the sediment covered in small pale translucent crustaceans
+      two or three centimetres long, working across the surface and over each
+      other, shallow depth of field, no people
+
+  - id: "2.3"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks suspended in the water above the silt drift slowly and steadily across the frame. The sediment is undisturbed and nothing lies on it. The camera does not move.
+    card: pressure-table
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Flat grey-brown silt seen wide under one hard white source, the pool
+      of light set to the right of frame and the lower left of frame empty
+      unlit silt falling into black, marine snow suspended in the near
+      water, the texture of the sediment sharp and resolved right across the
+      frame, no people
+
+  - id: "2.4"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: heavy marine snow falling steadily through the beam
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The heavy pale flecks fall steadily and evenly down through the beam and
+      out of the bottom of it into black, for the whole shot. The camera does
+      not move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam entering high in frame and
+      dying out below the centre, heavy pale marine snow falling through it,
+      nothing else in the picture, the only things in the water are the pale
+      flecks and none of them is bigger than a grain of sand, no people
+
+
+  # SCENE 3 — THE MOLECULE (45 s)
+  #
+  # 3.2 was submitted as local and is model: it runs under silence and carries
+  # no card, and a drift across a photograph under no voice is the slideshow
+  # the Motion Policy exists to stop. It is also the one shot at a distance
+  # this record visits once, so it has no anchor and goes text-to-image.
+
+  - id: "3.1"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 7
+    model: workhorse
+    generate_seconds: 10
+    motion: the body drifts slowly forward, keeping its shape exactly
+    # Take 2, with the translation recipe that fixed 6.1, held the shape to 7 s
+    # and then did the same thing take 1 did at 4.5: the tail tip lit up and
+    # frayed into a bright burst. Twice is the limit — this shot is cut at 7 s
+    # and the three seconds go to 3.2, which is the same animal at macro and
+    # holds for its whole ten. What this shot has learned: on a fragment of an
+    # animal, Kling completes the missing end sooner or later, and the usable
+    # length is the question, not whether it happens.
+    motion_tail: motion_tail_event
+    # Take 1 was cut to 4 s because the tail tip grew a bright bulb from about
+    # 4.5 s. Take 2 uses the recipe that fixed 6.1: every sentence is about
+    # position, none about shape, and the ways this model completes an animal
+    # are named in negative_extra. "The tail fans once" was an instruction to
+    # animate the tail, and it was obeyed.
+    video_prompt: >
+      The whole body drifts slowly and steadily forward, keeping exactly the
+      shape and the size it has in the first frame, and it stays inside the
+      frame for the whole shot. Nothing about it changes as it moves: the tail
+      stays the same thin taper, no part of it opens, folds, spreads or grows.
+      It does not turn toward the light and does not hurry. The camera does not
+      move.
+    negative_extra: >
+      head, eye, face, fish head, jaws, fins unfolding, fins spreading, tail
+      fanning, growing, swelling, bulb, glowing tip, morphing, shape change,
+      transformation, second animal
+    anchors: [A4-animal-beam]
+    prompt: >
+      A pale unpigmented animal, loose-bodied and tapering to a long tail,
+      holding still in one hard white beam against total black, seen from the
+      side with its head outside the left edge of frame, marine snow drifting
+      through the beam around it, no people
+
+  - id: "3.2"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 13
+    retime: 1.3
+    model: workhorse
+    generate_seconds: 10
+    exterior: true             # text-to-image: no anchor at this distance
+    spine_key: tissue_spine
+    motion: the tissue flexing very slightly, snow crossing in front of it
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The translucent tissue flexes very slightly and continuously, as
+      something under the skin shifts, and the pale flecks drift across in
+      front of it. The camera does not move.
+    prompt: >
+      Very close view of the flank of a pale translucent animal against total
+      black, one hard white source behind it so the light passes through the
+      tissue and the structure beneath the skin reads as soft shadow, the
+      tissue filling the frame, no people
+
+  - id: "3.3"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 13
+    retime: 1.3
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The sparse pale flecks drift slowly down through the beam and out of it into black, for the whole shot. The beam keeps its shape and the camera does not move.
+    card: tmao-measured
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam entering from the upper
+      right and dying out toward the centre of frame, sparse pale marine
+      snow in the beam, the lower left of frame empty black water, the only
+      things in the water are the pale flecks and none of them is bigger
+      than a grain of sand, no people
+
+  - id: "3.5"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: dense marine snow sinking through the beam
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The dense pale flecks sink steadily through the beam for the whole shot.
+      Nothing else moves and the camera does not move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with dense pale marine snow sinking through one hard
+      white beam that enters low and to the left, nothing else in the
+      picture, the only things in the water are the pale flecks and none of
+      them is bigger than a grain of sand, no people
+
+
+  # SCENE 4 — THE PREDICTION (35 s)
+  #
+  # Three consecutive shots of an empty sediment plain, which is the scene's
+  # subject: the depth below which nothing has been recorded. The hygiene rule
+  # forbidding reefs, wrecks and boulders is aimed squarely at these three —
+  # empty silt is what a model fills in when it decides the frame needs a
+  # subject.
+  #
+  # 4.4 was submitted as local and is model, for the same reason as 3.2.
+
+  - id: "3.4"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 13
+    retime: 1.3
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The few pale flecks in the beam drift slowly and evenly across the frame. Everything below the beam stays black. The camera does not move.
+    card: converge
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam lying high in frame as a
+      narrow shallow wedge, the lower two thirds of frame empty black water
+      with a few pale flecks of marine snow in it, the only things in the
+      water are the pale flecks and none of them is bigger than a grain of
+      sand, no people
+
+  - id: "4.1"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks drift slowly down through the water and settle onto the empty sediment. Nothing lies on the surface and nothing disturbs it. The pool of light keeps exactly the size and the brightness it has in the first frame. The camera does not move.
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Flat grey-brown silt seen wide under one hard white source, entirely
+      empty, nothing on the surface and nothing standing on it, the pool of
+      light bounded by total black on every side, the texture of the
+      sediment sharp and resolved right across the frame, no people
+
+  - id: "4.3"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow settling onto the silt, a faint drift of sediment across it
+    motion_tail: motion_tail_drift
+    # Take 1 grew the pool of light into a white cloud over the last seconds —
+    # "brightening" is already in the standing negative prompt and it happened
+    # anyway, so the light is now pinned positively in the motion itself.
+    video_prompt: >
+      The pale flecks fall slowly and steadily onto the sediment and settle on
+      it, and a very faint drift of fine silt moves across the surface. The
+      pool of light keeps exactly the size, the shape and the brightness it has
+      in the first frame, and the water above it stays black. The surface is not
+      disturbed by anything else. The camera does not move.
+    negative_extra: >
+      brightening, blooming, glare, haze, fog, light spreading, light growing,
+      exposure change, white cloud
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Empty grey-brown silt seen wide under one hard white source, pale
+      marine snow falling through the water onto the surface, a faint film
+      of fine sediment lying across it, nothing on the surface, the texture
+      of the sediment sharp and resolved right across the frame, no people
+
+  - id: "4.2"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks suspended above the sediment drift slowly and settle onto it. The surface is not disturbed by anything else and nothing lies on it. The camera does not move.
+    card: prediction
+    anchors: [A2-sediment-wide]
+    prompt: >
+      The same empty grey-brown silt seen wide, the pool of hard white light
+      placed high and to the right of frame so the lower left of frame is
+      unlit sediment going to black, marine snow suspended in the near
+      water, the texture of the sediment sharp and resolved right across the
+      frame, no people
+
+  - id: "4.4"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: fine silt lifting and resettling, snow falling into frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The finest grains of silt lift very slightly and resettle, and pale
+      flecks drift down into the frame and come to rest on the surface. The
+      camera does not move.
+    anchors: [A3-silt-macro]
+    prompt: >
+      Undisturbed grey-brown silt filling the frame seen straight down from
+      twenty centimetres under a steep hard white source, the grain sharp at
+      the centre and falling out of focus at the edges of frame, nothing in the
+      picture further from the lens than the silt, no people
+
+
+  # SCENE 5 — THE OTHER SOLUTION (45 s)
+  #
+  # The scene where the record stops describing published work. Nothing in the
+  # picture marks the change and nothing in the delivery does either.
+  #
+  # 5.1 is the descent past the line and reuses 1.1's water: the still is
+  # generated against the approved 1.1 rather than against A1, so the two
+  # readouts read as one dive. 5.3 was submitted as local and is model.
+
+  - id: "5.1"
+    approved_seed: 11    # selected 2026-09-18, generated against the approved 1.1
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    card: depth-2
+    ref_shot: "1.1"            # the same water, deeper — one dive, not two
+    motion: the camera descending, snow streaming upward past it
+    motion_tail: motion_tail_travel
+    video_prompt: >
+      The camera descends steadily and continuously, looking level, for the
+      whole shot. The pale flecks stream upward past it at a steady rate,
+      faster than a drift. The beam keeps its shape and nothing else changes.
+    prompt: >
+      Open black water with one hard white beam entering from outside the
+      upper left of frame and dying into black a few metres out, pale marine
+      snow streaming through the beam, the lower left of frame empty black
+      water, the only things in the water are the pale flecks and none of
+      them is bigger than a grain of sand, no people
+
+  - id: "5.2"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks drift slowly across the frame in front of the worn metal. The housing itself does not move at all, nothing lights up behind its window and no part of it opens. The camera does not move.
+    anchors: [A5-housing-close]
+    prompt: >
+      Close head-on view of a scuffed dark anodised metal housing with a thick
+      scratched acrylic window set into it and nothing lit behind the window,
+      one hard white source raking across it at a low angle, every edge worn
+      down to bare metal and the flat of it finely pitted, total black behind
+      it, no people
+
+  - id: "5.4"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 13
+    retime: 1.3
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks suspended above the pale sediment drift slowly and steadily across the frame. The surface stays unmarked and the camera does not move.
+    card: specimen
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Pale fine sediment seen wide under one hard white source, the pool of
+      light set right of centre and the lower left of frame empty sediment
+      dropping into black, marine snow suspended in the near water, the
+      texture of the sediment sharp and resolved right across the frame, no
+      people
+
+  - id: "5.3"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the finest grains stirring, snow settling onto the surface
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The finest grains of the pale sediment stir very slightly and
+      continuously, and pale flecks settle onto the surface out of the water
+      above it. The camera does not move.
+    anchors: [A3-silt-macro]
+    prompt: >
+      Paler finer sediment than before, settled smooth rather than coarse,
+      filling the frame seen straight down from twenty centimetres, one hard
+      white source raking across it from one side at a low angle so that every
+      pit in the surface casts its own shadow and the far corners of the frame
+      fall away into black, the surface unmarked, nothing in the picture
+      further from the lens than the sediment, no people
+
+  - id: "5.5"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: sparse marine snow rising through the beam
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The sparse pale flecks rise slowly and steadily through the beam for the
+      whole shot. Nothing else moves and the camera does not move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam low in frame and sparse pale
+      marine snow rising through it, nothing else in the picture, the only
+      things in the water are the pale flecks and none of them is bigger
+      than a grain of sand, no people
+
+
+  # SCENE 6 — THE ASCENT (40 s)
+
+  # The only appearance, and it is silent: room tone and the pump, no voice, no
+  # card, nothing in the mix moving when the animal enters or leaves the beam.
+  # It is the most expensive ten seconds in the record to get wrong, because
+  # the whole scene is built on it, and it is the one shot where the animal has
+  # to read as alive rather than as a specimen.
+  - id: "6.1"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 6
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the body travels slowly to the left and leaves the frame
+    motion_tail: motion_tail_event
+    # Take 1 completed the animal instead of moving it: a bright bulb grew on
+    # the tail tip by the second second and by the tenth a whole head with an
+    # eye had entered from the left. The still is right and the clip invents
+    # what the still withholds. The motion is written as pure translation now —
+    # every sentence is about position, none about shape — and the completion
+    # is named in negative_extra, where the first version said nothing.
+    video_prompt: >
+      The whole body travels slowly and steadily to the left, keeping exactly
+      the shape and the size it has in the first frame, and it leaves the frame
+      before the shot ends. Nothing about it changes as it goes: the tail stays
+      the same thin taper, no part of it opens, folds, spreads or grows, and
+      nothing new enters the frame behind it. It does not turn, does not react
+      to the light and does not hurry. The camera does not move.
+    negative_extra: >
+      head, eye, face, fish head, jaws, fins unfolding, fins spreading, tail
+      fanning, growing, swelling, bulb, glowing tip, morphing, shape change,
+      transformation, second animal
+    anchors: [A4-animal-beam]
+    prompt: >
+      The middle section and long tapering tail of a long pale unpigmented
+      animal, filling the picture from the left edge to the right edge and cut
+      off by the left edge so that everything forward of the middle of the body
+      is outside the picture, crossing the outer edge of one hard white beam
+      against total black, seen side-on, most of its length outside the light,
+      marine snow drifting through the beam, no people
+
+  - id: "6.2"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 6
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_travel
+    video_prompt: >
+      The camera rises steadily and continuously for the whole shot, looking the way it looks in the first frame. The pale flecks stream downward past it at a steady rate. The beam keeps its shape and nothing else changes.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam entering from below the
+      frame and pointing upward, pale marine snow suspended through it,
+      nothing solid in the picture, the only things in the water are the
+      pale flecks and none of them is bigger than a grain of sand, no people
+
+  - id: "6.3"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 6
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The sparse pale flecks drift slowly down through the beam and into the black below it. The beam keeps its shape and the camera does not move.
+    card: chain-fails
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam entering from the upper
+      right and falling off before the centre of frame, sparse pale marine
+      snow in the beam, the lower left of frame empty black water, the only
+      things in the water are the pale flecks and none of them is bigger
+      than a grain of sand, no people
+
+  - id: "6.4"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 6
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: snow pouring downward through frame, the beam weak against the water
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks pour downward through the frame in a steady heavy fall
+      for the whole shot. The water stays where it is and the camera does not
+      move.
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water going very slightly less black toward the top of
+      frame, one hard white beam weak against it, pale marine snow pouring
+      downward through the frame, nothing else in the picture, the only
+      things in the water are the pale flecks and none of them is bigger
+      than a grain of sand, no people
+
+
+  # SCENE 7 — CODA (31 s)
+  #
+  # 7.1 is 7 s and 7.5 is 8 s where the draft had 10 and 5: the closer is four
+  # lines at 40 px and needs 7.5 s of plate to type and hold. The paragraph
+  # over 7.1 now runs off the end of it and finishes over 7.2, which is moving
+  # water — which is where the last line of a record would rather end.
+  #
+  # 7.3 to 7.5 are the closing card plates. They were built as frozen frames
+  # on the argument that a coda is allowed to be still and that these frames
+  # are nearly black — and that argument was made without looking at them. Two
+  # of the three carry a full beam and a field of marine snow, so on the rough
+  # cut the record runs beautifully to 4:11 and then stops dead for nineteen
+  # seconds. The suspended-particles rule in CLAUDE.md has no coda exemption
+  # in it, and inventing one by assertion is how a rule gets quietly unwritten.
+  # Their cards stay in titles.yaml, not cards.yaml, because the closing block
+  # belongs to the record rather than to a plate — same as records 02 and 03.
+
+  - id: "7.1"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 7
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks drift slowly down onto the empty sediment and settle there. The surface is undisturbed and nothing lies on it. The pool of light keeps the size it has in the first frame. The camera does not move.
+    anchors: [A2-sediment-wide]
+    prompt: >
+      Flat grey-brown silt seen wide under one hard white source, empty, the
+      pool of light centred and total black at every edge of frame, the
+      texture of the sediment sharp and resolved right across the frame, no
+      people
+
+  - id: "7.2"
+    approved_seed: 11    # selected 2026-09-18, generated against the approved 6.4
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    ref_shot: "6.4"            # the same water as the end of the ascent
+    motion: marine snow falling steadily through frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The pale flecks fall steadily and evenly through the frame for the whole
+      shot. Nothing else moves and the camera does not move.
+    prompt: >
+      Open black water with one weak hard white beam in it and pale marine
+      snow falling steadily through the frame, nothing else in the picture,
+      the only things in the water are the pale flecks and none of them is
+      bigger than a grain of sand, no people
+
+  - id: "7.3"
+    approved_seed: 22    # selected 2026-09-18
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 7
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The few pale flecks drift slowly down through the narrow wedge of light in the upper right and out of it into black. The wedge of light keeps exactly the size, the shape and the brightness it has in the first frame, and the lower left of the frame stays black. The camera does not move.
+    negative_extra: >
+      brightening, blooming, glare, halo, comet, bright orb, glowing sphere,
+      light growing, light spreading, exposure change, lens flare
+    card: close-1
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with one hard white beam as a narrow wedge in the
+      upper right of frame, the rest of frame empty black water with a few
+      pale flecks of marine snow in it, the only things in the water are the
+      pale flecks and none of them is bigger than a grain of sand, no people
+
+  - id: "7.4"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 4
+    model: workhorse
+    generate_seconds: 5
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The three or four pale flecks near the top of the frame drift slowly across it, catching a trace of light as they go. Everything else in the frame stays completely black and nothing brightens. The camera does not move.
+    negative_extra: >
+      brightening, blooming, glare, halo, comet, bright orb, glowing sphere,
+      light growing, light spreading, exposure change, lens flare
+    card: close-2
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with almost no beam in frame, three or four pale
+      flecks of marine snow catching a trace of light at the top of frame,
+      the rest total black, the only things in the water are the pale flecks
+      and none of them is bigger than a grain of sand, no people
+
+  - id: "7.5"
+    approved_seed: 11    # selected 2026-09-18
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 8
+    model: workhorse
+    generate_seconds: 10
+    motion: marine snow drifting through the frame
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The few pale flecks drift slowly and steadily across the frame, and the centre of the frame stays completely black. Nothing else enters the frame, nothing brightens and no particle grows larger than the others. The camera does not move.
+    negative_extra: >
+      brightening, blooming, glare, halo, comet, bright orb, glowing sphere,
+      light growing, light spreading, exposure change, lens flare
+    card: close-3
+    anchors: [A1-open-water]
+    prompt: >
+      Open black water with no beam in frame, total black, a single pale
+      fleck of marine snow drifting at the upper edge of frame, the only
+      things in the water are the pale flecks and none of them is bigger
+      than a grain of sand, no people

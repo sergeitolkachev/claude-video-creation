@@ -88,6 +88,30 @@ def type_schedule(lines, start, spec):
     return schedule, clicks
 
 
+def counter_value(counter, at, t):
+    """What the odometer reads at time t, and it only changes `update_hz`
+    times a second.
+
+    The first version recomputed the number every frame and clicked on every
+    change: a four-digit readout counting to 8,200 changes its last digit
+    almost every frame, so the cold open came out as 148 clicks in six seconds
+    — a continuous rattle at 24 Hz, not an instrument ticking. It was
+    unreadable on screen for the same reason. An instrument updates a few
+    times a second; the easing then slows the changes down by itself as the
+    value settles, so the ticking decelerates and stops without being told to.
+    """
+    hz = counter.get("update_hz", 5)
+    step = counter.get("step", 1)
+    span = counter["count_seconds"]
+    tq = at + math.floor(max(0.0, t - at) * hz) / hz      # the update grid
+    f = min(1.0, max(0.0, (tq - at) / span))
+    eased = 1 - (1 - f) ** 3
+    v = counter["from"] + (counter["to"] - counter["from"]) * eased
+    if f >= 1.0:
+        return int(counter["to"])                          # lands exactly
+    return int(round(v / step) * step)
+
+
 def visible(line, reveal, t):
     """The part of a line that has arrived by time t."""
     n = sum(1 for r in reveal if r <= t)
@@ -126,7 +150,7 @@ def extras_height(card, size, lh):
         h += int(size * 1.2) + 28 + 10 + 16
     if card.get("counter"):
         h += 20 + lh + int(size * 1.7) + 16
-    if card.get("type") == "plot":
+    if card.get("type") in ("plot", "converge"):
         h += 200 + 24 + int(size * 2.2)      # plot, then the figure under it
     if card.get("type") == "stacked_bar":
         h += 22 + 24
@@ -222,9 +246,7 @@ def render_frame(card, spec, t, schedule, lines, size):
     if counter and t >= card["at"]:
         # An odometer counts up fast and settles. It ticks per digit change,
         # not per frame — see the click track.
-        frac = min(1.0, (t - card["at"]) / counter["count_seconds"])
-        eased = 1 - (1 - frac) ** 3
-        value = int(counter["from"] + (counter["to"] - counter["from"]) * eased)
+        value = counter_value(counter, card["at"], t)
         big = font_at(spec, int(size * 1.7))
         text = f"{value:,} {counter['unit']}"
         y = y0 + text_h + 20
@@ -242,6 +264,8 @@ def render_frame(card, spec, t, schedule, lines, size):
 
     if card.get("type") == "plot":
         draw_plot(d, card, spec, t, x0, y0 + text_h, size)
+    if card.get("type") == "converge":
+        draw_converge(d, card, spec, t, x0, y0 + text_h, size)
     if card.get("type") == "cosine":
         draw_cosine(d, card, spec, t, x0 + box_w + 90, y0, size, text_h)
     if card.get("type") == "stacked_bar":
@@ -281,6 +305,76 @@ def draw_plot(d, card, spec, t, x0, y0, size):
         pts.append((px(kx), py(ay["from"] + (ay["to"] - ay["from"]) * k)))
     if len(pts) > 1:
         d.line(pts, fill=colour + (alpha,), width=3)
+
+
+def draw_converge(d, card, spec, t, x0, y0, size):
+    """Two straight lines on a depth axis, one climbing and one flat, drawn to
+    the depth where they meet.
+
+    The lines are drawn from their end points, not shaped by hand: the internal
+    line runs from 350 mOsm/kg at the surface to 1,100 at 8,200 m, which puts
+    it through 990 at 7,000 m where the paper measured 991. The graphic and the
+    narration are the same two numbers, which is the only reason a graphic is
+    allowed here at all.
+
+    Every line carries its own label inside it. Record 02's first energy card
+    drew two unlabelled rectangles and they read as a progress bar for nothing;
+    two unlabelled lines on an axis are the same failure in another shape.
+    """
+    colour = tuple(spec["font"]["colour"]); alpha = spec["font"]["alpha"]
+    rule = spec.get("rule_alpha", 90)
+    pw, ph = 900, 200
+    draw_s = min(1.0, max(0.0, (t - card["at"]) / card.get("draw_seconds", 4.0)))
+    if draw_s <= 0:
+        return
+    ax, ay = card["x_axis"], card["y_axis"]
+    # The channel's floor is 40 px and it applies to every character on the
+    # card, not only to the rows: the first build drew the axis and the series
+    # labels at 28 and they were the only text in the record under the limit.
+    small = font_at(spec, size)
+    tracking = spec["font"]["tracking"]
+
+    def px(v): return x0 + (v - ax["from"]) / (ax["to"] - ax["from"]) * pw
+    def py(v): return y0 + ph - (v - ay["from"]) / (ay["to"] - ay["from"]) * ph
+
+    d.line([(x0, y0 + ph), (x0 + pw, y0 + ph)], fill=colour + (rule,), width=2)
+    d.line([(x0, y0), (x0, y0 + ph)], fill=colour + (rule,), width=2)
+    # The axes say what they measure. Without these the card is two lines
+    # crossing, which is a shape and not a measurement.
+    draw_tracked(d, (x0 + pw - tracked_width(d, ax["label"], small, tracking),
+                     y0 + ph + 10), ax["label"], small, colour + (rule + 60,),
+                 tracking)
+    draw_tracked(d, (x0, y0 - int(size * 1.5)), ay["label"], small,
+                 colour + (rule + 60,), tracking)
+
+    # The visible depth, in data units: both lines are drawn to the same depth
+    # at the same moment, because the whole point is where they arrive.
+    x_now = ax["from"] + (ax["to"] - ax["from"]) * draw_s
+    for ser in card["series"]:
+        (x1, y1), (x2, y2) = ser["from"], ser["to"]
+        xe = min(x2, x_now)
+        if xe <= x1:
+            continue
+        ye = y1 + (y2 - y1) * (xe - x1) / (x2 - x1)
+        d.line([(px(x1), py(y1)), (px(xe), py(ye))],
+               fill=colour + (alpha,), width=3)
+        # The label rides along its own line, once there is enough of the line
+        # to hang it on, and it sits on whichever side of the line has room —
+        # the flat line lives at the top of the plot, where above is where the
+        # axis label already is.
+        if xe - x1 > (x2 - x1) * 0.35:
+            f = 0.30
+            xl, yl = x1 + (xe - x1) * f, y1 + (ye - y1) * f
+            low = py(yl) > y0 + ph * 0.75       # the line is near the axis
+            ly = py(yl) + (-int(size * 1.1) if low else int(size * 0.45))
+            draw_tracked(d, (px(xl) + 12, ly), ser["label"], small,
+                         colour + (alpha,), tracking)
+
+    meet = card.get("meet")
+    if meet and x_now >= meet["x"]:
+        mx_, my_ = px(meet["x"]), py(meet["y"])
+        d.line([(mx_, my_ - 14), (mx_, my_ + 14)], fill=colour + (alpha,), width=2)
+        d.line([(mx_, my_ + 14), (mx_, y0 + ph)], fill=colour + (rule,), width=1)
 
 
 def draw_cosine(d, card, spec, t, x0, y0, size, box_h):  # x0 is past the table
@@ -394,7 +488,16 @@ def resolve_times(card, base):
     return walk(card)
 
 
-def build_card(card, spec, ep, ff):
+def card_schedule(card, spec):
+    """Lines, per-character reveal times and click times for one card.
+
+    Factored out of build_card so that validate.py can ask how long a card
+    takes to type without building it. Record 02 cut three cards off mid-word
+    because the hold was chosen before anyone knew the typing time, and record
+    03 caught the same fault in text by running this against the shot lengths.
+    A check that reads the same schedule the builder uses cannot disagree with
+    it — which is the part that matters.
+    """
     lines = card_lines(card)
     start = card["at"]
     if card.get("build") == "line" and card.get("interval"):
@@ -414,9 +517,31 @@ def build_card(card, spec, ep, ff):
         _, fig_clicks = type_schedule([fig["text"]], fig["at"], spec)
         clicks += fig_clicks
 
+    # An odometer ticks per digit change, same click, same level. CLAUDE.md has
+    # said so since record 02 and nothing implemented it: the counter cards
+    # came back with zero clicks, so record 04's cold open — ten seconds of a
+    # depth readout with no voice under it — would have counted up in silence.
+    # The digits are the only thing happening on screen there.
+    counter = card.get("counter") or {}
+    if counter:
+        start, hz = card["at"], counter.get("update_hz", 5)
+        last = None
+        for i in range(int(counter["count_seconds"] * hz) + 1):
+            t = start + i / hz
+            v = counter_value(counter, start, t)
+            if last is not None and v != last:
+                clicks.append(t)
+            last = v
+    return lines, schedule, clicks
+
+
+def card_end(card, spec, schedule):
+    """When a card is finished with the screen: last character, plus the hold,
+    plus whatever the card carries under its text."""
+    start = card["at"]
     last = max((r[-1] for r in schedule if r), default=start)
-    if card.get("figure"):
-        fig = card["figure"]
+    fig = card.get("figure") or {}
+    if fig:
         fs, _ = type_schedule([fig["text"]], fig["at"], spec)
         last = max(last, fs[0][-1])
     # hold_until may extend the card, never cut it short: the text has to
@@ -427,8 +552,21 @@ def build_card(card, spec, ep, ff):
         e = card.get(extra_key) or {}
         if e.get("at"):
             end = max(end, e["at"] + e.get("drain_seconds", e.get("hold", 2)))
-    if card.get("type") == "plot":
+    counter = card.get("counter") or {}
+    if counter:
+        # The odometer runs from the card's own start and has to be allowed to
+        # settle before the plate ends, the same way a line has to finish.
+        end = max(end, start + counter["count_seconds"]
+                  + spec["typing"].get("hold_after_seconds", 2.0))
+    if card.get("type") in ("plot", "converge"):
         end = max(end, card["at"] + card.get("draw_seconds", 3) + 1)
+    return end
+
+
+def build_card(card, spec, ep, ff):
+    lines, schedule, clicks = card_schedule(card, spec)
+    start = card["at"]
+    end = card_end(card, spec, schedule)
     dur = end - start
     frames = int(round(dur * FPS))
     size = card.get("size") or spec.get("card_size") or spec["font"]["size"]

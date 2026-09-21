@@ -1,0 +1,100 @@
+# Thumbnail variants for A/B. Three plates, three different promises — a test
+# measures nothing if all three sell the same thing with the text moved around.
+# Record 01's split was a number, a view, a person; record 03's was a number, a
+# door and the man alone with both. This record has no people and no machines,
+# so the split is: a number, an animal that should not exist, and the fact that
+# makes the whole thing possible.
+#
+# Plates are approved stills. Nothing is generated for a thumbnail — the frame
+# is already in the record, and promising a frame the episode does not contain
+# is the reliable way to lose watch time. All three plates are frames the viewer
+# actually meets: 1.3 at 0:19, 6.1 at 3:31, 2.2 at 0:44.
+#
+# Judge these at 210 px, which is what YouTube renders in a grid. It is the only
+# size that decides anything and the one nobody looks at while building a
+# 1280 px plate.
+#
+# The slug is constant across all three. It is channel furniture and is never
+# part of what a test is varying.
+
+episode: ep-04-the-line
+slug: "FC9-004 // The Line"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the number. The depth and what is not there, over the empty plain. No
+  # animal, no instrument, nothing to look at but sediment: the promise is that
+  # a number this flat has a reason behind it.
+  - id: a-the-line
+    plate: "1.3"
+    crop: {zoom: 0.86, bias_y: 0.44}
+    blocks:
+      - lines: ["8,200 m"]
+        size: 132
+        tracking: 4
+        x: 0.05
+        y: 0.10
+        anchor: left
+        scrim: true
+      - lines: ["NO FISH BELOW THIS DEPTH"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.35
+        anchor: left
+        scrim: true
+
+  # B — the animal. The only variant that shows the thing the record recovered,
+  # and it shows it the way the record does: head out of frame, most of it
+  # outside the light. The number under it is the invented one, which is the
+  # promise this variant makes and the description immediately separates out.
+  #
+  # The plate is the brightest frame in the record — a pale body lit hard
+  # against black — so the type sits low where the water is, not across it.
+  - id: b-the-specimen
+    plate: "6.1"
+    crop: {zoom: 0.82, bias_y: 0.40}
+    blocks:
+      - lines: ["9,450 m"]
+        size: 132
+        tracking: 4
+        x: 0.05
+        y: 0.52
+        anchor: left
+        scrim: true
+      - lines: ["2,000 METRES PAST THE LIMIT"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.77
+        anchor: left
+        scrim: true
+
+  # C — the fact that makes it possible, and the only variant whose whole claim
+  # is true and checkable. Crustaceans at the bottom of the Challenger Deep,
+  # deeper than any fish has ever been found, which is what rules pressure out.
+  #
+  # The plate is the brightest in the record — lit silt, edge to edge — and at
+  # 210 px the first build's second line smeared into it. Off-white type on a
+  # pale ground has only luminance to separate it, which is record 02's salt
+  # pan again. The ground is dimmed under the text rather than the text
+  # recoloured: the channel's type is one colour everywhere.
+  - id: c-not-pressure
+    plate: "2.2"
+    crop: {zoom: 0.88, bias_y: 0.52}
+    dim: {x0: 0.0, y0: 0.0, x1: 1.0, y1: 0.46, strength: 0.46, feather: 0.20}
+    blocks:
+      - lines: ["NOT PRESSURE"]
+        size: 104
+        tracking: 6
+        x: 0.05
+        y: 0.12
+        anchor: left
+        scrim: true
+      - lines: ["THESE LIVE 2,700 m DEEPER"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.35
+        anchor: left
+        scrim: true

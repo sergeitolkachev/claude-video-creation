@@ -200,6 +200,13 @@ listening.** Three tiers, and every shot in `shots.yaml` declares one:
 - `static` — locked-off, built in ffmpeg with lens breathing only. Allowed
   **only** for a shot carrying a data card, a title, or burned-in text. The
   eye is on the text; a moving frame under it fights the reading.
+  **Unless the frame has something suspended in it.** Record 04 is shot in
+  water full of marine snow, and a locked plate of it sitting after a clip
+  where the same snow drifts does not read as a locked-off camera, it reads
+  as a freeze-frame — the viewer checks the player, which is the tape-dropout
+  failure again in another form. A card plate whose frame carries dust, snow,
+  smoke or anything else in suspension gets `local_motion: drift` instead of
+  the breathing. It is still built in ffmpeg and still costs nothing.
 - `local` — drift or push, built in ffmpeg from the approved still. For shots
   under narration where the frame is texture rather than event. Free, exact,
   and steadier than any model, but it is a move across a photograph: no
@@ -263,7 +270,13 @@ episode, never A/B tested.
   is byte-identical between episodes — a sound that drifts is worse than no
   sound.
 - Numbers that count up (an odometer, a draining bar) tick per digit change,
-  same click, same level.
+  same click, same level. **A counter settles before the cut**, with the same
+  two seconds a card holds after its last character: a figure nobody has time
+  to read is texture, not a number. Record 04's second depth readout was
+  written to keep climbing until the shot ended and now lands two seconds
+  early. `card_end()` in `build_cards.py` measures this, and `validate.py`
+  fails it — the typing check CLAUDE.md has asked for since record 03 is a
+  gate now rather than something to remember to run.
 - The full spec — rate, jitter, click envelope, level — lives in
   `config/type.yaml`. It is versioned in full for the same reason the banner
   is: it outlives the episode.
@@ -290,6 +303,12 @@ episode, never A/B tested.
   the speed parameter is not monotonic — 0.7 came out faster than 0.8 —
   and run-to-run spread is about +/-8 wpm. It is noise, not a control.
   Pin it at the default, chosen for synthesis quality, and never touch it.
+- **A pause lives on a paragraph boundary.** Narration is generated one file
+  per paragraph and the gaps are cut between those files, so a pause asked for
+  in the middle of a paragraph cannot be cut at all. Record 04 asked for 1.8 s
+  after "None." and 2.5 s before a figure, both mid-paragraph; the fix is to
+  end the paragraph there, not to mark the pause inline. If a sentence needs
+  air after it, it is the last sentence of its paragraph.
 - Pacing is bought with silence between paragraphs, not with delivery
   speed inside them. Gaps are inserted at assembly, cost nothing, and are
   frame-accurate. Default gap 1.2 s between paragraphs, 2 s across a
@@ -633,6 +652,17 @@ filled in with whatever is statistically typical — "dust particles floating"
 became heaps of grit on the floor, "station corridor" became a concrete
 utility tunnel, "small circular porthole" was read as small in the frame. Be
 specific enough that there is nothing left to invent.
+
+**A frame that shows part of an animal is an invitation to finish it.** Record
+04 framed its animal deliberately cut by the edge — middle of the body and
+tail, head outside the picture, which is how the channel keeps faces off
+screen. Kling completed it: in both animal shots the tail tip grew a bright
+bulb within two to five seconds, and by the end of the ten seconds one of them
+had pulled a whole head with an eye into frame. The still is right and the clip
+invents what the still withholds, which no still-stage check can catch. Keep
+the generated length near the window that stays clean, name the completion in
+`negative_extra` (head, eye, fins unfolding, morphing, growing), and write the
+motion as pure translation — the body moves, nothing about it changes.
 
 **Some phrases break a model outright.** `shot on 35mm` makes Nano Banana
 return `no_media_generated` and produce nothing at all. Isolate a failure by

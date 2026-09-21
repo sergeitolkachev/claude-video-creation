@@ -8,7 +8,33 @@
 # Re-check before every episode. Prices and model names drift, and the drift
 # is not announced.
 
-verified_on: 2026-09-14   # workhorse tier re-probed against fal before stage 6
+verified_on: 2026-09-18   # whole video board re-checked against fal's pricing
+                         # page and model pages before record 04's stage 6
+
+# --- Why the workhorse tier is Kling, re-answered 2026-09-18 ----------------
+#
+# The question "is Kling actually the cheapest" is worth asking every episode,
+# because this board moves. Checked against fal today, per second of 1080p
+# image-to-video:
+#
+#   Kling 2.5 Turbo Pro   $0.07/s 1080p   <- what we use; fal's own pricing
+#                                            page calls it the best value in
+#                                            the image-to-video column
+#   MiniMax H3 Max        $0.08/s 768p    costs more per second AND is not 1080p
+#   LTX-2.5 Fast          $0.13/s 1080p   nearly double, audio we would strip
+#   Wan 3.0               $0.20/s 1080p   three times
+#   Seedance 2.5          $0.22/s 480p, $0.47/s 720p
+#   Veo 3                 $0.40/s         six times
+#
+# So the cheap tier below is not just banned on quality, it is no longer cheap:
+# Seedance has gone from $0.0486/s to several times Kling's price, which
+# settles a question record 01 answered on behaviour alone. The only genuinely
+# cheaper thing on the board is the old LTX Video at about $0.02 a clip, and
+# that is exploration-grade footage, not a shot in a record.
+#
+# The real saving on this channel is not the model. It is the shots that are
+# never generated at all — see build_static.py — and the discipline of killing
+# an idea at the stills stage, where a mistake costs four cents.
 
 image:
   # Anchors: 3-4 stills that define the location and the light. Generated
@@ -46,9 +72,11 @@ image:
     price_per_image_usd: 0.003
 
 video:
-  # Filler — static frames and slow drift, which is most of this episode.
-  # Accepts any duration from 2 to 12 seconds, so we pay for exactly the
-  # length we cut, with no rounding waste. Has a seed.
+  # Filler — kept for the record, not used. Banned on behaviour since record
+  # 01 (it will not hold a frame or geometry), and as of the 2026-09-18 check
+  # it is also three to seven times Kling's price, so the price below is stale
+  # and the tier has no argument left in its favour. Do not route a shot here
+  # without re-probing both the price and the camera.
   filler:
     id: fal-ai/bytedance/seedance/v1/pro/fast/image-to-video
     price_per_second_usd: 0.0486   # $0.243 per 5 s at 1080p

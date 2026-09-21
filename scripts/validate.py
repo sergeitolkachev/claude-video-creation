@@ -74,7 +74,9 @@ def main(ep):
         got = per.get(sc, 0)
         mark = "ok" if got == want else "FAIL"
         if got != want: fail.append(f"scene {sc}: {got}s vs {want}s")
-        print(f"  scene {sc}: {got:3d} s / {want:3d} s  {mark}")
+        # Seconds may be fractional — 24 fps makes 11.5 s exact — and a
+        # gate that dies on a format code is a gate that is not there.
+        print(f"  scene {sc}: {got:5g} s / {want:5g} s  {mark}")
     total = sum(per.values())
     if total != doc["runtime_seconds"]:
         fail.append(f"total {total}s vs {doc['runtime_seconds']}s")
@@ -229,11 +231,16 @@ def main(ep):
     picks_f = ep / "audio" / "narration.yaml"
     if picks_f.exists() and (ep / "audio.yaml").exists():
         sys.path.insert(0, str(pathlib.Path(__file__).parent))
-        from build_audio import place, scene_bounds
+        from build_audio import place, scene_bounds, card_anchors
         acfg = yaml.safe_load((ep / "audio.yaml").read_text())
         pk = yaml.safe_load(picks_f.read_text())["picks"]
         st, en = scene_bounds(shots)
-        at_full = place(pk, ep / "audio", st, en, acfg)
+        # The same anchors the mix was laid with. Without them this checked a
+        # placement nobody built: record 04 spent an hour moving shots to fix a
+        # card that was already landing correctly in the file, because the
+        # checker and the builder were computing two different timelines from
+        # the same inputs. A gate that does not read what shipped is decoration.
+        at_full = place(pk, ep / "audio", st, en, acfg, card_anchors(ep, shots))
         at = {pid: t for pid, _, t in at_full}
 
     cards_f = ep / "cards.yaml"
@@ -262,6 +269,80 @@ def main(ep):
                 if not ok:
                     fail.append(f"card {c['id']}: {d:+.1f}s from {c['with']}, "
                                 f"allowed -{CARD_EARLY} to +{CARD_LATE}")
+
+    # 7b. A card fits on its plate.
+    #
+    # Record 02 cut three cards off mid-word by choosing a hold before anyone
+    # knew the typing time, and CLAUDE.md has said since record 03 that the
+    # typing schedule is checked against the shot lengths as part of
+    # validation. It was not: it lived in whoever remembered to run it, which
+    # is the state every rule in this file exists to end. The schedule comes
+    # from build_cards.py, so the check cannot disagree with the builder.
+    #
+    # Data cards are timed from the start of their own shot; the closing block
+    # in titles.yaml is absolute on the record timeline, so it is measured
+    # against the shot its `at` falls in.
+    # Records 01 to 03 are published and frozen, and this gate is newer than
+    # all three. Run against record 02 it reports the cards that typed past
+    # their plates in the finished master — which is the fault CLAUDE.md
+    # records and the best evidence the check works, and also nothing anyone is
+    # allowed to fix now. Reported once, not failed, for the same reason the
+    # vertical block skips the pre-04 window form.
+    FROZEN = {"ep-01-tishina-9", "ep-02-sunrise-line", "ep-03-carbon-balance"}
+    tspec_all = yaml.safe_load(pathlib.Path("config/type.yaml").read_text())
+    sys.path.insert(0, str(pathlib.Path(__file__).parent))
+    from build_cards import card_schedule, card_end
+    bounds, acc = {}, 0
+    for sh in shots:
+        bounds[str(sh["id"])] = (acc, acc + sh["timeline_seconds"])
+        acc += sh["timeline_seconds"]
+
+    def plate_check(label, card, plate_start, plate_end, rel):
+        _, sched, _ = card_schedule(card, tspec_all)
+        end = card_end(card, tspec_all, sched) + (plate_start if rel else 0)
+        ok = end <= plate_end + 0.05
+        frozen = ep.name in FROZEN
+        print(f"  {label:<22} needs until {end:6.1f}s, plate ends "
+              f"{plate_end:6.1f}s  "
+              f"{'ok' if ok else 'frozen record' if frozen else 'FAIL'}")
+        if not ok and not frozen:
+            fail.append(f"card {card['id']}: needs {end - plate_end:.1f}s more "
+                        f"plate than it has — it types past the cut")
+
+    if cards_f.exists():
+        print()
+        for c in (yaml.safe_load(cards_f.read_text()) or {}).get("cards") or []:
+            b = bounds.get(str(c.get("shot")))
+            if b is None:
+                fail.append(f"card {c['id']}: shot {c.get('shot')} is not in shots.yaml")
+                continue
+            plate_check(f"card {c['id']}", c, b[0], b[1], rel=True)
+
+    titles_f = ep / "titles.yaml"
+    if titles_f.exists():
+        for c in (yaml.safe_load(titles_f.read_text()) or {}).get("cards") or []:
+            t0 = float(c["at"])
+            host = next((sid for sid, (a, b) in bounds.items() if a <= t0 < b), None)
+            if host is None:
+                fail.append(f"title {c['id']}: at {t0}s is off the timeline")
+                continue
+            plate_check(f"title {c['id']} ({host})", c, 0, bounds[host][1], rel=False)
+
+    # 7c. Two paragraphs never speak at once.
+    #
+    # Anchoring a line to its card pushes it later, and on record 04 that put
+    # the last line of scene 3 one second on top of the first line of scene 4.
+    # An overrun past a scene boundary is fine — the voice crossing a cut is a
+    # choice the script makes — but two takes playing together is a fault no
+    # amount of mixing hides.
+    if at_full:
+        prev_pid, prev_end = None, None
+        for pid, f, t in at_full:
+            d = dur_of(f)
+            if prev_end is not None and t < prev_end - 0.01:
+                fail.append(f"{prev_pid} and {pid} overlap by "
+                            f"{prev_end - t:.2f}s of speech")
+            prev_pid, prev_end = pid, t + d
 
     # 8b. Stage directions are not speech. They are stripped by one shared
     # parser now, but the check is two lines and the fault it catches — a

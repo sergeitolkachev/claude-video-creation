@@ -1,0 +1,221 @@
+# Data cards — record 4.
+#
+# Rules carried from the channel, enforced elsewhere and repeated here because
+# this is the file someone edits at two in the morning:
+#
+#   - Every character comes out of Pillow in Menlo, phosphor green, at the size
+#     in config/type.yaml. Never white, never below 40 px.
+#   - Cards go UNDER the grain pass, like the titles, so they belong to the
+#     recording instead of looking captioned onto it.
+#   - Characters type on one at a time with a click per glyph. Nothing slides,
+#     fades, bounces or wipes. The click bed is mixed by build_cards.py, not by
+#     hand — record 03 shipped a silent typewriter because that step lived in
+#     somebody's memory.
+#   - Every card sits on a plate framed for it. See `card:` in shots.yaml and
+#     the "lower left of frame empty" clause in each of those prompts. If a
+#     plate comes back busy where the card goes, the plate is wrong.
+#   - A graphic says what it is measuring. The one graphic in this record has
+#     its labels inside its own two lines and its meeting point spelled out in
+#     words underneath.
+#
+# `with:` names the narration paragraph the card answers to, and validate.py
+# measures the gap. The two readout cards have no `with:` on purpose — they
+# answer to no line. They are the instrument, running while nobody talks.
+#
+# Times are seconds from the start of the card's own shot, never absolute. The
+# closing block is in titles.yaml, which is absolute, because it belongs to the
+# record rather than to a plate.
+#
+# Typing time was checked against every plate before generation, by
+# validate.py, which runs the real type_schedule from build_cards.py. Record 02
+# cut three cards off mid-word by choosing a hold before anyone knew the typing
+# time; the four-line cards here need 8.7 and 8.9 s on their 10 s plates, which
+# is tight and is the reason the check is a gate rather than a habit.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  # The cold open. Ten seconds of water, no voice, and an instrument counting
+  # down to the number the whole record is about. It stops at the line and
+  # holds there while the shot runs out, which is the only thing that happens
+  # in the first ten seconds of this record.
+  # It starts at 5.0 s, not 0.8, because the slug owns the lower left for its
+  # first five seconds — same corner, same font, every record since 01 — and
+  # the first master drew the readout straight through it. The fix is not to
+  # move the furniture: it is that the instrument is already deep when the
+  # record starts. It picks up at 5,900 m and closes on the line, which is
+  # better fiction than a lander counting up from zero at the exact moment the
+  # recording begins.
+  - id: depth-1
+    shot: "1.1"
+    pos: lower-left
+    at: 5.0
+    hold_until: 10.0
+    counter:
+      label: "DEPTH"
+      from: 5900
+      to: 8200
+      count_seconds: 3.0
+      # The readout updates five times a second and steps in tens, like an
+      # instrument rather than like a frame counter. Rebuilt after the first
+      # mix: recomputing it every frame put 148 clicks into six seconds of a
+      # record whose cold open has no other sound, and made the number
+      # unreadable while it moved.
+      update_hz: 5
+      step: 50
+      unit: m
+
+  # The figure and what it means, on the flattest plate in the scene. Two
+  # lines, 30 characters, 4.0 s to type.
+  - id: line-8200
+    with: s1p3
+    shot: "1.3"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 9.6
+    lines:
+      - "8,200 m"
+      - "NO FISH BELOW THIS DEPTH"
+
+  # --- Scene 2 -------------------------------------------------------------
+  # Two rows, and the argument of the scene is the gap between them: more
+  # pressure, more animals. The units are on both rows because the comparison
+  # is the point and a reader should not have to carry one across.
+  - id: pressure-table
+    with: s2p3
+    # On 2.4, not 2.3. The line is spoken ten seconds into the scene's last
+    # shot, and a card on the shot before it reaches the screen while the voice
+    # is still on the sentence in front. The plate is open water, which is as
+    # clear a lower left as a composed plate.
+    shot: "2.4"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 9.6
+    lines:
+      - " 8,200 m    830 bar   NO FISH"
+      - "10,935 m  1,100 bar   AMPHIPODS"
+
+  # --- Scene 3 -------------------------------------------------------------
+  # The measured record, from the published paper. Four lines, 102 characters,
+  # 8.7 s to type on a 10 s plate — the tightest card in the record.
+  - id: tmao-measured
+    with: s3p2
+    shot: "3.3"
+    pos: lower-left
+    build: line
+    at: 0.4
+    hold_until: 12.5
+    lines:
+      - "NOTOLIPARIS   7,000 m"
+      - "TMAO            386 mmol/kg"
+      - "INTERNAL        991 mOsm/kg"
+      - "SEAWATER      1,100 mOsm/kg"
+
+  # The card the record is built on, and the only graphic in it. Two lines on a
+  # depth axis: one climbing, one flat. The labels sit inside their own lines —
+  # an unlabelled pair of lines is the unlabelled-rectangle failure from record
+  # 02 in another shape — and the meeting point resolves last, in words.
+  #
+  # The internal line is drawn from the two published points, not shaped by
+  # hand: 350 mOsm/kg at the surface to 1,100 at 8,200 m passes through 990 at
+  # 7,000 m, which is the measured 991. The graphic and the narration agree
+  # because they are the same two numbers.
+  - id: converge
+    # Answers p3, not p4. p3 is the sentence about the two lines — "every
+    # molecule added raises internal concentration" — which is what the graph
+    # is drawing while it is spoken; p4 reads the figure out loud, and the
+    # figure is the one element inside this card that resolves last, on its own
+    # clock. Mapping it to p4 asked the whole graph to wait for the answer.
+    with: s3p3
+    shot: "3.4"
+    pos: lower-band
+    type: converge
+    at: 0.5
+    draw_seconds: 4.0
+    hold_until: 12.5
+    x_axis: {label: "depth, m", from: 0, to: 10000, ticks: 2000}
+    y_axis: {label: "mOsm/kg", from: 300, to: 1200, ticks: 300}
+    series:
+      - {label: "INTERNAL", from: [0, 350], to: [8200, 1100]}
+      - {label: "SEAWATER", from: [0, 1100], to: [10000, 1100]}
+    meet: {x: 8200, y: 1100}
+    figure:
+      at: 6.0
+      hold: 4.0
+      text: "MEET AT   8,200 m"
+
+  # --- Scene 4 -------------------------------------------------------------
+  # Prediction, observation, and the difference — which is the scene. The
+  # overshoot is on its own row because the voice says it on its own.
+  - id: prediction
+    with: s4p2
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 9.8
+    lines:
+      - "2014  PREDICTED     8,200 m"
+      - "2022  FILMED        8,336 m"
+      - "      OVERSHOOT       136 m"
+
+  # --- Scene 5 -------------------------------------------------------------
+  # The readout returns, at the same place in the frame and on the same tick,
+  # and this time it goes past 8,200 without stopping. It settles on 9,450 two
+  # seconds before the cut rather than running to the last frame as the draft
+  # asked: a number nobody has time to read is not a figure, it is texture, and
+  # the same two-second rule that holds a card on screen holds an odometer
+  # after it lands. The instrument reaches the figure before the voice does at
+  # 5.4, which is the direction a card is allowed to lead its line.
+  - id: depth-2
+    shot: "5.1"
+    pos: lower-left
+    at: 0.4
+    hold_until: 10.0
+    counter:
+      label: "DEPTH"
+      from: 8200
+      to: 9450
+      count_seconds: 7.5
+      update_hz: 5
+      step: 50
+      unit: m
+
+  # The invented specimen, written exactly like the measured one in scene 3 —
+  # same four-row shape, same units, same column. Nothing about the card marks
+  # it as the moment the record stops describing published work. 105
+  # characters, 8.9 s on a 10 s plate.
+  - id: specimen
+    with: s5p3
+    shot: "5.4"
+    pos: lower-left
+    build: line
+    at: 0.4
+    hold_until: 12.5
+    lines:
+      - "DEPTH               9,450 m"
+      - "PROTECTION   1,900 mmol/kg"
+      - "OSMOTIC COST     3 mOsm/kg"
+      - "INTERNAL       380 mOsm/kg"
+
+  # --- Scene 6 -------------------------------------------------------------
+  # Three rows, and the reader does the division: 1,900 into tissue rated for
+  # 380 is five times over. The card does not do it for them and neither does
+  # the voice.
+  - id: chain-fails
+    with: s6p2
+    shot: "6.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 9.8
+    lines:
+      - "CHAIN FAILS    300 bar / 3,000 m"
+      - "RELEASED      1,900 mmol/kg"
+      - "TISSUE RATED    380 mOsm/kg"

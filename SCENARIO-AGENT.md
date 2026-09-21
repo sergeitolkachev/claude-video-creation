@@ -156,7 +156,7 @@ listening.**
 
 | Tier | What it is | When it is allowed |
 |---|---|---|
-| `static` | Locked-off frame, lens breathing only | **Only** for a shot carrying a data card, a title, or burned-in text. The eye is on the text; a moving frame fights the reading. |
+| `static` | Locked-off frame, lens breathing only | **Only** for a shot carrying a data card, a title, or burned-in text. The eye is on the text; a moving frame fights the reading. **But** if the frame has dust, snow or anything else in suspension, it gets a slow drift instead of the breathing: frozen particles beside moving ones read as a freeze-frame, not as a locked camera. Still free, still built in ffmpeg. |
 | `local` | Slow drift or push across the approved still | Shots **under narration** where the frame is texture rather than event. No parallax, nothing in frame is alive. |
 | `model` | A real video clip | **Required** for any shot running under silence, and for any shot whose content should physically move: dust, water, frost, smoke, a drifting object, an animal. |
 
@@ -207,6 +207,13 @@ of 120 characters needs about 9 s of plate, and giving it an 8 s shot means it
 is still typing when the shot cuts. Count the characters and give the shot the
 seconds. Record 03's draft put its most important card — the one the whole
 episode is built around — on an 8 s plate that needed 11.
+
+**A counting readout has to stop before the shot does.** A number that ticks
+up — a depth, a distance, an odometer — gets the same two seconds after it
+lands that a card gets after its last character. Record 04 asked for a readout
+that "keeps climbing until the shot ends", which means the one figure it exists
+to deliver is never on screen long enough to read. Give the count a duration
+that ends at least two seconds before the cut.
 
 **A coda is declared, not assumed.** A closing block of text cards, or a held
 silent shot before them, is exempt from the 55% silence ceiling — but only if
@@ -374,6 +381,12 @@ target audience, not a hazard.
 - Default gaps: **1.2 s between paragraphs, 2.0 s across a scene cut.** Longer
   gaps are allowed where the script asks for them **by name**, with a reason.
   List them in a Pacing section.
+- **A pause you ask for has to fall on a paragraph boundary.** The voice is
+  generated one file per paragraph and the gaps are cut between those files, so
+  a pause in the middle of a paragraph is a pause that cannot be cut. Record 04
+  asked for 1.8 s after "None." and 2.5 s before a figure, both inside a
+  paragraph, and both had to be split before anything could be recorded. If a
+  sentence needs air after it, end the paragraph on it.
 - If a line reads hurried after the gaps are in, **edit the sentence** —
   shorter clauses, a period where a comma was.
 - **Room tone runs under the entire episode.** Absolute digital silence
@@ -501,7 +514,13 @@ the production side and each failure costs a rewrite.
 - [ ] Any coda is declared by scene number, with its reason.
 - [ ] Every number is consistent with every other number, including implied
       rates and dates. Appendix lists real and invented separately.
-- [ ] Pacing section lists every non-default gap with a reason.
+- [ ] Pacing section lists every non-default gap with a reason, and every one
+      of them falls between two paragraphs, never inside one.
+- [ ] Every counting readout settles at least 2 s before its shot ends.
+- [ ] No two consecutive shots are both built in ffmpeg — a card plate and a
+      drift next to each other is twenty seconds where nothing in the frame is
+      alive, whatever the tiers say. Order the scene so a `model` shot sits
+      between them.
 - [ ] Three verticals nominated, each as a line list and a shot list, each
       with its figures spoken aloud, each working on hard cuts alone.
 - [ ] Four or five teaser lines nominated, in order, each one strange without

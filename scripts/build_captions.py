@@ -242,7 +242,13 @@ def main():
     cfg = yaml.safe_load((ep / "audio.yaml").read_text())
     shots = yaml.safe_load((ep / "shots.yaml").read_text())["shots"]
     start, end = ba.scene_bounds(shots)
-    pos = {pid: t for pid, _, t in ba.place(picks, ep / "audio", start, end, cfg)}
+    # The same anchors the mix was laid with — this was the third copy of the
+    # placement call and the second one to be missing them, which would time
+    # every caption against a mix nobody built. Count the copies before fixing
+    # the bug: there were three, and two of them were wrong.
+    pos = {pid: t for pid, _, t in
+           ba.place(picks, ep / "audio", start, end, cfg,
+                    ba.card_anchors(ep, shots))}
     cache_dir = ep / "audio" / "alignment"; cache_dir.mkdir(parents=True, exist_ok=True)
 
     verticals = yaml.safe_load((ep / "verticals.yaml").read_text())
