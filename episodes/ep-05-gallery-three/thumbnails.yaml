@@ -1,0 +1,115 @@
+# Thumbnail variants for A/B. Three plates, three different promises — a test
+# measures nothing if all three sell the same thing with the text moved around.
+# Record 01's split was a number, a view, a person; record 04's was a number,
+# an animal and the fact that made it possible. This record has no animal and
+# no view worth selling, so the split is: a headcount, a door nobody may open
+# alone, and the energy figure the whole thing turns on.
+#
+# Plates are approved stills. Nothing is generated for a thumbnail — the frame
+# is already in the record, and promising a frame the episode does not contain
+# is the reliable way to lose watch time. All three are frames the viewer
+# actually meets: 1.3 at 0:20, 3.4 at 1:35, 2.1 at 0:30.
+#
+# Judge these at 210 px, which is what YouTube renders in a grid. It is the
+# only size that decides anything and the one nobody looks at while building a
+# 1280 px plate. Record 03 built three variants that all read at full size and
+# had one smear its second line into the slug at grid size.
+#
+# The slug is constant across all three. It is channel furniture and is never
+# part of what a test is varying.
+
+episode: ep-05-gallery-three
+slug: "FC9-005 // Gallery Three"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the headcount. Five bare hooks and one suit, and two figures that do
+  # not need a sentence around them. The promise is the arithmetic of a crew
+  # that is not there; nothing in the plate says where the other five went.
+  #
+  # The type sits top-left over the lit panelling, which is the flattest part
+  # of this plate — the hooks run across the middle and the suit owns the
+  # right, and both have to stay visible for the number to mean anything.
+  - id: a-the-headcount
+    plate: "1.3"
+    crop: {zoom: 0.88, bias_y: 0.46}
+    blocks:
+      - lines: ["SIX HOOKS"]
+        size: 118
+        tracking: 4
+        x: 0.05
+        y: 0.09
+        anchor: left
+        scrim: true
+      - lines: ["ONE SUIT LEFT ON THEM"]
+        size: 38
+        tracking: 10
+        x: 0.05
+        y: 0.33
+        anchor: left
+        scrim: true
+
+  # B — the door. Two steel bars bolted across a pressure hatch, which is the
+  # one image in this record that explains itself without a caption, and the
+  # rule that put them there. The promise is a prohibition, not a number.
+  #
+  # The plate is dark panelling either side of a bright hatch, so the type goes
+  # left, off the metal and onto the dark.
+  - id: b-the-door
+    plate: "3.4"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      - lines: ["NO ENTRY", "ALONE"]
+        size: 96
+        tracking: 4
+        x: 0.05
+        y: 0.10
+        anchor: left
+        scrim: true
+      # At 210 px the full sentence ran the whole width of the plate, straight
+      # across the brightest metal on it and into the indicator lamp — record
+      # 03's smeared second line, reproduced. Half the words say the same
+      # thing and the line now ends before the hatch rim.
+      # Second pass at 210 px: shortening the sentence cleared the lamp but
+      # the last word still sat on the hatch's left rim. Smaller and tighter
+      # ends the line before the rim starts, which is the measurement that
+      # matters — the rim is the brightest edge in the plate.
+      - lines: ["FIVE STILL INSIDE"]
+        size: 28
+        tracking: 4
+        x: 0.05
+        y: 0.47
+        anchor: left
+        scrim: true
+
+  # C — the arithmetic. The night and the margin, over the plate where the
+  # record's night actually starts. This is the variant that sells the genre
+  # rather than the story: a figure that can be checked, and a second figure
+  # that is nine hours away from being enough.
+  #
+  # The plate is almost entirely black with one thin lit band of regolith, so
+  # this is the one variant whose type needs no scrim to survive — but it
+  # keeps one, because the band moves with the crop and a variant that reads
+  # only at one zoom is not a variant.
+  - id: c-the-margin
+    plate: "2.1"
+    crop: {zoom: 0.90, bias_y: 0.52}
+    blocks:
+      - lines: ["354 HOURS", "OF NIGHT"]
+        size: 104
+        tracking: 4
+        x: 0.05
+        y: 0.10
+        anchor: left
+        scrim: true
+      # Moved down off the lit band of regolith, which is the one bright thing
+      # in an otherwise black plate and was washing the line out at grid size.
+      # Below the band it is pale type on black, which is the easiest read on
+      # any of the three.
+      - lines: ["NINE HOURS OF BATTERY TO SPARE"]
+        size: 34
+        tracking: 8
+        x: 0.05
+        y: 0.72
+        anchor: left
+        scrim: true

@@ -251,6 +251,31 @@ def main():
                     ba.card_anchors(ep, shots))}
     cache_dir = ep / "audio" / "alignment"; cache_dir.mkdir(parents=True, exist_ok=True)
 
+    # --align-only fetches and caches the word timings for every paragraph and
+    # stops there, without needing verticals.yaml to exist.
+    #
+    # This exists because the pipeline had a circle in it. A cut's in and out
+    # points come from the real word timings — the channel refuses an estimate,
+    # because record 03 shipped two verticals cut inside a word — and those
+    # timings live in audio/alignment/. But the only thing that ever filled
+    # audio/alignment/ was this script, and this script reads verticals.yaml on
+    # its way there. So the file whose contents depend on the alignments had to
+    # exist before the alignments could be fetched, and record 04's cut points
+    # were chosen against a set of timings someone had already produced by
+    # running the script far enough to crash.
+    #
+    # Same API, same seeds, same previous_text, same cache. Nothing here is a
+    # second copy of the alignment call; it is the same function, stopped early.
+    align_only = "--align-only" in sys.argv
+    for pid in order:
+        if not align_only:
+            break
+        alignment(pid, paras[pid], prev_of[pid], picks[pid], voice, key, cache_dir)
+        print(f"  aligned {pid}")
+    if align_only:
+        print(f"\n{len(order)} paragraphs aligned into {cache_dir}")
+        return 0
+
     verticals = yaml.safe_load((ep / "verticals.yaml").read_text())
 
     # This stage burns captions into a cut that was carved out of the master as

@@ -1,0 +1,167 @@
+# Data cards — record 5.
+#
+# Rules carried from the channel, enforced elsewhere and repeated here because
+# this is the file someone edits at two in the morning:
+#
+#   - Every character comes out of Pillow in Menlo, phosphor green, at the size
+#     in config/type.yaml. Never white, never below 40 px. Record 02 shipped
+#     off-white at 26 px into a salt pan and the cards vanished.
+#   - Cards go UNDER the grain pass, like the titles, so they belong to the
+#     recording instead of looking captioned onto it.
+#   - Characters type on one at a time with a click per glyph. Nothing slides,
+#     fades, bounces or wipes. The click bed is mixed by build_cards.py, not by
+#     hand — record 03 shipped a silent typewriter because that step lived in
+#     somebody's memory.
+#   - Every card sits on a plate framed for it. See `card:` in shots.yaml and
+#     the "lower left of frame empty" clause in each of those prompts. If a
+#     plate comes back busy where the card goes, the plate is wrong.
+#
+# `with:` names the narration paragraph the card answers to, and validate.py
+# measures the gap: -3.0 s to +6.0 s. The two coda cards have no `with:` on
+# purpose — there is no voice left to answer to. They are the recovery frame,
+# and the two figures on them are the ones the operator never learns.
+#
+# Times are seconds from the start of the card's own shot, never absolute.
+#
+# All eight plates are 10 s except 7.2, which is 5. Typing time is checked
+# against every one of them by validate.py, which runs the real card_schedule
+# and card_end out of build_cards.py, so this file cannot quietly disagree
+# with the builder. The tight one is purge-telemetry: six lines, 92
+# characters, finished at 9.3 s of a 10 s plate.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 2 -------------------------------------------------------------
+  # The budget, in two halves. This card is the barrier and the next one is
+  # the answer to it, and the gap between them — nine hours on three hundred
+  # and fifty-four — is the whole record. Both are read out loud as well,
+  # because a figure that only exists on a card does not survive the crop into
+  # a vertical.
+  - id: night-budget
+    with: s2p2
+    shot: "2.1"
+    pos: lower-left
+    build: line
+    at: 2.8
+    hold_until: 9.6
+    lines:
+      - "NIGHT     354.4 H"
+      - "BATTERY   4000 KWH"
+
+  - id: budget-draw
+    with: s2p4
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 3.5
+    hold_until: 9.6
+    lines:
+      - "DRAW      11.0 KW"
+      - "RUNTIME   363.6 H"
+      - "MARGIN    9.3 H"
+
+  # --- Scene 3 -------------------------------------------------------------
+  # The protocol, word for word as the voice reads it. The card and the line
+  # say the same thing at the same time on purpose: this is the one rule the
+  # record is going to break, and it is worth the viewer having read it as
+  # well as heard it.
+  - id: protocol-7
+    with: s3p4
+    shot: "3.3"
+    pos: lower-left
+    build: line
+    at: 0.2
+    hold_until: 9.6
+    lines:
+      - "PROTOCOL 7  REVISED"
+      - "NO ENTRY TO GALLERY 3 ALONE"
+      - "NO CONTACT WITH VOID MATERIAL"
+      - "PURGE VALVES CLAMPED"
+
+  # --- Scene 4 -------------------------------------------------------------
+  # The telemetry. Six lines and the only card in the record that is evidence
+  # rather than a summary: the eleven seconds the operator reads out are the
+  # difference between the first timestamp and the last, and the viewer can
+  # do that subtraction while he is still talking.
+  #
+  # It starts at 0.4, earlier than the others, because six lines at 18
+  # characters a second need 6.9 s of typing and then two seconds on screen
+  # after the last character. That leaves 0.7 s of margin on a 10 s plate,
+  # which is the tightest card on this record and the reason the typing check
+  # is a gate rather than a habit.
+  - id: purge-telemetry
+    with: s4p3
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 0.4
+    hold_until: 9.6
+    lines:
+      - "PURGE VALVE OPEN  GALLERY 3"
+      - "S2  -60:14:07"
+      - "S3  -60:14:09"
+      - "S4  -60:14:11"
+      - "S5  -60:14:15"
+      - "S6  -60:14:18"
+
+  # --- Scene 5 -------------------------------------------------------------
+  # Two numbers that should be the same number. The card does not say what the
+  # difference means; the next card does not either. The operator says it.
+  - id: battery-3658
+    with: s5p2
+    shot: "5.1"
+    pos: lower-left
+    build: line
+    at: 4.0
+    hold_until: 9.6
+    lines:
+      - "BATTERY   3658 KWH"
+      - "EXPECTED  3670 KWH"
+
+  # The impossibility, stated as two lines of instrument output with no
+  # comment on it. A load, and everything that could be drawing it switched
+  # off. Both lines carry their own label inside them — record 02's two
+  # unlabelled rectangles are why every graphic on this channel says what it
+  # is measuring.
+  - id: bus-3
+    with: s5p4
+    shot: "5.3"
+    pos: lower-left
+    build: line
+    at: 0.3
+    hold_until: 4.7
+    lines:
+      - "BUS 3        0.40 KW"
+      - "BUS 3 LOADS  ISOLATED"
+
+  # --- Scene 7, the coda ---------------------------------------------------
+  # No `with:`. There is no voice in scene 7 and these two cards are the whole
+  # of it. The first is the arithmetic the record has already given the viewer
+  # everything needed to do: hour 351 is where the battery ends only if the
+  # 0.40 kW was never switched off, and switching it off is what the operator
+  # went in to do.
+  - id: record-ends
+    shot: "7.1"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 9.6
+    lines:
+      - "RECORD ENDS  NIGHT HOUR 31"
+      - "BATTERY 0 KWH  NIGHT HOUR 351"
+
+  # One line, five seconds, and the last thing on the record. Six suits in a
+  # gallery that five crew walked into, and one operator after them. The
+  # record does not say which six.
+  - id: suits-6
+    shot: "7.2"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 4.8
+    lines:
+      - "SUITS IN GALLERY 3 AT DAWN: 6"

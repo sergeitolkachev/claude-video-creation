@@ -58,6 +58,20 @@ def main():
     only = None
     if "--only" in args:
         i = args.index("--only"); only = args[i+1]; del args[i:i+2]
+    # --dry-run prints the exact body that would be sent and spends nothing.
+    #
+    # Record 05 paid $0.70 to learn why this is needed. A shots.yaml edit
+    # raised an error after its first substitution and before the file was
+    # written, so nothing was saved; the generate command was on the next
+    # shell line rather than chained to it and ran anyway, against the
+    # unchanged prompt. The money bought a second copy of a take that had
+    # already been rejected.
+    #
+    # What makes that impossible is not remembering to check. It is being able
+    # to see the outgoing prompt without paying for it, which is what this is.
+    # Run it after every prompt edit and before every generate.
+    dry = "--dry-run" in args
+    if dry: args.remove("--dry-run")
     scene = int(args[0])
     ep = pathlib.Path(args[1] if len(args) > 1 else "episodes/ep-01-tishina-9")
     cfg = yaml.safe_load(pathlib.Path("config/models.yaml").read_text())
@@ -108,7 +122,8 @@ def main():
             jobs.append((dest, j["status_url"], j["response_url"], 0.0, s))
             continue
         tier = cfg["video"][s["model"]]
-        img = upload(ep / "approved" / f"{s['id']}.jpg", key, cache)
+        plate = ep / "approved" / f"{s['id']}.jpg"
+        img = "<dry-run: not uploaded>" if dry else upload(plate, key, cache)
         gen = s["generate_seconds"]
         static = s["motion"].strip() == "static"
         motion = s.get("video_prompt") or (
@@ -144,6 +159,18 @@ def main():
                     "seed": 11, "camera_fixed": s["motion"].strip() == "static"}
             price = gen * tier["price_per_second_usd"]
 
+        if dry:
+            print(f"\n  ---- {s['id']}  {s['model']}  {gen}s  ${price:.2f} "
+                  f"{'(plate MISSING)' if not plate.exists() else ''}")
+            print(f"  endpoint : {tier['id']}")
+            print(f"  prompt   : {body['prompt']}")
+            if body.get("negative_prompt"):
+                print(f"  negative : {body['negative_prompt']}")
+            for k in ("duration", "generate_audio", "camera_fixed", "resolution"):
+                if k in body: print(f"  {k:<9}: {body[k]}")
+            jobs.append((dest, None, None, price, s))
+            continue
+
         r = req(f"https://queue.fal.run/{tier['id']}", key, body)
         # Written before anything is polled: from here on the request exists on
         # fal's side whatever happens to this process.
@@ -158,6 +185,9 @@ def main():
               f"id={r.get('request_id')}")
 
     print(f"\nscene {scene}: {len(jobs)} clips, ${sum(j[3] for j in jobs):.2f}\n")
+    if dry:
+        print("DRY RUN — nothing was queued, nothing was uploaded, $0.00 spent.")
+        return
 
     spent = 0.0
     for dest, status_url, response_url, price, s in jobs:

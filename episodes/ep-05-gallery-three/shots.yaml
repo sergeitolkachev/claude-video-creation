@@ -1,0 +1,1250 @@
+# Record No. 5 — "THE OPERATOR WENT INTO GALLERY THREE ALONE"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompt text here is already cleaned for the hygiene rules below. Do not copy
+# prompt prose out of script.md into a generation call by hand — that text is
+# laid out for a human reader, and on this record it was laid out by an agent
+# that put the camera move in the same sentence as the subject. The split is
+# the whole reason this file exists.
+
+episode: ep-05-gallery-three
+runtime_seconds: 225
+aspect: "16:9"
+
+# The operator, first person. Record 03 was the first told in this voice and
+# it broke three scripts in turn, each of which had read config/voice.yaml on
+# its own and found `narrator` written into it. An episode names its voice
+# once, here, and gen_narration.py, build_audio.py and build_captions.py all
+# read this key. The dangerous one is the third: captions timed against a
+# voice that is not in the record place every word where it is not spoken.
+voice: character
+
+# Per-scene runtime, read by scripts/validate.py. Every figure is summed from
+# the shots below, never from the prose. The submitted script arrived with the
+# arithmetic already correct — 26 shots summing to 225 s exactly, per scene
+# and overall — which is the first time that has happened on this channel.
+scene_runtime: {1: 30, 2: 35, 3: 40, 4: 40, 5: 40, 6: 25, 7: 15}
+
+# Scene 7 is the coda: two card plates with no voice at all. The recording has
+# ended and the recovery frame is delivered as text, which is where the payoff
+# of the record lives — the battery hour and the suit count are deliberately
+# withheld from the operator, who never learns either. 100% silent by
+# construction, so it is declared rather than dragging the body average down.
+# Declared, not waived: validate.py measures the body without it and prints it
+# separately.
+coda: [7]
+
+# --- Prompt hygiene ---------------------------------------------------------
+# Everything here was decided in the script or on intake, and is repeated as a
+# pattern so a later edit to a prompt cannot quietly break it. Each rule is a
+# failure someone has already paid for, on this record or an earlier one.
+
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    # Rule 1 — nothing moves in a frame that will never be animated.
+    #
+    # Thirteen of the twenty-six shots here are built in ffmpeg from one
+    # approved still. A still that contains dust in the air, a hanging strap,
+    # condensation or a lit indicator is a frozen photograph of something that
+    # ought to be moving, and on a screen that does not read as a locked-off
+    # camera — it reads as a stalled player, which is the tape-dropout failure
+    # in another form. Record 04 paid $1.75 re-rolling three coda plates
+    # through Kling for exactly this, having exempted them from the rule by
+    # assertion.
+    #
+    # The exception list is not a list of tolerated faults. It is, precisely,
+    # the thirteen shots that go to a video model, where every one of these
+    # words is the subject. Moving a shot off the model tier means taking its
+    # id out of here, and the rule then tells you what has to come out of the
+    # prompt with it.
+    - pattern: '\b(drift\w*|float\w*|motes?|suspended|vapou?r|mist|steam|smoke|condensation|sway\w*|swing\w*|turning|rotat\w*|blink\w*|flash\w*|puls\w*|flicker\w*|creep\w*|advancing|stream\w*|billow\w*|swirl\w*|sink\w*|falling|rising|spark\w*|moving)\b'
+      except: ["1.1", "1.3", "2.3", "2.4", "3.1", "3.3", "3.4",
+               "4.4", "4.5", "5.4", "5.5", "6.2", "6.3"]
+      why: >
+        A shot built from a single still must contain nothing that the eye
+        expects to see move. The words "loose", "hanging" and "clear" are
+        deliberately not in this pattern: they are the remedy, and a rule that
+        fires on its own remedy is a rule nobody can read past.
+
+    # Rule 2 — no surface that a model can write on.
+    #
+    # The submitted draft asked for "one flat screen ... with nothing
+    # displayed on it" on 4.1 and 6.1. Every noun in that clause is one record
+    # 04 forbids outright: Seedream and nano-banana invent garbage glyphs out
+    # of anything that resembles a panel with information on it, and this
+    # channel's entire claim to having been issued rather than assembled is
+    # that every character on screen comes out of one Pillow renderer. The
+    # console is a flat glass panel lit evenly from behind now, with nothing
+    # behind it.
+    # "plaque", "placard", "nameplate" and "legend" joined this list after
+    # scene 4's batch. They were never in a prompt and are not what went
+    # wrong: 4.1 came back with a small white label plate above and below
+    # every one of forty toggle switches, each carrying invented lettering,
+    # because a console with rows of switches IMPLIES labels and record 03's
+    # rule is that a negation only works when the subject does not. The real
+    # fix is in 4.1's prompt, which now describes bare switches set into
+    # unbroken metal. This pattern is here so that a later editor cannot
+    # reintroduce the noun by hand.
+    - pattern: '\b(text|lettering|writing|written|label|labell?ed|plaque|placard|nameplate|legend|inscription|stencil\w*|serial|legible|numerals?|digits?|readout|display\w*|screen|monitor|gauge|dial)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py. The six
+        data cards in this record are drawn in Menlo at 40 px in phosphor
+        green, and nothing in the picture underneath them is allowed to be
+        writing.
+
+    # Rule 3 — no people, and no suit that could become one.
+    #
+    # The ordinary version of this rule holds: "no people" ends every prompt
+    # and has never failed across records 01 to 04. What is new here is the
+    # empty suit. Record 04 learned that a frame showing part of an animal is
+    # an invitation to finish it — Kling grew a head with an eye onto a tail
+    # in two shots out of two. A pressure suit hanging on a hook is the same
+    # invitation in a different shape: it is a person-shaped hole, and 1.3 and
+    # 4.4 hold it in frame for ten seconds each. The still stage cannot catch
+    # this, because the still is right and the clip invents what the still
+    # withholds. It is named in negative_extra on both shots and the motion is
+    # written as pure translation of one strap.
+    #
+    # "eye" and "face" are NOT in this pattern on purpose: five prompts open
+    # "eye-height view down a corridor" and one is a macro of the face of a
+    # hatch, and a hyphen is a word boundary. A rule that fires on the right
+    # word in the wrong sense gets switched off.
+    - pattern: '\b(man|woman|person|crew|operator|astronaut|figure|hands?|arms?|fingers?|shoulder|wearing|inhabited)\b'
+      except: []
+      why: >
+        The word "people" is deliberately absent: every prompt ends with the
+        clause "no people". What this catches is the noun that arrives by
+        accident, like "operator's console".
+
+    # Rule 4 — the far side has no air and no weather.
+    #
+    # Outside, there is no haze, no glow on the horizon, no cloud and no
+    # atmosphere of any kind: shadows have a razor edge with no fill in them
+    # and the sky is black at every angle including next to the sun. Every
+    # image model answers "lunar surface" with a hazy terminator glow, because
+    # that is what the illustration training data is full of.
+    - pattern: '\b(haze|hazy|mist over|atmospher\w*|cloud\w*|fog|glow on the horizon|airglow|aurora|blue sky|sunset colou?rs?|golden)\b'
+      except: []
+      why: >
+        Interiors have air and one of them has mist in a depressurising
+        airlock, which is real and is why "mist" alone is in rule 1 and not
+        here. What this catches is an atmosphere outside.
+
+    # Rule 5 — nobody has been outside.
+    #
+    # Found on scene 1's first batch. Shot 1.1 came back in one seed out of
+    # two with an evenly spaced line of boot prints crossing the regolith,
+    # bright rim and dark cavity, unmistakable: Seedream answers "lunar
+    # surface" with Apollo photography, because that is what lunar surface
+    # photography IS in the training data. In a record whose premise is one
+    # man who has not left the station, a human track outside is not a blemish
+    # — it is the fiction contradicted in the establishing shot.
+    #
+    # The remedy is written positively — "the surface unbroken and continuous
+    # with nothing crossing it" — so that none of these words has to appear in
+    # a prompt to keep one out of the picture.
+    # "module", "equipment" and "base" were in this pattern for about a minute
+    # and came straight back out: two prompts describe the side of a battery
+    # module, which is a station part and not a piece of Apollo hardware
+    # parked on the regolith. The pattern names the specific nouns, not the
+    # general ones.
+    - pattern: '\b(footprints?|boot ?prints?|tracks?|tread|trail|tyre|tire|rover|lander|flag|antenna|outpost)\b'
+      except: []
+      why: >
+        Every exterior in this record is ground nobody has walked on. The
+        interiors are unaffected: none of these nouns belongs in one either.
+
+    # Rule 6 — no saturated colour, and no painted markings to carry it.
+    #
+    # Also from scene 1's first batch. Both candidates for 1.3 put a saturated
+    # yellow hazard stripe along the floor, one of them in the lower left
+    # where the slug sits for the record's first five seconds. The spine says
+    # "desaturated blue-grey, graphite and dull silver, and nothing else", and
+    # the model volunteered the colour anyway, because an industrial interior
+    # in the training data has a painted floor in it. A spine states the
+    # palette; it does not defend it.
+    - pattern: '\b(yellow|orange|amber|red|hazard|warning strip\w*|painted line|colou?rful|high-vis\w*)\b'
+      except: []
+      why: >
+        The palette is desaturated blue-grey, graphite and dull silver
+        outside and in. "Blue" is deliberately absent from this pattern:
+        every interior prompt in the record says "cold white-blue light".
+
+# --- Spines -----------------------------------------------------------------
+# Material, light and palette only. No camera, no distance, no lens, no
+# framing words, and no object named — not even to forbid it. Record 03's
+# spine said its work lamp "appears only in the shots that name it" and the
+# lamp then stood in eight of fifteen anchor candidates: the model reads the
+# noun and discards the clause governing it.
+#
+# One spine per camera distance, which is record 03's other lesson and record
+# 04's proof. "A station corridor" is a framing instruction wearing a
+# material's clothes, so the two macro distances get spines with no room and
+# no landscape in them at all.
+
+anchor_spine: &spine >
+  Scuffed brushed aluminium and off-grey composite panelling, every edge worn
+  down to bare metal, fine grey dust packed into every seam and rivet line.
+  Cold white-blue light from overhead, low and even, falling off into
+  near-black within a few metres. The palette is desaturated blue-grey,
+  graphite and dull silver, and nothing else. No saturated colour. No people.
+
+# The interior macro distance. No room noun anywhere in it: no corridor, no
+# station, no wall, no ceiling. Record 03 lost three passes of macro anchors
+# to a spine that opened "interior of an orbital relay station", and record 04
+# landed the same distance on the third pass only after the room words came
+# out.
+macro_spine: &macro_spine >
+  Worn brushed aluminium and grey woven fabric with abrasion and pilling in
+  it, fine grey dust caught in the knurling and worked into the stitching,
+  every surface in the picture at close to the same distance from the lens.
+  One cold white-blue source from one side. The palette is desaturated
+  blue-grey, graphite and dull silver, and nothing else. No saturated colour.
+  No people.
+
+# Outside. Two anchors share it, because the material is the same and the
+# light is not: A1 is rim-lit and A1n is starlight, and the difference is
+# written into each anchor's own subject rather than into the spine.
+exterior_spine: &exterior_spine >
+  Fine powdery pale-grey regolith, undisturbed. Hard black shadow with a razor
+  edge to it and no fill light inside it at all. Nothing softens anything and
+  there is no haze at any distance. A black sky filled edge to edge with
+  small, sharp, unmoving stars. The only light is hard white light or
+  starlight. The palette is monochrome, grey through black, and nothing else.
+  No people.
+
+# The same ground with no sun on it, and its own spine because the exterior
+# spine above cannot be reused for it. Pass 1 handed A1n the exterior spine
+# and got three brightly sunlit craters back, one of them with a grey glow
+# along the horizon: the spine offers "hard white light or starlight", and a
+# model reading that sentence takes the hard white light every time, exactly
+# the way record 03's spine named a work lamp and then put it in eight frames
+# out of fifteen. There is no shadow noun in here either — at night nothing
+# casts a shadow, everything unlit is simply black — and the picture is told
+# outright that most of it is black, because an image that is mostly black is
+# statistically rare and a model will light it if it is not stopped.
+#
+# One change from pass 1, not two. The geometry sentence in A1n's subject is
+# left word for word as it was, because the identical sentence in A1 returned
+# a ground-level view in all three seeds. If pass 2 lands the light and the
+# camera is still up on the rim, the geometry is pass 3's change and not this
+# one's — which is the discipline record 04's A3 needed three passes to learn.
+night_exterior_spine: &night_exterior_spine >
+  Fine powdery pale-grey regolith, undisturbed, seen by starlight and by
+  nothing else. There is no sun anywhere and no sunlight on anything. Most of
+  the picture is black, and the ground is barely readable, dark grey on black,
+  with no bright surface anywhere in it. A black sky filled edge to edge with
+  small, sharp, unmoving stars, with no glow of any kind along the horizon and
+  no light in the sky but the stars themselves. The palette is black, with
+  only the faintest dark grey in it, and nothing else. No people.
+
+# One shot: 7.2, a macro of the ground outside. It is neither the exterior
+# wide nor the interior hardware macro, and handing it either anchor returns
+# that anchor's distance — the failure record 01 paid a whole pass for. There
+# is no anchor at this distance because it happens once, so it goes
+# text-to-image against its own spine, the way record 04's one tissue shot
+# did. Written the way record 04's macro_spine finally worked: the material
+# described by what it is smooth of, and the geometry stated positively.
+regolith_macro_spine: &regolith_macro_spine >
+  A surface of fine pale grey dust, so fine that it has no visible grains,
+  marked only by the faint pitting where single particles have settled on it.
+  Every part of the picture is that surface, at the same distance from the
+  lens as every other part, because the camera is directly above it and
+  pointing down. The surface continues in every direction past the picture, so
+  the picture is a piece of it and not a view of it. One hard white source
+  comes in low from one side and every pit casts its own small hard black
+  shadow. There is no sky and no distance anywhere in it. The palette is pale
+  grey through black, and nothing else. No people.
+
+# --- Motion tails -----------------------------------------------------------
+# Appended to every video prompt by gen_takes.py. They are what stops Kling
+# inventing a camera move, and they are the reason the static tier is built in
+# ffmpeg instead of asked for politely.
+
+motion_tail_drift: &motion_tail_drift >
+  Only the suspended dust moves, slowly and evenly, and it keeps moving for
+  the whole shot. The camera itself does not move at all: no dolly, no push
+  in, no pull back, no pan, no tilt, no parallax. The light source does not
+  move and the beam does not sweep. No cuts, no speed changes, no zoom snaps.
+  Nothing enters the frame and nothing new appears in it.
+
+motion_tail_event: &motion_tail_event >
+  The one movement named above happens and completes within the shot, at a
+  steady unhurried speed. Everything else in the frame is still. The camera
+  itself does not move at all: no dolly, no push in, no pull back, no pan, no
+  tilt, no parallax. Nothing in the frame changes shape, grows, unfolds or
+  becomes anything else. No cuts, no speed changes, no zoom snaps. Nothing
+  else enters the frame.
+
+# For the two shots where the camera genuinely travels down the corridor.
+# Kling holds a frame and it holds a single continuous move; what it will not
+# do is hold a frame while being told to, which is why the static tier is
+# built in ffmpeg and this tail exists for exactly two shots.
+motion_tail_travel: &motion_tail_travel >
+  The camera moves continuously and slowly in that one direction for the whole
+  shot and in no other: no pan, no tilt, no rotation, no reversal, no pause,
+  no zoom. The corridor keeps its shape exactly and no part of it changes as
+  the camera passes. The suspended dust streams past at a steady rate. No
+  cuts, no speed changes. Nothing enters the frame.
+
+# --- Anchors ----------------------------------------------------------------
+# Five, one per camera distance and light condition that recurs. An anchor
+# locks composition as hard as it locks palette, so handing A2 to a macro shot
+# returns a corridor — that is the failure that cost record 01 a whole pass.
+#
+# A1 and A1n are the same ground in two lights. The exterior appears three
+# times in this record and in three states — low sun on the rim (1.1), full
+# night under starlight (2.1), first light on the peaks (7.1) — and an anchor
+# holds light as hard as it holds framing. A1 carries the two rim-lit shots;
+# the night is its own anchor because a sun in the reference puts a sun in the
+# frame.
+#
+# approved_seed plus the prompt here reproduces the approved image exactly. Do
+# not regenerate an approved anchor: every still in the record is built
+# against these frames. All candidates from all passes stay under
+# anchors/pass-N/.
+anchors:
+  - id: A1-crater-lowsun
+    model: anchor
+    approved_seed: 11         # approved 2026-09-21
+    approved_file: anchors/A1-crater-lowsun.jpg
+    covers: ["1.1"]
+    spine: *exterior_spine
+    subject: >
+      Camera: 24mm lens at ground level, level, the rim across the upper third
+      of the frame. Wide shot. Subject: a flat crater floor of pale grey
+      regolith running out to a distant mountainous rim, one low hard white
+      source grazing it from the right so that every ridge throws a long hard
+      black shadow with nothing inside it. The lower left quarter of the frame
+      is unlit ground going to black.
+
+  - id: A1n-crater-night
+    model: anchor
+    approved_seed: 11         # approved 2026-09-21
+    approved_file: anchors/A1n-crater-night.jpg
+    covers: ["2.1", "7.1"]   # 7.1 moved here from A1 after batch 1
+    spine: *night_exterior_spine
+    subject: >
+      Camera: 24mm lens at ground level, level, the rim across the upper third
+      of the frame. Wide shot. Subject: a flat floor of pale grey regolith
+      running out to a distant mountainous rim, with no sun on any part of it,
+      the ground reading as the faintest dark grey against a black sky and the
+      rim as a flat black edge with no detail in it at all. The ground takes
+      up the lower half of the picture and is almost entirely black. The lower
+      left quarter of the frame is black and empty.
+    note: >
+      Pass 1 came back as three brightly sunlit craters seen from up on the
+      rim, one of them with a grey gradient glow along the horizon — an
+      atmosphere, in a record whose fourth hygiene rule forbids one. The fault
+      was in the spine, not in the subject: the exterior spine offers "hard
+      white light or starlight" and a hard black shadow with a razor edge, and
+      both clauses are instructions to light the scene. Pass 2 gives the night
+      its own spine and changes nothing else.
+
+      Pass 2 landed the two things this anchor exists to hold: no sun anywhere
+      in any of the three seeds, and a ground-level camera on a flat floor
+      with the rim in the upper third — the elevated bowl view went away on
+      its own when the light wording changed, which is the case for changing
+      one property at a time rather than the case against it.
+
+      One fault remains, and it is a selection decision rather than a rework:
+      the plain is still brighter than starlight would leave it, brightest in
+      s22 and s33 and darkest in s11. An image that is mostly black is rare in
+      the training data and the model lifts it. It is not fixed by
+      regenerating an approved frame; if it has to go, it is pass 3 changing
+      that one property.
+
+  - id: A2-corridor
+    model: anchor
+    approved_seed: 11         # approved 2026-09-21
+    approved_file: anchors/A2-corridor.jpg
+    covers: ["2.4", "3.1", "5.3", "5.5", "6.2"]
+    spine: *spine
+    subject: >
+      Camera: 28mm lens at eye height on the axis of the corridor, level, the
+      vanishing point in the centre of the frame. Subject: a narrow corridor
+      of worn aluminium panelling running away from the lens into darkness,
+      lit in separate pools by cold overhead sources with unlit stretches
+      between them, the far end lost in black. The lower left of the frame is
+      unlit panelling.
+
+  - id: A3-macro-hardware
+    model: anchor
+    approved_seed: 11         # approved 2026-09-21
+    approved_file: anchors/A3-macro-hardware.jpg
+    covers: ["1.2", "2.2", "2.3", "3.2", "3.3", "4.2", "4.5", "5.1", "5.2",
+             "5.4"]   # 4.2 moved here from ref_shot 1.2 after batch 1
+    spine: *macro_spine
+    subject: >
+      Camera: 100mm macro lens twenty-five centimetres from the subject,
+      square on to it, shallow depth of field. Subject: a worn aluminium
+      fitting seen close enough that the machining marks and the dust in them
+      are the whole of the picture, one cold source raking it from the left
+      and the right side of the frame falling into deep shadow. There is no
+      room behind it: the picture is filled by the fitting and by what it is
+      set into.
+
+  - id: A4-object-mid
+    model: anchor
+    approved_seed: 11         # approved 2026-09-21
+    approved_file: anchors/A4-object-mid.jpg
+    covers: ["1.3", "3.4", "4.1", "4.3", "4.4", "6.1", "6.3"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens two and a half metres from the subject, square on to
+      it, the subject centred. Mid shot. Subject: a single piece of station
+      fitting mounted on a worn aluminium wall, lit from above by one cold
+      even source, the wall falling away into near-black to either side of it.
+      The lower left quarter of the frame is in shadow and completely empty,
+      because that is where every data card in this record is drawn.
+
+# --- Shots ------------------------------------------------------------------
+#
+# `approved_seed` is the candidate a human picked out of stills/, written down
+# for the same reason an anchor's is: stills/ and approved/ are media and are
+# not versioned, so without the seed an approved frame is only reproducible by
+# eye. Prompt plus seed brings it back exactly. It is filled in at stage 5 and
+# is empty until then.
+#
+# Thirteen shots here have `source: ffmpeg_still` and cost nothing. That is
+# not a saving taken out of the record: eight of them carry a data card, where
+# the Motion Policy wants the frame still because the eye is on the text, and
+# five are texture under narration. Every shot that runs under silence, and
+# every shot whose content should physically move, is on the model tier.
+
+shots:
+
+  # SCENE 1 — NIGHT HOUR ZERO (30 s)
+  #
+  # Image first, no card, no logo. The record opens on the last ten seconds of
+  # daylight this station will see for two weeks, and the only thing that
+  # happens in them is the shadow arriving.
+
+  - id: "1.1"
+    scene: 1
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the shadow edge creeping toward the camera
+    motion_tail: motion_tail_event
+    # The submitted draft asked for "camera locked, very slow push forward" in
+    # one sentence. That is two instructions, and record 01 established what
+    # this model does with a contradiction. The camera is locked and the
+    # movement is the terminator, which is the one thing in this frame that is
+    # actually moving in the fiction. It is also slow: if the take comes back
+    # with nothing visibly happening in ten seconds, the fix is a faster edge
+    # in the prompt, not a camera move.
+    video_prompt: >
+      The hard black shadow edge lying across the ground moves slowly and
+      steadily toward the camera for the whole shot, and the lit ground in
+      front of it gets narrower as it comes. Nothing else in the frame moves.
+      The sun does not move and the camera does not move.
+    negative_extra: >
+      dust in the air, haze, glowing horizon, atmosphere, lens flare, sun
+      moving, stars moving, terrain changing shape
+    anchors: [A1-crater-lowsun]
+    # Batch 1: seed 22 came back with a line of boot prints across the
+    # regolith and seed 11 with a rift cut through the middle distance, which
+    # is a second void in a record that already has one and puts it at 41 m
+    # under a drill. Both are the model filling an empty plain with the most
+    # statistically likely thing, and neither is fixed by forbidding it —
+    # record 03's rule is that a negation only works when the subject does not
+    # imply it, and an empty plain implies something. So the surface is
+    # described by what it has on it instead.
+    prompt: >
+      Ground-level wide view across a crater floor of pale grey regolith
+      toward a distant mountainous crater rim, a low white sun sitting exactly
+      on the rim line at frame right, a hard black shadow edge lying across
+      the regolith in the middle distance with nothing inside it, the ground
+      itself flat and unbroken and continuous from the bottom of the frame to
+      the rim with nothing crossing it and nothing lying on it, its only
+      texture the fine even dust and a scatter of shallow dents too small to
+      cast much shadow, black sky with small sharp stars above the rim, no
+      people
+
+  - id: "1.2"
+    scene: 1
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of a round purge valve knob with coarse knurling set into grey
+      woven suit fabric, a heavy brushed-aluminium clamp bracket bolted across
+      the knob and locking it, fine grey dust settled in the knurling and
+      along the fabric stitching, cold white-blue light raking from the left
+      and deep shadow on the right, shallow depth of field, nothing in the
+      frame loose or hanging and the air in front of the subject completely
+      clear, no people
+
+  - id: "1.3"
+    scene: 1
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the tether strap swaying in the vent draft
+    motion_tail: motion_tail_event
+    # The person-shaped hole. Five bare hooks and one suit, held in frame for
+    # ten seconds, is record 04's animal problem in a different shape: the
+    # still withholds a person and the model is invited to supply one. The
+    # motion is written as translation of one strap and nothing else, and the
+    # completions are named. 4.4 is the same rack and carries the same list.
+    # Take 1 held the thing that was expensive to hold — the neck opening
+    # stayed empty for all ten seconds, no head, no face — and lost the two
+    # things that move. The strap did not sway: it grew into a long festoon
+    # draped between two hooks by 5 s and was hanging from a different hook by
+    # 9.8. And the collar re-folded and changed direction continuously, which
+    # on screen reads as a neck turning inside an empty suit, then hardened in
+    # the last second from crumpled fabric into a rigid circular ring.
+    #
+    # That is record 04's completion failure in a quieter register. Kling did
+    # not grow a head; it animated the hole where a head would be, which in a
+    # record whose whole claim is that the suit is empty is the worse of the
+    # two. Take 2 uses the recipe that fixed record 04's 6.1: every sentence
+    # is about position, none about shape, and each way the model completed
+    # the frame is named.
+    #
+    # If take 2 breaks the same way, that is two failures and there is no
+    # third roll. The documented fallback is record 04's: cut this shot at the
+    # last clean second and give the remainder to 1.2, which is built in
+    # ffmpeg and costs nothing. Scene 1 stays 30 s either way.
+    video_prompt: >
+      The loose fabric strap hanging beside the suit swings slowly from side
+      to side as one piece, staying exactly the same length and exactly the
+      same shape, and staying on the same hook for the whole shot. The neck
+      opening of the suit keeps exactly the shape it has and keeps facing
+      exactly the direction it faces. The suit itself does not move, nothing
+      moves inside it, and the camera does not move.
+    negative_extra: >
+      person, human figure, body filling the suit, the suit inflating, the
+      suit standing up, an arm, a leg, a head, a face behind the visor,
+      helmet turning, the neck opening turning, the collar re-folding,
+      the collar opening or closing, the collar stiffening into a ring,
+      fabric becoming metal, the strap lengthening, the strap unfolding,
+      the strap draping between hooks, the strap moving to another hook,
+      suit changing shape, growing, morphing
+    anchors: [A4-object-mid]
+    # Batch 1 volunteered three things, and all three are fixed in the same
+    # edit because each has its own obvious cause. The hook count did not read
+    # — the line this shot carries is "station crew, six, on shift, one", so
+    # five empty hooks and one full one ARE the shot, and a rail of eight
+    # small hooks says nothing. A second light fixture appeared lit on the
+    # wall, which a suit rack does not imply, so a plain negation works on it.
+    # And both candidates painted a saturated yellow stripe along the floor,
+    # one of them in the lower left where the slug sits. See hygiene rule 6.
+    prompt: >
+      Head-on view of a wall-mounted suit rack with exactly six large heavy
+      hooks in one evenly spaced row, the five hooks on the left completely
+      bare with nothing on them at all and only the sixth hook at the right
+      end carrying one empty grey pressure suit, its empty helmet resting on
+      the shelf above that hook, worn aluminium panelling behind, one cold
+      white-blue light from above and no other light fitting anywhere in the
+      picture, a loose fabric tether strap hanging from the suit, the suit
+      empty and unoccupied, the floor and the walls bare metal with no paint
+      and no stripe of any kind on them, lower left of frame in shadow, no
+      people
+
+
+  # SCENE 2 — THE BUDGET (35 s)
+  #
+  # Two card plates and two shots that move. The plates are a night exterior
+  # and a macro of cooling fins, and neither has anything in the air in it —
+  # which is what makes them free. See hygiene rule 1.
+
+  - id: "2.1"
+    scene: 2
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: night-budget
+    anchors: [A1n-crater-night]
+    prompt: >
+      Ground-level wide view across a crater floor at night, pale grey
+      regolith only just visible under starlight and losing itself into black
+      toward the camera, a dark crater rim against a black sky dense with
+      small sharp stars, nothing in the picture lit except the ground and the
+      stars, lower left of frame near-black and empty, no people
+
+  - id: "2.2"
+    scene: 2
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: budget-draw
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of the side of a battery module, ribbed brushed-aluminium cooling
+      fins with a thin rime of frost along their outer edges and fine grey
+      dust settled in the grooves, cold white-blue light from above right, the
+      air in front of the fins completely clear and no lamp lit anywhere in
+      the frame, lower left of frame in soft dark shadow and empty, no people
+
+  - id: "2.3"
+    scene: 2
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: frost crystals growing inward across the glass
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The feathered frost crystals grow slowly and steadily inward from the
+      metal rim across the inner surface of the glass for the whole shot,
+      covering a little more of it as they go. Nothing else in the frame
+      moves and the camera does not move.
+    # Take 1 grew the frost exactly as asked and drifted the frame while doing
+    # it: the rim's bolt sits centre-left at t=0 and is out of frame by t=9.8,
+    # four to six per cent of the frame width over the clip. So did 2.4, in a
+    # push. Both tails already say "no dolly, no push in, no parallax" and
+    # gen_takes.py's standing negative list already carries "dolly" and "rapid
+    # push in" — saying it a fourth time in the same voice is not a fix.
+    #
+    # What worked on 1.3 was naming the failure as a thing in the picture
+    # rather than as a camera instruction, so that is what take 2 does here:
+    # the porthole is told not to move, not the camera. If this holds, the
+    # same wording goes on the remaining nine model shots; if it does not, the
+    # drift is something to crop out in post, not to keep paying for.
+    negative_extra: >
+      anything appearing beyond the glass, light outside the porthole, a
+      reflection resolving into a shape, the rim changing shape, the porthole
+      growing a bolted collar, the porthole sliding across the frame, the rim
+      moving out of frame, the whole image drifting, the picture sliding,
+      the frame travelling
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of the inner edge of a thick round viewport set in worn aluminium,
+      the porthole fixed in the centre of the picture and staying in exactly
+      the same place in the frame from the first moment to the last, pure
+      black beyond the glass, fine feathered frost crystals on the inner
+      surface of the glass reaching in from the metal rim, cold white-blue
+      light grazing the frost from the left, no people
+
+  - id: "2.4"
+    scene: 2
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: dust motes drifting through the light shaft
+    motion_tail: motion_tail_drift
+    video_prompt: >
+      The fine grey dust suspended in the light shaft drifts slowly and evenly
+      through it, each mote catching the light as it crosses and going out
+      again. Nothing else in the frame moves and the camera does not move.
+    # Batch 1 put a PERSON in the corridor in both seeds — a figure in a
+    # brass diving suit with its arm raised in one, a woman in a coat in the
+    # other — with "no people" in the prompt, a clause that had not failed
+    # once across records 01 to 04. The clause is not what broke. A corridor
+    # drawn with a vanishing point and a far end "lost in black" is a picture
+    # with a hole in the middle of it, and the model fills a hole with whoever
+    # walks down corridors. Record 03's rule again: the subject implied it, so
+    # the frame is filled instead. The corridor now ends in a closed bulkhead
+    # a few metres away and there is no black hole left to occupy.
+    anchors: [A2-corridor]
+    prompt: >
+      Eye-height view down a short narrow station corridor of worn aluminium
+      panels that ends a few metres away in a plain closed bulkhead panel of
+      the same worn aluminium, one shaft of cold white-blue overhead light
+      falling across the floor between the camera and that bulkhead, fine grey
+      dust suspended in the shaft, the corridor completely empty from the lens
+      to the bulkhead with nothing standing in it and nothing on the floor,
+      no people
+
+
+  # SCENE 3 — GALLERY THREE (40 s)
+
+  - id: "3.1"
+    scene: 3
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the camera travelling forward along the corridor axis
+    motion_tail: motion_tail_travel
+    video_prompt: >
+      The camera travels slowly and steadily forward along the axis of the
+      corridor toward the hatch for the whole shot, at walking pace or slower.
+      The corridor keeps its shape exactly, the bars stay bolted across the
+      handles, and the dust streams past the lens.
+    negative_extra: >
+      the hatch opening, the bars moving, a door swinging, the corridor
+      changing shape, new openings appearing, the far end brightening
+    anchors: [A2-corridor]
+    prompt: >
+      Eye-height view down a narrow corridor of worn aluminium panels toward a
+      round pressure hatch at the far end, two heavy steel bars bolted across
+      the hatch's twin handles, cold white-blue overhead light in separate
+      pools along the corridor, fine grey dust suspended in the light, no
+      people
+
+  - id: "3.2"
+    scene: 3
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 10
+    # Was static, carrying protocol-7. The card moved to 3.3 because the line
+    # it answers — the protocol read aloud — is the fourth paragraph of the
+    # scene and lands 9.9 s into this 10 s plate, so the card could not both
+    # fit the plate and arrive with its line. Record 04 moved a card one plate
+    # on for the same reason. A static tier is justified by carrying text, so
+    # with the card gone this becomes local.
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of the face of a pressure hatch, thick worn grey paint chipped
+      through to bare steel around a heavy bolt head, fine grey dust settled
+      along the seal groove, cold white-blue light raking from the right, the
+      air in front of the steel completely clear and nothing in the frame lit
+      or hanging, lower left of frame flat dark painted steel and empty, no
+      people
+
+  - id: "3.3"
+    scene: 3
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: cold vapour curling off the frosted tubes
+    motion_tail: motion_tail_drift
+    # Take 1 animated the one thing the prompt forbade and skipped the one
+    # thing it asked for. There was no vapour anywhere in ten seconds, and an
+    # amplified difference against the first frame lit up the surfaces of the
+    # tubes themselves: the packed regolith inside the sealed glass and the
+    # frost crust on it crawl and shimmer for the whole clip. Both were
+    # already in negative_extra by name.
+    #
+    # The reading: "faint cold vapour curls slowly off the frost" is a small,
+    # vague request in a frame filled edge to edge with tubes, and the model
+    # animated the thing with the area. Take 2 makes the vapour the subject of
+    # the sentence with somewhere to go, and says what the tubes are doing
+    # rather than only what they must not do.
+    card: protocol-7
+    video_prompt: >
+      A thin thread of white vapour rises continuously from the frost on the
+      tubes, climbs slowly through the frame and leaves it at the top edge,
+      over and over for the whole shot. It is the only thing in the picture
+      that moves. The dark grey material packed inside the glass tubes is
+      completely still and every grain of it stays exactly where it is, the
+      frost on the outside of the glass keeps exactly the pattern it has, the
+      tray does not move, and the camera does not move.
+    negative_extra: >
+      anything moving inside the tubes, the regolith shifting, the grains
+      crawling, the material churning, the frost crust changing pattern,
+      the glass surface boiling or shimmering, a tube cracking, the tray
+      moving, heavy smoke, the vapour filling the frame,
+      the picture sliding across the frame, the whole image drifting,
+      the frame travelling, the subject moving out of frame,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    anchors: [A3-macro-hardware]
+    prompt: >
+      the tray and the tubes fixed in the picture and staying in exactly the same place in the frame from the first moment to the last, Macro of a row of transparent core sample tubes lying in a
+      brushed-aluminium tray, each tube packed with dark grey regolith, a thin
+      rime of frost on the outside of the tubes, cold white-blue light from
+      the left, shallow depth of field, no people
+
+  - id: "3.4"
+    scene: 3
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the indicator lamp pulsing slowly brighter and dimmer
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The small round lamp beside the hatch brightens and dims slowly and
+      evenly, over and over, for the whole shot. Nothing else in the frame
+      moves. The hatch does not move, the bars do not move, and the camera
+      does not move.
+    negative_extra: >
+      the hatch opening, the bars moving, light appearing in the small round
+      window, something behind the window, the lamp changing colour, strobing,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    anchors: [A4-object-mid]
+    prompt: >
+      the hatch fixed in the centre of the picture and staying in exactly the same place in the frame from the first moment to the last, Head-on view of a round pressure hatch with two heavy steel bars across
+      its twin handles, set in a worn aluminium wall, a small round indicator
+      lamp beside the hatch lit cold blue, the hatch's small round window
+      showing only black, cold white-blue overhead light, lower left of frame
+      in shadow, no people
+
+
+  # SCENE 4 — TELEMETRY (40 s)
+  #
+  # 4.1 and 6.1 are the same console. The draft asked for "one flat screen
+  # with nothing displayed on it", which is four forbidden nouns in a row —
+  # see hygiene rule 2. It is a glass panel lit from behind now.
+
+  - id: "4.1"
+    scene: 4
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    # Batch 1: the glass panel came back correctly blank — rule 2 did its job
+    # on the word "screen" — and the model then wrote invented lettering onto
+    # a small white plate above and below every single toggle, forty of them.
+    # A console implies labels, so the plates are removed by describing the
+    # panel as unbroken metal rather than by forbidding them. The same batch
+    # painted a saturated yellow stripe along the floor in the lower left, the
+    # third time this record has had to say it: a spine states the palette, it
+    # does not defend it.
+    anchors: [A4-object-mid]
+    prompt: >
+      Head-on view of a station operations console, a bank of worn aluminium
+      panels with rows of plain black physical toggle switches set directly
+      into unbroken brushed metal, the metal between and around the switches
+      completely smooth and bare with nothing mounted beside any of them, and
+      one flat glass panel set into the same metal lit evenly from behind by a
+      plain cold white-blue light with nothing behind it, bundled grey cables
+      running down into the floor, low cold light, every switch in the same
+      position and nothing in the frame loose or hanging, no lamp lit on it,
+      the floor and the walls bare unpainted metal with no stripe and no
+      marking of any kind on them, the air in front of it completely clear,
+      no people
+
+  - id: "4.2"
+    scene: 4
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: purge-telemetry
+    # This shot had ref_shot: "1.2" and the reference did exactly what
+    # CLAUDE.md says it does — it held the thing that was supposed to change.
+    # Seed 11 came back with the clamp bracket still bolted across the knob,
+    # which is 1.2 again and the opposite of what the scene says; seed 22
+    # threw the knob off the fabric entirely and left it lying on its side.
+    # A reference makes two shots the same object and resists an intended
+    # change as hard as it holds an unintended one, and the change here is the
+    # whole shot. So it comes off the anchor, and the continuity with 1.2 is
+    # carried by describing the same knurling, the same fabric and the same
+    # dust rather than by pinning the pixels.
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of a round purge valve knob with coarse knurling set into grey
+      woven suit fabric, no clamp and no bracket anywhere in the picture, the
+      knob wound all the way out on its thread so that it stands well proud of
+      its seat and a band of clean unworn metal shows underneath it, fine grey
+      dust settled in the knurling and along the fabric stitching, cold
+      white-blue light raking from the right, nothing in the frame loose or
+      hanging and the air in front of the fabric completely clear, lower left
+      of frame soft out-of-focus grey fabric and empty, no people
+
+  - id: "4.3"
+    scene: 4
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    # Batch 1 mounted a lit lamp fixture on the wall above the bench in both
+    # seeds, and this shot is built in ffmpeg from one still and never
+    # animated — a lit fitting held motionless for five seconds is the frozen
+    # frame hygiene rule 1 exists to prevent. The clause that keeps it out was
+    # written into 4.1, 5.1, 5.2, 6.1, 2.2 and 3.2 and left off this one; a
+    # bench and a helmet do not imply a lamp, so a plain negation holds here.
+    # The second seed also painted the yellow floor stripe again.
+    anchors: [A4-object-mid]
+    prompt: >
+      Head-on view of a single empty suit helmet resting on a worn aluminium
+      bench, the dark smoked visor down and reflecting only a soft smear of
+      cold light, fine grey dust settled on the bench, the helmet empty and
+      unoccupied with nothing behind the visor, the light coming from above
+      and from outside the picture with no lamp and no light fitting anywhere
+      in the frame, the floor and the wall bare unpainted metal with no stripe
+      and no marking on them, the air around it completely clear, lower left
+      of frame in shadow, no people
+
+  # THREE ROLLS, THREE STRAP FAILURES. Rolls 1 and 2 went out with the old
+  # wording (see cost.md — the second was paid for twice over a shell mistake);
+  # roll 3 carried 1.3's proven wording, verified in the outgoing body with
+  # gen_takes.py --dry-run, and the strap deformed anyway. Sampled at half
+  # second intervals, roll 1 is clean to about t=2.0 s and horizontal by 3.0.
+  #
+  # Why this shot and not 1.3, which the same wording fixed on its first try:
+  # in 1.3 the strap hangs against the suit and has something to be attached
+  # to, and in 4.4 it hangs alone on a hook against a blank lit wall. An
+  # isolated flexible object with nothing around it is the thing the model
+  # re-invents, the same way an empty plain grew boot prints and an empty
+  # corridor grew a person. The lesson is not about straps: a small soft
+  # object alone in a large empty frame is not a safe thing to animate.
+  #
+  # DECIDED 2026-09-22: roll 3 ships as it is. The strap behaves much as the
+  # one in 1.3's approved take does, so accepting it here is the same standard
+  # applied twice rather than two standards; and on a record whose subject is
+  # an empty suit, a tether that will not hang still is a characteristic of
+  # the picture rather than a fault in it. Taken with all three rolls and the
+  # half-second sampling in hand, not as a default. The general rule this
+  # produced is in CLAUDE.md and SCENARIO-AGENT.md.
+  #
+  # Take 1: the collar held and the strap became a band draped between two
+  # hooks by 5 s — the fault 1.3 spent a retake on. The cause was bookkeeping,
+  # not modelling: the comment below says this shot carries "the same negative
+  # list" as 1.3, and when 1.3's list was tightened during its retake the
+  # tightening was written into 1.3 only. Saying two shots share a list is not
+  # sharing it. 1.3's proven wording is copied out in full here now.
+  - id: "4.4"
+    scene: 4
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the tether strap swaying in the vent draft
+    motion_tail: motion_tail_event
+    # The same rack as 1.3, and the same person-shaped hole. Same negative
+    # list, for the same reason.
+    ref_shot: "1.3"
+    video_prompt: >
+      The loose fabric strap hanging beside the suit swings slowly from side
+      to side as one piece, staying exactly the same length and exactly the
+      same shape, and staying on the same hook for the whole shot. The neck
+      opening of the suit keeps exactly the shape it has and keeps facing
+      exactly the direction it faces. The suit itself does not move, nothing
+      moves inside it, the five bare hooks do not move, and the camera does
+      not move.
+    negative_extra: >
+      person, human figure, body filling the suit, the suit inflating, the
+      suit standing up, an arm, a leg, a head, a face behind the visor, a
+      second suit appearing, a hook filling, helmet turning,
+      the neck opening turning, the collar re-folding, the collar opening or
+      closing, the collar stiffening into a ring, fabric becoming metal,
+      the strap lengthening, the strap unfolding, the strap draping between
+      hooks, the strap moving to another hook,
+      suit changing shape, growing, morphing,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    prompt: >
+      the rack and the suit fixed in the picture and staying in exactly the same place in the frame from the first moment to the last, Head-on view of the same wall-mounted suit rack with six heavy hooks,
+      five bare and one empty grey pressure suit hanging on the right, a loose
+      fabric tether strap hanging from the suit, cold white-blue overhead
+      light, the suit empty and unoccupied, no people
+
+  - id: "4.5"
+    scene: 4
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the spare clamp turning slowly on its lanyard
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The clamp hanging on the short steel lanyard turns slowly on it, a
+      little one way and then back, keeping its shape exactly. Nothing else in
+      the frame moves and the camera does not move.
+    negative_extra: >
+      the clamp falling, the lanyard breaking, the clamp opening, the clamp
+      changing shape, a second clamp appearing,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    anchors: [A3-macro-hardware]
+    prompt: >
+      the clamp fixed in the picture and staying in exactly the same place in the frame from the first moment to the last, Macro of a spare brushed-aluminium valve clamp hanging from a short
+      steel lanyard against a worn aluminium panel, fine grey dust in its
+      machining marks, cold white-blue light from the left, shallow depth of
+      field, no people
+
+
+  # SCENE 5 — BUS THREE (40 s)
+  #
+  # 5.1 is the same battery module as 2.2 and is deliberately NOT a ref_shot.
+  # The frost on it is thicker — that is the scene — and a reference resists
+  # an intended change exactly as hard as it holds an unintended one. Two
+  # stills off the same anchor make it the same kind of module, which is all
+  # this shot needs; the frost is the thing the viewer is meant to notice.
+
+  - id: "5.1"
+    scene: 5
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: battery-3658
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of the side of a battery module, ribbed brushed-aluminium cooling
+      fins with a thick rime of frost built up along their edges and fine grey
+      dust settled in the grooves, cold white-blue light from above right, the
+      air in front of the fins completely clear and no lamp lit anywhere in
+      the frame, lower left of frame in dark shadow and empty, no people
+
+  - id: "5.2"
+    scene: 5
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 10
+    # Was static, carrying bus-3, and moved to 5.3 for the same reason 3.2's
+    # card moved to 3.3: the line lands 10.8 s into a 10 s plate.
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    # A breaker cabinet is a thing that implies an indicator, and record 03
+    # established that a negation cannot remove what the subject implies —
+    # "no crater" does not fix "one broad shallow depression". So the frame is
+    # filled with something else instead: every handle identical and in the
+    # same position, the steel dark and unlit.
+    anchors: [A3-macro-hardware]
+    prompt: >
+      Macro of a row of heavy black rotary breaker handles on a worn grey
+      steel electrical cabinet, thick grey cables entering from above, fine
+      grey dust settled on every ledge, cold white-blue light raking from the
+      right, every handle in the row identical and in the same position, the
+      steel around them dark and unlit, the air in front of the cabinet
+      completely clear, lower left of frame flat dark steel and empty, no
+      people
+
+  - id: "5.3"
+    scene: 5
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    # The same corridor as 3.1, where nothing has changed: this is the shot
+    # ref_shot exists for. 6.2 is the same corridor with the bars off, and is
+    # deliberately not a reference for exactly the opposite reason.
+    #
+    # The dust that is suspended in 3.1 is absent here, and that is not an
+    # inconsistency to fix later: this plate is never animated, and a frozen
+    # photograph of drifting dust reads as a stalled player. The corridor is
+    # the same corridor; the air in it is clear in this frame.
+    #
+    # And the reference fought that clause. Seed 11 came back with the air
+    # full of suspended specks — 3.1's dust, carried across by the reference
+    # against a prompt that says "completely clear with no dust in it" in so
+    # many words. Seed 22 honoured it and is the approved frame, so this cost
+    # nothing, but it is the third time on this record that a reference held
+    # the one thing that was supposed to differ (4.2's clamp, 7.1's lit plain,
+    # this). The rule is not "ref_shot is unreliable": it is that a reference
+    # votes for everything in the image it points at, including the parts the
+    # prompt is arguing with, and the seeds split on who wins.
+    ref_shot: "3.1"
+    card: bus-3
+    prompt: >
+      Eye-height view down the same narrow corridor toward the round pressure
+      hatch with two steel bars across its handles, cold white-blue light in
+      separate pools along it, the air in the corridor completely clear with
+      no dust in it, nothing in the frame lit but the overhead light, no
+      people
+
+  - id: "5.4"
+    scene: 5
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: frost crystals growing further inward across the glass
+    motion_tail: motion_tail_event
+    # References the approved 2.3 — the same porthole, later. The known
+    # tension: the intended change is more frost, and a reference resists
+    # that. If the still comes back with 2.3's coverage, the fallback is the
+    # anchor and the continuity is carried by the metal rather than by the
+    # ice. Do not fix it by regenerating 2.3.
+    ref_shot: "2.3"
+    video_prompt: >
+      The feathered frost keeps growing slowly and steadily inward across the
+      glass for the whole shot, taking in a little more of it. Nothing else in
+      the frame moves and the camera does not move.
+    negative_extra: >
+      anything appearing beyond the glass, light outside the porthole, a
+      reflection resolving into a shape, the rim changing shape, the porthole
+      growing a bolted collar,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    prompt: >
+      the porthole fixed in the centre of the picture and staying in exactly the same place in the frame from the first moment to the last, Macro of the inner edge of the same thick round viewport, pure black
+      beyond the glass, feathered frost now covering about a third of the
+      glass and reaching further in from the metal rim, cold white-blue light
+      grazing it from the left, no people
+
+  - id: "5.5"
+    scene: 5
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the junction box indicator blinking slowly
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The small cold blue light on the junction box goes on and off slowly and
+      evenly, over and over, for the whole shot. Nothing else in the frame
+      moves and the camera does not move.
+    negative_extra: >
+      the cable moving, the cable being pulled, the box opening, the light
+      changing colour, strobing, sparks, a second light appearing,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    anchors: [A2-corridor]
+    prompt: >
+      the junction box fixed in the picture and staying in exactly the same place in the frame from the first moment to the last, Eye-height view along a corridor floor where a thick grey power cable
+      runs away into darkness, a steel junction box beside the cable with one
+      small cold blue light lit on it, cold white-blue overhead light, no
+      people
+
+
+  # SCENE 6 — NIGHT HOUR THIRTY-ONE (25 s)
+  #
+  # No cards. Every figure in this scene is spoken, which is what lets the
+  # picture carry it.
+
+  - id: "6.1"
+    scene: 6
+    approved_seed: 22    # selected 2026-09-21
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    # The same console as 4.1, and nothing about it has changed — which is the
+    # point of the shot and the correct use of ref_shot.
+    ref_shot: "4.1"
+    prompt: >
+      Head-on view of the same station operations console, worn aluminium
+      panels, rows of plain black physical toggle switches set directly into
+      unbroken brushed metal with nothing mounted beside any of them, one flat
+      glass panel lit evenly from behind by a plain cold white-blue light with
+      nothing behind it, bundled grey cables into the floor, every switch in
+      the same position and nothing in the frame loose or hanging, no lamp lit
+      on it, the floor and the walls bare unpainted metal with no stripe and
+      no marking of any kind on them, the air in front of the console
+      completely clear, no people
+
+  - id: "6.2"
+    scene: 6
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the camera travelling forward behind a helmet lamp
+    motion_tail: motion_tail_travel
+    # Off the anchor, NOT off 3.1. The submitted draft referenced the approved
+    # still of 3.1 here. A reference makes two shots the same object down to
+    # the scratch in the glass and resists intended change just as hard — and
+    # the one thing that has to be different in this frame is the two steel
+    # bars being off the hatch, which is the beat of the scene. 5.3 keeps the
+    # reference, because in 5.3 nothing changes at all.
+    video_prompt: >
+      The camera travels slowly and steadily forward along the axis of the
+      corridor toward the hatch for the whole shot, at walking pace. The one
+      white beam travels with it and lights the dust streaming past the lens.
+      The corridor keeps its shape exactly, the two bars stay leaning against
+      the wall, and the hatch stays closed.
+    negative_extra: >
+      the hatch opening, the bars moving or being lifted, a person, a hand
+      entering the frame, a second light, the beam becoming a bright core or a
+      comet, the corridor changing shape, new openings appearing
+    anchors: [A2-corridor]
+    prompt: >
+      Eye-height view down the narrow corridor toward the round pressure
+      hatch, the two heavy steel bars unbolted and leaning against the wall
+      beside it, one white beam from the camera position lighting the corridor
+      ahead and fine grey dust suspended in it, the panelling to either side
+      falling into black, no people
+
+  - id: "6.3"
+    scene: 6
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the mist forming and thinning away
+    motion_tail: motion_tail_event
+    video_prompt: >
+      A thin white mist forms in the air of the airlock and then slowly thins
+      away to nothing. The hatch does not move, the walls do not move, and the
+      camera does not move.
+    negative_extra: >
+      the inner hatch opening, a person, the mist filling the frame, heavy
+      smoke, the airlock changing shape, light appearing beyond the hatch,
+      the picture sliding across the frame, the whole image drifting, the frame travelling, the subject moving out of frame
+    anchors: [A4-object-mid]
+    prompt: >
+      the airlock fixed in the picture and staying in exactly the same place in the frame from the first moment to the last, Head-on view inside a small cylindrical airlock of worn aluminium, the
+      round inner hatch closed ahead, one cold white-blue ceiling light, no
+      people
+
+
+  # SCENE 7 — CODA (15 s)
+  #
+  # Declared coda. The recording has ended and this is the recovery frame,
+  # delivered as two cards with no voice under them. Both plates are outside,
+  # in vacuum, where there is genuinely nothing in the air — which is the one
+  # place on this channel where a locked-off frame under a card is not a
+  # compromise but the physics.
+
+  - id: "7.1"
+    scene: 7
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: record-ends
+    # Batch 1 returned the same lit plain as 1.1, in both seeds: sunset and
+    # dawn were indistinguishable, and the one beat this plate carries is that
+    # the light has come back and the record has not. The cause is the anchor.
+    # A1's approved frame is a lit floor under a low sun, an anchor locks
+    # composition as hard as it locks palette, and no amount of "still in deep
+    # black shadow" in a shot prompt outvotes the reference. So the dawn plate
+    # goes on A1n, whose approved frame is a dark floor under a faint rim, and
+    # the shot adds the one thing that is lit.
+    anchors: [A1n-crater-night]
+    prompt: >
+      Ground-level wide view across a crater floor toward a mountainous crater
+      rim, the floor black from the bottom edge of the picture all the way to
+      the base of the rim with no detail visible in it anywhere, and only the
+      topmost ridge line of the rim carrying a narrow hard white band of the
+      first sunlight, that lit band a small part of the picture high up in it,
+      black sky with small sharp stars, lower left of frame black and empty,
+      no people
+
+  - id: "7.2"
+    scene: 7
+    approved_seed: 11    # selected 2026-09-21
+    motion_tier: static
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    card: suits-6
+    # No anchor at this distance. A1 is the exterior wide and A3 is interior
+    # hardware, and handing either to a macro of the ground returns that
+    # anchor's distance — the failure record 01 paid a whole pass to learn.
+    # One shot is not a distance that recurs, so it goes text-to-image against
+    # its own spine, the way record 04's one tissue shot did.
+    exterior: true
+    spine_key: regolith_macro_spine
+    prompt: >
+      Fine pale grey regolith seen from directly above, lit by low hard white
+      light from the right so every pit casts its own small hard black shadow,
+      the surface unbroken and continuous with nothing crossing it and nothing
+      lying on it, lower left of frame in shadow and empty, no people

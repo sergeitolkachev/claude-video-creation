@@ -1,0 +1,119 @@
+# The vertical cuts — record 05. Assembled, not carved, which is how the
+# channel has built them since record 04.
+#
+# Each cut is a shot list out of takes/ in whatever order works, each shot
+# framed where its subject is with `crop_x`, and a line list out of the
+# paragraphs the record already contains. Nothing is generated: every shot is
+# a take that is already in the record and every line is a paragraph already
+# approved and reproducible from its seed.
+#
+# What every cut here obeys:
+#
+#   - A voice inside the first second. Every cut opens on its hardest sentence:
+#     "Station crew, six. On shift, one.", "All five purge valves were opened
+#     by hand.", "Bus three is drawing four hundred watts."
+#   - It stops at a paragraph end, on a word boundary, with real silence after
+#     it. None of the three carries a `trim`, so none of them can sever a word
+#     — which is the fault record 03 shipped twice and its validator passed,
+#     because the validator was reading the same timestamps the builder had
+#     trusted.
+#   - Hard cuts only. No dissolves, no dips.
+#   - No data cards, no click bed, no music. Every figure that matters is
+#     spoken aloud, which is what makes the cards droppable — and these cuts
+#     come from takes/, which never had a card on them in the first place.
+#   - The closing card, from config/type.yaml, same two lines every time.
+#
+# `runtime_seconds` is the whole piece, closing card included.
+#
+# Cut points, from audio/alignment/ and not from an estimate. All three end at
+# a paragraph boundary, so the silence after the last word is the gap to the
+# next paragraph in the record — 1.2 s at least, everywhere:
+#
+#   .a  ends after "again."              s1p5, paragraph end
+#   .b  ends after "opened."             s4p6, paragraph end and scene end
+#   .c  ends after "alone."              s6p3, paragraph end
+
+slug: "FC9-005 // GALLERY THREE"
+
+cuts:
+  # ---------------------------------------------------------------- a -------
+  # The clamps. Opens on the headcount — the cost before the cause — and closes
+  # on a man checking a fitting twice and not saying why. Nothing in this cut
+  # explains what protocol seven is for.
+  - id: fc9-005-a-the-clamps
+    runtime_seconds: 15.0
+    shots:
+      # Five bare hooks and one suit, under "Station crew, six. On shift, one."
+      # The line IS the headcount, so the window travels instead of sitting:
+      # it starts on the empty hooks and arrives at the one suit as the voice
+      # gets to "on shift, one". A static window at 0.66 framed the suit and
+      # cropped the hooks away, which threw out the half of the picture the
+      # sentence is about. This is the only camera move a cut is allowed and
+      # it costs nothing.
+      - {id: "1.3", at:  0.0, from: 0.0, seconds: 4.0, crop_x: 0.40,
+         crop_to: 0.70}
+      # The clamp bolted across the valve knob, under the clamps line.
+      - {id: "1.2", at:  4.0, from: 1.0, seconds: 4.0, crop_x: 0.50}
+      # The spare clamp turning on its lanyard — the one thing in this record
+      # that moves the way the model expects a thing to move.
+      - {id: "4.5", at:  8.0, from: 0.5, seconds: 3.0, crop_x: 0.45}
+      # The empty helmet, last, on "Then I checked them again."
+      - {id: "4.3", at: 11.0, from: 0.5, seconds: 2.0, crop_x: 0.50}
+    lines:
+      - {pid: s1p3, at: 0.20}    # "Station crew, six. On shift, one."
+      - {pid: s1p4, at: 3.76}    # clamps fitted, per revised protocol seven
+      - {pid: s1p5, at: 8.92}    # "I checked them. Then I checked them again."
+    ends_on: "Then I checked them again."
+
+  # ---------------------------------------------------------------- b -------
+  # Eleven seconds. The whole cut is one piece of telemetry read flat, and the
+  # figure that matters is the one the viewer works out: five men, by hand,
+  # eleven seconds, and a valve that takes four turns.
+  - id: fc9-005-b-eleven-seconds
+    runtime_seconds: 20.0
+    shots:
+      # The valve wound fully out, no clamp on it. Opens the cut.
+      - {id: "4.2", at:  0.0, from: 1.0, seconds: 4.0, crop_x: 0.52}
+      # The spare clamp turning, under "A purge valve takes four turns."
+      - {id: "4.5", at:  4.0, from: 0.0, seconds: 3.0, crop_x: 0.45}
+      # The barred hatch with its indicator, under "No suit reported a fault."
+      - {id: "3.4", at:  7.0, from: 2.0, seconds: 4.0, crop_x: 0.50}
+      # The rack: five bare hooks, under the heart-rate line.
+      - {id: "4.4", at: 11.0, from: 2.0, seconds: 4.0, crop_x: 0.66}
+      # The frosted core tubes, last. The cut never says what is in them.
+      - {id: "3.3", at: 15.0, from: 1.0, seconds: 3.0, crop_x: 0.45}
+    lines:
+      - {pid: s4p3, at:  0.20}   # "All five purge valves were opened by hand."
+      - {pid: s4p4, at:  6.24}   # "A purge valve takes four turns."
+      - {pid: s4p5, at:  9.24}   # no fault reported, no alarm on the channel
+      - {pid: s4p6, at: 13.52}   # "...normal until the valves opened."
+    ends_on: "Heart rate on all five suits was normal until the valves opened."
+
+  # ---------------------------------------------------------------- c -------
+  # Four hundred watts. The arithmetic cut: a load on a bus whose every device
+  # is switched off, the breaker for it inside the room nobody may enter alone,
+  # and 320 hours of battery against 323 to dawn. It stops on the rule, not on
+  # the decision — "entering gallery three" is in the record and not in here.
+  - id: fc9-005-c-four-hundred-watts
+    runtime_seconds: 24.5
+    shots:
+      # The junction box with its one blue light, on the opening line.
+      - {id: "5.5", at:  0.0, from: 0.0, seconds: 4.0, crop_x: 0.62}
+      # The row of breaker handles, all in the same position.
+      - {id: "5.2", at:  4.0, from: 1.0, seconds: 4.0, crop_x: 0.45}
+      # The corridor toward the barred hatch, on "The breaker for bus three is
+      # in gallery three." The window travels with the camera's own push.
+      - {id: "3.1", at:  8.0, from: 2.0, seconds: 4.0, crop_x: 0.50}
+      # Frost taking the porthole, under the battery figures.
+      - {id: "5.4", at: 12.0, from: 2.0, seconds: 4.0, crop_x: 0.42}
+      # The corridor again, bars off the hatch, under the protocol line.
+      - {id: "6.2", at: 16.0, from: 0.5, seconds: 4.0, crop_x: 0.50}
+      # The hatch, still barred, last. The cut ends before it is opened.
+      - {id: "3.4", at: 20.0, from: 3.0, seconds: 2.5, crop_x: 0.50}
+    lines:
+      - {pid: s5p4, at:  0.20}   # "Bus three is drawing four hundred watts."
+      - {pid: s5p5, at:  3.68}   # both loads on it are isolated
+      - {pid: s5p6, at:  9.08}   # "The breaker for bus three is in gallery three."
+      - {pid: s6p2, at: 12.72}   # 320 hours of battery, 323 to dawn
+      - {pid: s6p3, at: 18.44}   # "...does not allow entry to gallery three alone."
+    ends_on: "Protocol seven does not allow entry to gallery three alone."

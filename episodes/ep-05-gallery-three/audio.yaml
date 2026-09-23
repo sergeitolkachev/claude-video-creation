@@ -1,0 +1,184 @@
+# Record 05's mix. Scene boundaries are not here — they are summed from
+# shots.yaml, which is the only place a shot's duration is allowed to live.
+#
+# For reference, summed from there:
+#   scene 1  0-30    scene 3  65-105   scene 5  145-185   scene 7  210-225
+#   scene 2  30-65   scene 4  105-145  scene 6  185-210   (6.3 is 205-210)
+
+runtime_seconds: 225
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+
+# Extra air before specific lines, from the pause table in script.md. Every one
+# of them falls on a paragraph boundary, which is the only place a pause can be
+# cut: the voice is one file per paragraph and the gaps go between the files.
+hold:
+  # Image first. Shot 1.1 is the last ten seconds of daylight this station
+  # sees for two weeks and the only thing that happens in them is the shadow
+  # arriving. lead_in alone would start the first line 2 s in, over it.
+  s1p1: 5.0
+  # "Station crew, six. On shift, one." The headcount is the cost before the
+  # cause, and it needs to land before the clamps line explains nothing.
+  s1p4: 2.0
+  # "Heart rate on all five suits was normal until the valves opened." The
+  # flattest line in the record; the gap is what makes it flat rather than
+  # rushed.
+  s4p6: 2.0
+  # "Entering gallery three." Last words of the record. Nothing follows them
+  # but picture, and then the recording stops.
+  s6p5: 2.5
+
+# --- Layers -----------------------------------------------------------------
+# Four, and the distinction that matters is record 03's: `tone` is the FLOOR
+# and never stops; everything else is sound design and is allowed to go away.
+#
+# Record 03 gated its scrubber fan off for two passages and, because the fan
+# was also serving as the room tone, both fell to -90 dBFS — not silence, a
+# file that has ended. This record's air handler is gated off twice by design,
+# so the floor underneath it is a separate bed that runs from the first frame
+# to the last, including under the coda cards where there is no station left.
+#
+# `tone` is written as recorder noise floor rather than as room ambience on
+# purpose: it has to be correct both inside the station and in the coda, which
+# is outside on the regolith with nothing running at all.
+#
+# The design, from script.md:
+#   fan   the air handler, established in scene 1, gone on shot 6.3 (the
+#         airlock, 205-210) and gone for the whole coda (210-225).
+#   hum   a second, very faint steady electrical tone, in from the line "Bus
+#         three is drawing four hundred watts" and through the end of scene 6.
+#         It is the 400 watts. Nothing in the record says so.
+#   pump  the airlock pump, on shot 6.3 only, where the air handler is not.
+#
+# LEVELS ARE TRIMS APPLIED TO THE FILE, NOT TARGETS IN THE MIX, and the sign
+# follows the measurement. Filled in after measuring the generated beds — see
+# the block under `sfx:`. A bed that comes back quieter than the floor wants
+# is lifted, not cut.
+# Measured on the generated files, 2026-09-22, mean volume:
+#
+#   tone  -63.0 dBFS      fan  -68.6 dBFS
+#   hum   -28.3 dBFS      pump -33.9 dBFS      voice about -17.2 dBFS
+#
+# Forty decibels between the quietest bed and the loudest, from four prompts
+# at the same endpoint on the same day. CLAUDE.md records 15 and 20 dB of
+# spread from the sound-effect endpoint on record 04; this is worse, and it is
+# the whole reason a level in this file is a trim on a measurement rather than
+# a number somebody liked.
+#
+# Targets, and why:
+#   tone  -44 dBFS, about 27 dB under the voice. It is the floor: it has to be
+#         there when everything else is gated off, and never noticed.  -> +19
+#   fan   -40 dBFS. The station's one continuous machine, present in every
+#         scene it runs in and missed on 6.3 where it stops.           -> +29
+#   hum   -46 dBFS, UNDER the fan. The script calls it "very faint" and it is
+#         the 400 watts nobody can account for; if it announces itself the
+#         record has explained its own twist.                          -> -18
+#   pump  -38 dBFS. It is alone on 6.3 with the fan gone, so it carries that
+#         shot by itself and sits a little above where the fan sat.    -> -4
+#   clicks -35 dBFS: 18 dB under the voice and 9 dB over the floor. The bed
+#         build_cards.py wrote measures -57.9 dBFS, so the trim is +23. At the
+#         +12 that record 04 needed for its own bed this one would have landed
+#         at -46, UNDER the room tone — which is precisely record 04's fault,
+#         reproduced by copying its number instead of measuring ours.
+#
+# ARITHMETIC AGAINST A MEASUREMENT IS NOT THE SAME AS A JUDGEMENT. CLAUDE.md's
+# rule is to judge a bed in the room, on a phone, not in a meter — record 03's
+# first pass was defensible on every number and read as having no background
+# at all. That test is owed on the draft and is not done.
+levels: {tone: 19, fan: 29, hum: -18, pump: -4, clicks: 23}
+
+layers:
+  tone:
+    file: sfx/tone.mp3
+    loop_to_fill: true
+
+  fan:
+    file: sfx/fan.mp3
+    loop_to_fill: true
+    # Off for shot 6.3 and everything after it: 205 s to the end.
+    silence_at: [205, 20]
+    fade_out: [204.0, 1.0]
+
+  hum:
+    file: sfx/hum.mp3
+    loop_to_fill: true
+    # In under "Bus three is drawing four hundred watts" and out at the end of
+    # scene 6, when the recording stops. The exact second is set from where
+    # build_audio.py actually places s5p4, not from an estimate.
+    silence_at: [0, 155.5]
+    fade_out: [209.0, 1.0]
+
+  pump:
+    file: sfx/pump.mp3
+    loop_to_fill: true
+    # Shot 6.3 only. Silent everywhere before it and after it.
+    silence_at: [0, 205]
+    fade_out: [210.0, 0.5]
+
+# Regenerable from here: nothing under audio/ is versioned.
+#
+# All four beds are deliberately dull. Anything with a rise or a rhythm in it
+# starts telling its own story under a voice reading numbers.
+sfx:
+  tone:
+    file: sfx/tone.mp3
+    seconds: 22
+    prompt: >
+      The noise floor of a recording device and nothing else, a very quiet
+      wide even hiss with a faint low rumble far under it, completely flat and
+      unchanging from beginning to end, almost nothing, no machinery, no fan,
+      no motor, no hum, no rhythm, no pulsing, no clicks, no beeps, no wind,
+      no voices, no music, a continuous unbroken noise floor
+
+  fan:
+    file: sfx/fan.mp3
+    seconds: 22
+    prompt: >
+      A small air handler running steadily somewhere behind a wall in a sealed
+      habitat, a low even rush of moving air with a faint steady motor note
+      under it, completely constant, no speeding up, no slowing down, no
+      rattling, no squeaking, no clanking, no beeps, no alarms, no voices,
+      no music, heard through panelling at a distance
+
+  hum:
+    file: sfx/hum.mp3
+    seconds: 22
+    prompt: >
+      A very faint steady electrical hum from a live circuit behind a metal
+      panel, one thin unchanging tone, barely audible, completely constant
+      with no modulation at all, no buzzing, no crackling, no arcing, no
+      sparks, no beeps, no alarms, no rhythm, no motor, no voices, no music
+
+  pump:
+    file: sfx/pump.mp3
+    seconds: 22
+    prompt: >
+      A small airlock pump running inside a metal cylinder, a low even
+      mechanical whirr drawing air out, steady and unchanging, muffled by the
+      walls around it, no hissing of escaping gas, no clanking, no rattling,
+      no squealing, no beeps, no alarms, no voices, no music
+
+# The click bed: one click per glyph, across every card in the record.
+# build_cards.py mixes it — record 03 shipped a silent typewriter because that
+# step lived in somebody's memory instead of in a script.
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser ---------------------------------------------------------------
+# The teaser is the one piece on this channel allowed a cue under it, and the
+# rule that it never spreads to the record is the reason the record works.
+# Generated, never licensed: a Content ID claim on a channel built out of
+# recovered recordings costs more than any cue is worth.
+teaser_sfx:
+  music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold, airless tension for a documentary about a recording found on
+      the far side of the Moon. Low sustained strings and a deep synth pad over
+      a quiet sub-bass, one very gradual build across the whole piece, and
+      nothing that resolves. No drums, no percussion, no beat, no melody hook,
+      no piano motif, no vocals, no sudden hits, no risers, no cinematic
+      braams. It must sit under a calm speaking voice without ever competing
+      with it.

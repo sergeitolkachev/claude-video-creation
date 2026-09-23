@@ -200,13 +200,22 @@ listening.** Three tiers, and every shot in `shots.yaml` declares one:
 - `static` — locked-off, built in ffmpeg with lens breathing only. Allowed
   **only** for a shot carrying a data card, a title, or burned-in text. The
   eye is on the text; a moving frame under it fights the reading.
-  **Unless the frame has something suspended in it.** Record 04 is shot in
-  water full of marine snow, and a locked plate of it sitting after a clip
-  where the same snow drifts does not read as a locked-off camera, it reads
-  as a freeze-frame — the viewer checks the player, which is the tape-dropout
-  failure again in another form. A card plate whose frame carries dust, snow,
-  smoke or anything else in suspension gets `local_motion: drift` instead of
-  the breathing. It is still built in ffmpeg and still costs nothing.
+  **Nothing that the eye expects to move may be in the frame at all.**
+  Record 04 is shot in water full of marine snow, and a locked plate of it
+  sitting after a clip where the same snow drifts does not read as a
+  locked-off camera, it reads as a freeze-frame — the viewer checks the
+  player, which is the tape-dropout failure again in another form. Record 04
+  answered that by moving twelve plates onto Kling at $0.70 each. Record 05
+  answers it in the prompt instead: a frame that is never animated is written
+  with nothing suspended, loose or lit in it — no dust in the air, no vapour,
+  no hanging strap, no indicator lamp — and says so positively, because the
+  image models put dust in an industrial interior whether or not it was asked
+  for. Where the subject implies the thing, fill the frame with something else
+  rather than negating it. Continuity across tiers is not a fault: the same
+  corridor may carry drifting dust in a `model` shot and clear air in the
+  `static` plate beside it. `local_motion: drift` remains the repair for a
+  plate that comes back with something in suspension anyway; it is not the
+  rule.
 - `local` — drift or push, built in ffmpeg from the approved still. For shots
   under narration where the frame is texture rather than event. Free, exact,
   and steadier than any model, but it is a move across a photograph: no
@@ -652,6 +661,49 @@ filled in with whatever is statistically typical — "dust particles floating"
 became heaps of grit on the floor, "station corridor" became a concrete
 utility tunnel, "small circular porthole" was read as small in the frame. Be
 specific enough that there is nothing left to invent.
+
+**A shot's motion is chosen from what the model can hold, and the line is
+rigid against soft, not big against small.** The reliable motions have one
+thing in common: the shape stays fixed and only its position, orientation or
+extent changes, so there is nothing for the model to invent frame to frame.
+
+- **Reliable, tested on this channel.** Suspended particles drifting — dust,
+  marine snow. Frost spreading across a surface. Vapour rising and leaving
+  frame. A rigid object rotating on its mounting: record 05's spare clamp
+  turning on its lanyard was correct on the first take. A lamp blinking or
+  pulsing. A beam travelling with the camera. A shadow edge advancing.
+  Anything with an axis belongs here — a fan, a wheel, a counter turning over
+  — because the model recognises the class and turns it rather than redrawing
+  it. (The fan and the counter are inference from the same class, not yet
+  rolled on this channel; the clamp and the lamp are measured.)
+- **Unreliable: a soft deformable object whose shape has to be re-drawn every
+  frame.** Fabric, cable, a loose flap, a hanging tag. Record 05 asked a
+  fabric tether strap to sway and lost three takes and $2.10 on one shot: it
+  stretched into a band draped between two hooks, detached, re-formed on a
+  different hook, on every roll, including the roll carrying the exact wording
+  that had fixed the same strap elsewhere, and with every failure named in
+  `negative_extra`. Sampled at half-second intervals the clip is clean for two
+  seconds of ten, so there is nothing to trim to either.
+
+Isolation is **not** the discriminator, and it looked like it was. The clamp
+that behaved hangs alone on a lanyard against a blank wall — as alone in its
+frame as the strap that did not. What separates them is that a clamp has one
+degree of freedom the model knows about and a strap has as many as it likes.
+
+So: when a shot's only movement is something soft, either give the shot a
+different motion and let the soft thing hang still, or accept what comes. It
+is not fixed by naming the failure in the negative list; that was tried three
+times. Record 05 shipped its strap as it came, deliberately, after three
+takes and with the evidence in hand — a decision, not a default.
+
+**Verify a prompt edit landed before paying for it.** `gen_takes.py --dry-run`
+prints the exact outgoing body — endpoint, final prompt with its motion tail,
+the full negative list, duration and price — and uploads nothing, queues
+nothing and costs nothing. Record 05 paid $0.70 for a take it had already
+rejected because a `shots.yaml` edit raised an error before the file was
+written while the generate command, on the next shell line rather than chained
+to it, ran against the unchanged prompt. An edit and the run that depends on
+it belong in one command, and the dry run goes between them.
 
 **A frame that shows part of an animal is an invitation to finish it.** Record
 04 framed its animal deliberately cut by the edge — middle of the body and

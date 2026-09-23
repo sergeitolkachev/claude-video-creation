@@ -34,6 +34,16 @@ def main():
     # only so the record's own bed and the promo bed cannot be confused for
     # each other when someone is looking for what runs under the episode.
     beds = {**(cfg.get("sfx") or {}), **(cfg.get("teaser_sfx") or {})}
+    # A --only that names nothing did nothing, printed nothing and exited 0.
+    # Record 05 asked for --only music with the spec written into teaser.yaml
+    # instead of audio.yaml, which this script does not read, and got a clean
+    # successful run that generated no cue. A spend script that can no-op in
+    # silence is the same failure that cost record 05 a $0.70 take: the run
+    # looked fine and the work had not happened.
+    if only and only not in beds:
+        print(f"audio.yaml has no bed named '{only}'. It defines: "
+              f"{', '.join(sorted(beds)) or '(none)'}")
+        return 1
     for name, spec in beds.items():
         if only and name != only:
             continue
@@ -87,4 +97,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main() returns 1 when --only names nothing. Without sys.exit the guard
+    # prints its warning and still reports success, so a shell chain built with
+    # && carries on as if the bed had been generated.
+    sys.exit(main() or 0)

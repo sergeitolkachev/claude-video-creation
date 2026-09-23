@@ -28,7 +28,9 @@ that voice actually mean. The narrator never closes that gap. The viewer does.
 **Numbering** (the agent proposes these):
 
 - Long records: `FC9-LOG-041 // The Aldren Basin Survey`
-- Vertical cuts: `FC9-041.b // Fragment`
+- Vertical cuts: `FC9-041.a // Fragment` — the suffixes run `.a`, `.b`,
+  `.c` from the first cut. Record 04 ran `.b`/`.c`/`.d`; from record 05 the
+  first cut is always `.a`.
 
 **Write the description with the script.** It goes in `publish.md`: the title,
 the description, the chapter list, and a title and description for each
@@ -156,9 +158,65 @@ listening.**
 
 | Tier | What it is | When it is allowed |
 |---|---|---|
-| `static` | Locked-off frame, lens breathing only | **Only** for a shot carrying a data card, a title, or burned-in text. The eye is on the text; a moving frame fights the reading. **But** if the frame has dust, snow or anything else in suspension, it gets a slow drift instead of the breathing: frozen particles beside moving ones read as a freeze-frame, not as a locked camera. Still free, still built in ffmpeg. |
+| `static` | Locked-off frame, lens breathing only | **Only** for a shot carrying a data card, a title, or burned-in text. The eye is on the text; a moving frame fights the reading. Its prompt must describe a frame with nothing in it that the eye expects to move — see "Nothing moves in a frame that is never animated" below. Free, built in ffmpeg. |
 | `local` | Slow drift or push across the approved still | Shots **under narration** where the frame is texture rather than event. No parallax, nothing in frame is alive. |
 | `model` | A real video clip | **Required** for any shot running under silence, and for any shot whose content should physically move: dust, water, frost, smoke, a drifting object, an animal. |
+
+**What a `model` shot may be asked to move.** The motion a shot names is not
+free. The rule is rigid against soft: a motion is safe when the thing keeps
+its shape and only its position, orientation or extent changes.
+
+**Safe to write into a shot.** Drifting dust or snow. Frost spreading. Vapour
+rising out of frame. A rigid thing turning on its mounting — a clamp on a
+lanyard, a fan, a wheel, a counter rolling over. A lamp blinking or pulsing. A
+beam travelling with the camera. A shadow edge advancing.
+
+**Not safe.** Anything soft that has to be re-drawn every frame: fabric, a
+strap, a cable, a loose flap, a hanging tag. Record 05 lost three takes and
+$2.10 on one fabric strap, which stretched into a band draped between two
+hooks and re-formed on a different hook on every roll, with each failure
+spelled out in the negative list. Naming the failure does not prevent it.
+
+Note what does **not** decide this: being alone in the frame. The clamp that
+turned correctly on the first take hangs by itself on a lanyard against a
+blank wall, as isolated as the strap that failed. A clamp has one degree of
+freedom the model recognises; a strap has as many as it invents.
+
+So if a shot's only movement is something soft, give the shot a different
+motion and let the soft thing hang still.
+
+### Nothing moves in a frame that is never animated
+
+`static` and `local` shots are built in ffmpeg from one approved still. So
+whatever is in that still is held, motionless, for the whole shot — and a
+photograph of something the eye expects to see moving does not read as a
+locked-off camera. It reads as a stalled player, and the viewer checks the
+scrub bar instead of watching the record.
+
+**So the prompt for a `static` or `local` shot may not contain anything
+suspended, loose or lit that would be moving if it were real.** No dust or
+motes in the air, no smoke, vapour, steam or mist, no hanging strap, cable or
+lanyard, no swinging or turning part, no lamp or indicator lit, no falling or
+settling anything. Say so positively in the prompt — "the air in front of the
+subject is completely clear", "nothing in the frame is loose or hanging", "no
+lamp or indicator is lit anywhere in it" — because the image models put dust
+in the air of an industrial interior whether or not it was asked for.
+
+Where the subject *implies* the thing, do not negate it: fill the frame with
+something else. A breaker cabinet implies an indicator light, and "no
+indicator" does not remove it — "every handle in the row identical and in the
+same position, the steel around them dark and unlit" does. This is the same
+rule as "one broad shallow depression" not being fixable with "no crater".
+
+Continuity across tiers is not a fault. The same corridor may have dust
+drifting in it in a `model` shot and clear air in the `static` plate next to
+it; that is the correct answer, not an inconsistency to reconcile. The
+alternative — which record 04 paid $1.75 to discover and another twelve shots'
+worth to fix — is that the frame has to be animated after all, at $0.70 each.
+
+Earlier guidance said a suspended-particle plate gets a slow drift instead of
+lens breathing. That is the expensive repair, not the rule. **Write the frame
+so there is nothing to freeze.**
 
 **The rule that matters: no text on screen and no voice means the picture
 carries the shot alone, and a still frame cannot.** Silence is a format choice
@@ -218,6 +276,33 @@ that ends at least two seconds before the cut.
 **A coda is declared, not assumed.** A closing block of text cards, or a held
 silent shot before them, is exempt from the 55% silence ceiling — but only if
 the script says which scene is the coda and why. Everything else is measured.
+
+**Budget the coda for what has to fit in it, including the channel closer.**
+Records 02, 03 and 04 end on a centred block — `FILE CLASS NINE`, the slug and
+the fiction line — and that block needs a plate of its own. Record 05's coda is
+15 s with two plates, and both were already spoken for: one carries the record's
+last two figures and the other the single number the script deliberately
+withholds from the voice. There was nowhere to put a closer without sharing a
+plate, which is two blocks of type at once, or pushing a payoff card off its
+plate. Record 05 shipped without one, which is a decision it was free to make;
+what it was not free to do was invent the seconds in post.
+
+So the arithmetic a coda has to pass is not only "the seconds sum". Each card
+needs its own plate, and each plate needs the card's typing time plus two
+seconds of hold. At 18 characters a second and 0.35 s between lines, a
+four-line card of 100 characters wants about 9 s. Count the plates the coda
+needs before choosing its runtime.
+
+**A card lands with the line it answers to, so check which paragraph that is.**
+A card is anchored to its plate and a line to its scene, and a ten-second plate
+cannot wait for a line that arrives nine seconds into it. Record 05 put five
+cards on the first shot of a pair while the lines they answer were the second
+and fourth paragraphs of their scenes; every one reached the screen 4 to 10
+seconds early, and two had to move to the following plate in post — which also
+cost those shots their `static` tier, because a static frame is only allowed
+where there is text on screen. When a card answers anything other than the
+first paragraph of its scene, put it on the plate that is on screen when the
+line is spoken, and say so in the script.
 
 Two things the writer decides:
 
@@ -499,6 +584,9 @@ the production side and each failure costs a rewrite.
 - [ ] Every shot declares a motion tier, and the header gives the split.
 - [ ] No `static` shot without text on screen. No silent shot that is not
       `model`.
+- [ ] No `static` or `local` prompt contains dust in the air, vapour, mist,
+      smoke, a hanging or swinging part, or a lit lamp. Those frames are never
+      animated and a frozen photograph of them reads as a stalled player.
 - [ ] Every `model` shot is 5 s or 10 s. No shot exceeds 10 s.
 - [ ] Every shot names an anchor; anchors are one per distance; the spine
       contains no camera words; one palette.
@@ -511,7 +599,12 @@ the production side and each failure costs a rewrite.
       enough for its card to type and hold.
 - [ ] Every card sits on a plate that reaches the screen with the line it
       answers to, not several shots later.
-- [ ] Any coda is declared by scene number, with its reason.
+- [ ] Any coda is declared by scene number, with its reason, and has a plate
+      for every card it must carry — the payoff cards and, if the record wants
+      one, the channel closer.
+- [ ] Every card names the paragraph it answers to, and sits on the plate that
+      is on screen when that paragraph is spoken — not on the first shot of the
+      scene out of habit.
 - [ ] Every number is consistent with every other number, including implied
       rates and dates. Appendix lists real and invented separately.
 - [ ] Pacing section lists every non-default gap with a reason, and every one

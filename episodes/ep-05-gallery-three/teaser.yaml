@@ -1,0 +1,106 @@
+# The thirty-second teaser. Built from scratch, posted before the record
+# exists, and the only piece on this channel allowed a cue under it.
+#
+# Its one job is to stop a thumb in the first second, so it opens on the line
+# that costs nothing to understand and everything to sit with — six on the
+# crew, one on shift — over five empty hooks. Then it escalates on the
+# record's own telemetry and stops before any of it is explained: nothing here
+# says what was in the void, what the battery does, or what the operator finds.
+#
+# Three rules it does not break:
+#
+#   Voice   Nothing is generated. Every line is a take already in the record,
+#           already approved, reproducible from its seed. A teaser that speaks
+#           a sentence the episode does not contain is the audio version of a
+#           thumbnail promising a frame that is not there.
+#
+#   Facts   Every figure spoken here is one the record states and the appendix
+#           separates into real and invented. The lunar night and the energy
+#           arithmetic are real; the station and its crew are not, and the
+#           teaser never claims otherwise — the description carries the
+#           fiction line the same as the record's does.
+#
+#   Music   Generated, never licensed, and it stays here. Music never goes
+#           under the record itself: a man reading numbers under music is an
+#           actor in a film, and the whole record depends on him not being one.
+#
+# Timing is absolute, in seconds, on the teaser's own timeline.
+
+runtime_seconds: 30.0
+aspect: "9:16"
+slug: "FC9-005 // GALLERY THREE"
+
+# Two closing cards exist on this channel and they are not interchangeable.
+# The vertical CUTS carry "WATCH THE FULL RECORD ON THE CHANNEL", because by
+# the time a cut is posted the record is up and the card is an instruction.
+# The teaser carries SOON, because it goes out before the record exists and a
+# card promising something that is not there yet is the one promise a channel
+# cannot take back.
+end_card:
+  at: 26.0
+  seconds: 4.0
+  lines: ["SOON", "ON THE CHANNEL"]
+
+# Every shot is a take out of takes/, framed where its subject is, and every
+# one of them is a shot in which something physically moves — there is no
+# ffmpeg plate anywhere in this list. The order is the teaser's own: a
+# scrolling thumb does not wait for an establishing shot.
+shots:
+  # Five empty hooks travelling to the one occupied one, under the headcount.
+  # The same move the .a cut uses, for the same reason: the line is the count.
+  - {id: "1.3", at:  0.0, from: 0.0, seconds: 4.0, crop_x: 0.40, crop_to: 0.70}
+  # The barred hatch with its indicator pulsing, under "Five crew remain in
+  # gallery three." The bars are the answer to why they remain.
+  - {id: "3.4", at:  4.0, from: 1.0, seconds: 3.5, crop_x: 0.50}
+  # The valve clamp turning on its lanyard, under the eleven seconds.
+  - {id: "4.5", at:  7.5, from: 0.0, seconds: 3.5, crop_x: 0.45}
+  # Vapour off the frosted core tubes — the material from the void, unnamed.
+  - {id: "3.3", at: 11.0, from: 2.0, seconds: 3.5, crop_x: 0.45}
+  # The junction box light, under "A purge valve takes four turns."
+  - {id: "5.5", at: 14.5, from: 0.5, seconds: 3.0, crop_x: 0.62}
+  # Frost taking the porthole, under the heart-rate line.
+  - {id: "2.3", at: 17.5, from: 1.0, seconds: 4.5, crop_x: 0.42}
+  # The corridor with the bars off the hatch, under "Entering gallery three."
+  # Last shot, and the only one in the teaser where something has changed —
+  # so the window has to contain the change. A centred crop framed the hatch
+  # and cropped the bars out of the left of the 16:9 frame entirely, which
+  # left the shot saying nothing the earlier corridor had not already said.
+  # The window starts on the unbolted bars leaning against the wall and
+  # travels to the hatch as the line is spoken.
+  - {id: "6.2", at: 22.0, from: 2.0, seconds: 4.0, crop_x: 0.30,
+     crop_to: 0.52}
+
+# Six lines, in the record's own words, each one strange without the one
+# before it and none of them explaining another.
+lines:
+  - {pid: s1p3, at:  0.20}   # "Station crew, six. On shift, one."
+  - {pid: s3p2, at:  4.16}   # "Five crew remain in gallery three."
+  - {pid: s4p3, at:  7.72}   # "...opened by hand. First to last, eleven seconds."
+  - {pid: s4p4, at: 14.16}   # "A purge valve takes four turns."
+  - {pid: s4p6, at: 17.56}   # "...normal until the valves opened."
+  - {pid: s6p5, at: 22.56}   # "Entering gallery three."
+
+# Levels are trims on measured files, the same rule as the record's own mix,
+# and the numbers are this record's rather than the last one's.
+#
+# Measured 2026-09-22: the cue is -16.1 dBFS mean over its 30.0 s, the voice
+# takes sit near -17.2. Twelve decibels under the narration is where record 04
+# put its cue and where it worked, so the trim is -13 and the music lands
+# about -29. Record 04's own figure is -16, and copying it would have put this
+# cue at -32 — four decibels quieter than intended, because its cue measured
+# -13.7 and ours does not. The click bed on this record made the same mistake
+# in the other direction and had to be lifted 11 dB off record 04's number.
+#
+# The room tone keeps the record's own trim so the teaser sounds like the thing
+# it is advertising.
+levels:
+  music: -13
+  tone: 19
+  voice: 0
+
+music: sfx/teaser-music.mp3
+
+# The cue itself is specified in audio.yaml under `teaser_sfx:`, not here.
+# gen_sfx.py reads audio.yaml and nothing else, and a spec written in this file
+# is a spec that never gets generated — which is exactly what happened on the
+# first attempt, silently and with an exit status of zero.

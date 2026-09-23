@@ -1,0 +1,60 @@
+# Burned-in titles — channel furniture only. The episode's data graphics are in
+# cards.yaml; this is the slug, in the same Menlo, the same phosphor and the
+# same corner as every other record.
+#
+# Times are absolute seconds on the 225 s timeline. A title is not tied to a
+# plate the way a data card is — the slug belongs to the record, not to the
+# shot it happens to land on — so these stay absolute. Shot boundaries, for
+# reading these numbers against:
+#
+#   1.1   0-10    7.1 210-220    7.2 220-225
+#
+# Every absolute figure in here has to be re-derived from shots.yaml if any
+# duration anywhere changes. Record 04 grew two scenes by nine seconds after
+# its narration was recorded and every time in its own titles.yaml was nine
+# seconds early until the plate check caught it.
+#
+# Rendered by build_cards.py --titles.
+#
+# On the corner: record 04's file says the slug sits upper right "the way it is
+# on every record", and it does not. A card that names no `pos` gets
+# lower-left, because build_cards.py passes that as the default —
+# `anchor_xy(card.get("pos", "lower-left"), ...)` — so the slug has been drawn
+# LOWER left on every record that has one, and the rendered frames of this one
+# confirm it. Record 04's own cards.yaml agrees from the other direction: it
+# moved its depth readout because "the slug owns the lower left for its first
+# five seconds". The comment in record 04's titles.yaml is simply wrong.
+#
+# That corner is also where every data card in this record is drawn, which is
+# why the slug has to be gone before one arrives. It is: the slug clears at
+# 4.1 s and the first card types at 32.8 s.
+
+cards:
+  # The slug types itself into the corner over the opening shot and is gone
+  # before the cut. Image first: no ident, no title sequence, no logo. Shot 1.1
+  # is ten seconds of the last daylight this station sees, with the terminator
+  # crossing it, and the slug is off the screen well before the cut.
+  #
+  # The short form, as record 04 used: the record's full title — "THE OPERATOR
+  # WENT INTO GALLERY THREE ALONE" — is 52 characters with the number on it and
+  # would run most of the width of the frame at 40 px, which is a banner and
+  # not a corner mark. The long form lives in publish.md, where it is the
+  # YouTube title, and the slug stays furniture.
+  - id: slug
+    at: 0.8
+    hold: 4.0
+    lines: ["FC9-005 // GALLERY THREE"]
+
+# --- What is deliberately NOT here -------------------------------------------
+#
+# The channel closer. Records 02, 03 and 04 all end on a centred block —
+# "FILE CLASS NINE", the slug, and the fiction line — and this record has
+# nowhere to put one. Its coda is 15 s and both plates in it are already spoken
+# for: 7.1 carries RECORD ENDS / BATTERY 0 KWH and 7.2 carries the suit count,
+# which is the payoff the script withholds from the voice on purpose. A closer
+# would either share a plate with one of them, which is two blocks of type at
+# once, or push a payoff card off its plate.
+#
+# This is a script-stage fact, not a post-stage one: a coda that wants a closer
+# has to be written long enough to hold it. Flagged for record 06 rather than
+# fixed here.
