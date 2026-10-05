@@ -1,0 +1,75 @@
+# The vertical cuts — record 07. Assembled, not carved.
+#
+# Every shot is a take from takes/ in which something moves: an object turning
+# or blinking on Kling, or a push built in ffmpeg (record 07 rule: a push is
+# movement). Every line is a paragraph the record already contains. No cards,
+# no click bed, no music; every figure is spoken. Each closes on the channel
+# card.
+#
+# Timing from audio/alignment/ (2026-10-05), forced-aligned on the takes in the
+# mix: each line starts 0.6 s after the previous line's last word, and the
+# picture runs 0.8 s past the last word.
+#
+# Retimed takes run at real speed here, so each stays inside its clean head:
+# 1.2 < 4 s, 2.3 < 2.5 s, 4.3 < 5 s, 4.5 < 3.2 s (shots.yaml, retime_exception).
+# 3.4 and 4.1 are near-stills without their assembly push and are not used.
+#
+# `runtime_seconds` is the whole piece, closing card included.
+
+slug: "FC9-007 // THE NINETY-NINE WATTS"
+
+cuts:
+  # ---------------------------------------------------------------- a -------
+  # The arithmetic, whole: out, in, the operator, the remainder. Ends on the
+  # flattest line in the record.
+  - id: fc9-007-a-the-ninety-nine-watts
+    runtime_seconds: 22.36
+    shots:
+      - {id: "5.3", at:  0.0, from: 1.0, seconds: 4.6, crop_x: 0.52}
+      - {id: "5.1", at:  4.6, from: 0.0, seconds: 4.5, crop_x: 0.48}
+      - {id: "4.3", at:  9.1, from: 0.0, seconds: 4.5, crop_x: 0.52}
+      - {id: "2.1", at: 13.6, from: 2.0, seconds: 3.0, crop_x: 0.50}
+      - {id: "5.3", at: 16.6, from: 5.0, seconds: 3.76, crop_x: 0.52}
+    lines:
+      - {pid: s5p1, at:  0.20}   # 4483 out, 4280 in on the bus
+      - {pid: s5p2, at:  6.64}   # 2150 kcal is 104 W
+      - {pid: s5p3, at: 16.18}   # "That leaves ninety-nine watts. I have checked it four times."
+    ends_on: "I have checked it four times."
+
+  # ---------------------------------------------------------------- b -------
+  # The sweep. Lamp blinking, lamp turning, the passage, the push in on the
+  # hatch under the patch, the imager under "yesterday".
+  - id: fc9-007-b-the-patch
+    runtime_seconds: 27.64
+    shots:
+      - {id: "6.1", at:  0.0, from: 0.0, seconds: 6.5, crop_x: 0.66}
+      # The oval slides left to right; the window follows it.
+      - {id: "6.2", at:  6.5, from: 0.0, seconds: 5.0, crop_x: 0.45, crop_to: 0.70}
+      - {id: "1.3", at: 11.5, from: 2.0, seconds: 2.8, crop_x: 0.50}
+      - {id: "7.1", at: 14.3, from: 0.0, seconds: 7.5, crop_x: 0.50}
+      - {id: "6.4", at: 21.8, from: 4.0, seconds: 3.84, crop_x: 0.55}
+    lines:
+      - {pid: s6p1, at:  0.20}   # 99 W has to come out of a surface
+      - {pid: s6p2, at:  7.58}   # no warm surface anywhere
+      - {pid: s6p3, at: 14.32}   # the patch: 42 cm, 3.1 degrees colder
+      - {pid: s6p4, at: 22.38}   # "It was eleven centimeters to the left yesterday."
+    ends_on: "It was eleven centimeters to the left yesterday."
+
+  # ---------------------------------------------------------------- c -------
+  # A fault drifts. s2p2 is trimmed after "This is not drifting." — forced
+  # alignment puts 0.44 s of silence there ("drifting." ends 2.66, "It" at
+  # 3.10); the cut sits at 2.88.
+  - id: fc9-007-c-a-fault-drifts
+    runtime_seconds: 19.66
+    shots:
+      - {id: "1.2", at:  0.0, from: 0.0, seconds: 4.0, crop_x: 0.53}
+      - {id: "2.1", at:  4.0, from: 1.0, seconds: 3.7, crop_x: 0.50}
+      - {id: "2.3", at:  7.7, from: 0.0, seconds: 2.5, crop_x: 0.40}
+      - {id: "4.5", at: 10.2, from: 0.0, seconds: 3.2, crop_x: 0.52}
+      - {id: "3.2", at: 13.4, from: 1.0, seconds: 4.26, crop_x: 0.53}
+    lines:
+      - {pid: s1p2, at:  0.20}   # 22.8 against 21.2
+      - {pid: s2p2, at:  4.60, trim: 2.88}   # "A fault drifts. This is not drifting."
+      - {pid: s2p3, at:  7.86}   # "Something that stops is something that balanced."
+      - {pid: s3p3, at: 10.82}   # "...is not drawing current."
+    ends_on: "Whatever is making the difference is not drawing current."

@@ -90,6 +90,11 @@ def main():
             # closer, and the number has to stay square in the middle of it.
             z, x, y = (f"1+{PUSH_ZOOM}*on/{n}",
                        "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)")
+        elif s.get("local_motion") == "pull":
+            # The push run backwards: the frame starts close and opens out.
+            # Record 07's last passage shot retreats from the forward hold.
+            z, x, y = (f"1+{PUSH_ZOOM}*(1-on/{n})",
+                       "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)")
         elif s.get("local_motion") == "drift":
             # A controlled push with a touch of sideways travel. Used where a
             # model was asked for a slow drift and trucked the subject out of

@@ -106,6 +106,16 @@ captions:
   # top and darkest at the bottom of the caption band, feathered over 180 px so
   # it has no boundary anywhere. On a dark plate it is invisible; on a bright
   # one it is the only reason the type survives.
+  # The slug at the top left of every vertical and the teaser. Channel-wide,
+  # read by build_verticals.py and build_teaser.py alike; it was x=44, y=88
+  # hard-coded in both. At y=88 YouTube's mobile player covers it with its
+  # own top row (Serge, 2026-10-05, on record 07): one line lower and a step
+  # in from the edge clears it on every vertical from here on.
+  slug:
+    size: 34
+    x: 80
+    y: 150
+
   # The card every vertical closes on. Same text, same length, every cut and
   # every episode — furniture, like the slug. The channel asks for one thing
   # and it asks once, at the end, after the viewer has already stayed.

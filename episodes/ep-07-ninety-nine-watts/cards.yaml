@@ -1,0 +1,129 @@
+# Data cards — record 7.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script and never by hand.
+#
+# `with:` names the paragraph the card answers to, and validate.py measures
+# the gap once narration exists. Times are seconds from the start of the
+# card's own shot. The coda cards have no `with:` — there is no voice left.
+#
+# No card sits on 3.4, 5.3 or 6.4: those are phosphor screens, green in
+# fiction, and a green card over them stops reading as the record's own layer.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  # Shares 1.1 with the slug, which is gone by 4.5 s (titles.yaml). Lands
+  # ~1 s ahead of "Cabin temperature…" — the instrument getting there first.
+  - id: cabin
+    with: s1p2
+    shot: "1.1"
+    pos: lower-left
+    build: line
+    at: 4.6
+    lines:
+      - "LOG 088 / KROMKA-6"
+      - "CABIN 22.8 C / NOMINAL 21.2 C"
+
+  # --- Scene 2 -------------------------------------------------------------
+  - id: stable
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "LOG 090 / +1.6 C STABLE 6 DAYS"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: bus
+    with: s3p1
+    shot: "3.1"
+    pos: lower-left
+    build: line
+    at: 1.5
+    lines:
+      - "LOG 092 / BUS LOAD"
+      - "NOW      4280 W"
+      - "D-14     4280 W"
+      - "D-30     4281 W"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: radiator
+    with: s4p2
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 1.0
+    lines:
+      - "RADIATOR A   14.0 m²"
+      - "PLATE       285.5 K"
+      - "DESIGN      283.9 K"
+      - "REJECTING    4483 W"
+
+  # --- Scene 5 -------------------------------------------------------------
+  # OUT and BUS were spoken in s5p1; OPERATOR is s5p2's news.
+  - id: balance
+    with: s5p2
+    shot: "5.2"
+    pos: lower-left
+    build: line
+    at: 2.0       # latest that still fits is 4.5; 2.0 lands it 2 s before its line
+    lines:
+      - "OUT        4483 W"
+      - "BUS        4280 W"
+      - "OPERATOR    104 W"
+
+  # One line, types in under a second, holds for the rest of the plate.
+  - id: unaccounted
+    with: s5p3
+    shot: "5.4"
+    pos: lower-left
+    build: line
+    at: 1.0
+    hold_until: 9.6
+    lines:
+      - "UNACCOUNTED  99 W"
+
+  # --- Scene 6 -------------------------------------------------------------
+  # Needs 7.3 s from its start; latest start that still finishes is 2.7.
+  - id: ir-sweep
+    with: s6p3
+    shot: "6.3"
+    pos: lower-left
+    build: line
+    at: 2.0
+    lines:
+      - "IR SWEEP / FORWARD HOLD"
+      - "WALL     296.0 K"
+      - "PATCH    292.9 K"
+      - "ACROSS     0.42 m"
+
+  # --- Scene 8 — coda --------------------------------------------------------
+  # The principle the operator never says. The draft's second card — "99 W IS
+  # WHAT IT COSTS TO HOLD 3.1 C BELOW AMBIENT" — drew the conclusion for the
+  # viewer and is gone (script.md, correction 1).
+  - id: cooling
+    shot: "8.1"
+    pos: lower-left
+    build: line
+    at: 2.0       # log 98 runs ~1.1 s into this plate; type after it
+    lines:
+      - "A COOLING DEVICE RELEASES MORE HEAT"
+      - "THAN IT REMOVES"
+
+  # The archive's catalogue line, on the freed plate. A fact about the record,
+  # not a promise of the next one.
+  - id: hook
+    shot: "8.3"
+    pos: lower-left
+    build: line
+    at: 1.5
+    lines:
+      - "KROMKA-6"
+      - "RECORD ENDS AT LOG 104"

@@ -27,9 +27,33 @@ def main():
         secs = s["timeline_seconds"]
         vf = ("scale=1920:-2,crop=1920:1080:(iw-1920)/2:(ih-1080)/2,"
               "setsar=1,fps=24")
+        src_t = []
         if s.get("retime"):
-            vf = f"setpts={s['retime']}*PTS," + vf
-        subprocess.run([ff, "-y", "-v", "error", "-i", str(src), "-t", str(secs),
+            r = s["retime"]
+            # A plain setpts repeats frames, which is fine at 1.3x and reads
+            # as a stutter well before 2x. Record 07's 1.2 is slowed 2x and
+            # approved only as interpolated — repeated frames step the needle.
+            # Only the source the shot actually uses is read: interpolating
+            # the whole 10 s take to keep its first 5 is minutes for nothing.
+            if s.get("retime_mode") == "interpolate":
+                vf = (f"setpts={r}*PTS,minterpolate=fps=24:mi_mode=mci:"
+                      f"mc_mode=aobmc:me_mode=bidir:vsbmc=1," + vf)
+                src_t = ["-t", f"{secs / r + 0.1:.3f}"]
+            else:
+                vf = f"setpts={r}*PTS," + vf
+        if s.get("post_motion") == "push":
+            # A centred push laid over a take that came back too still to
+            # hold the screen. Record 07's 3.4 asked Kling for a line that
+            # "holds", got a near-frozen frame for $0.70, and was kept with
+            # this instead of a reroll. Same travel as build_static.py's
+            # `local_motion: push`, over the 3840 upscale that keeps zoompan
+            # from stepping, so a pushed take and a pushed still move alike.
+            from build_static import PUSH_ZOOM
+            n = int(secs * 24) - 1
+            vf += (f",scale=3840:-2,zoompan=z='1+{PUSH_ZOOM}*on/{n}':d=1:"
+                   f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':"
+                   f"s=1920x1080:fps=24,setsar=1")
+        subprocess.run([ff, "-y", "-v", "error", *src_t, "-i", str(src), "-t", str(secs),
                         "-vf", vf, "-an", "-c:v", "libx264", "-crf", "18",
                         "-pix_fmt", "yuv420p", str(dst)], check=True)
         parts.append(dst)

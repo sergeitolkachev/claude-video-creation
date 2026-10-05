@@ -118,12 +118,23 @@ def main(ep):
         elif not (d[0] <= g <= d[1]):
             fail.append(f"{s['id']}: {g}s outside range {d} for {s['model']}")
 
-    # 4. Retiming stays under 1.3x.
+    # 4. Retiming stays under 1.3x — unless a shot names its exception.
+    #
+    # Record 07's 1.2 keeps the first 5 s of a 10 s take, the part before the
+    # dial turned into a clock, slowed 2x by interpolation and approved by eye.
+    # So a retimed shot no longer has to use the whole take: what it reads is
+    # timeline / retime seconds, and that only has to fit inside the take.
     for s in shots:
         r = s.get("retime")
-        if r and r > 1.3: fail.append(f"{s['id']}: retime {r} exceeds 1.3x")
-        if r and abs(s["timeline_seconds"] / s["generate_seconds"] - r) > 0.01:
-            fail.append(f"{s['id']}: retime {r} disagrees with the durations")
+        if not r: continue
+        if r > 1.3 and not s.get("retime_exception"):
+            fail.append(f"{s['id']}: retime {r} exceeds 1.3x with no retime_exception")
+        if r > 1.3 and s.get("retime_mode") != "interpolate":
+            fail.append(f"{s['id']}: retime {r} above 1.3x must be retime_mode: interpolate")
+        used = s["timeline_seconds"] / r
+        if used > s["generate_seconds"] + 0.01:
+            fail.append(f"{s['id']}: retime {r} needs {used:.1f}s of a "
+                        f"{s['generate_seconds']}s take")
         if not r and not s.get("source", "").startswith("ffmpeg"):
             if s["timeline_seconds"] > s["generate_seconds"]:
                 fail.append(f"{s['id']}: timeline longer than generated, no retime declared")
@@ -142,6 +153,19 @@ def main(ep):
             fail.append(f"{s['id']}: motion_tier model but no model tier named")
         if tier == "local" and not s.get("source", "").startswith("ffmpeg"):
             fail.append(f"{s['id']}: motion_tier local but not built locally")
+    # Two locked-off frames in a row is twenty seconds where nothing moves.
+    # Since record 07 a push or pull counts as movement, so this is the
+    # adjacency rule that survives: static beside static, never.
+    # The rule dates from record 07; earlier records are published and frozen,
+    # so it is reported for them and not failed (record 05's coda has two).
+    rec = int(re.search(r"ep-(\d+)", ep.name).group(1))
+    for a_, b_ in zip(shots, shots[1:]):
+        if a_.get("motion_tier") == "static" and b_.get("motion_tier") == "static":
+            msg = f"{a_['id']} and {b_['id']}: two static frames in a row"
+            if rec < 7:
+                print(f"  {msg} — frozen record, reported only")
+            else:
+                fail.append(msg)
     n = {t: sum(1 for s in shots if s.get("motion_tier") == t) for t in TIERS}
     moving = n["model"] + n["local"]
     print(f"\n  motion: {n['model']} model, {n['local']} local, {n['static']} static "

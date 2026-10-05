@@ -1,0 +1,31 @@
+# Burned-in titles — channel furniture only. Data cards are in cards.yaml.
+#
+# Times are absolute seconds on the 267 s timeline. Shot boundaries, for
+# reading these numbers against:
+#
+#   1.1   0-10    8.1 235-243   8.3 248-256   8.5 261-267
+#
+# Every figure here must be re-derived from shots.yaml if any duration
+# anywhere changes. Rendered by build_cards.py --titles.
+
+cards:
+  # The slug types into the lower left of 1.1 and is gone before the cabin
+  # card takes the same corner at 4.6 s: 32 characters, 1.8 s of typing, 2 s
+  # of hold, finished at 4.3.
+  - id: slug
+    at: 0.5
+    hold: 2.0
+    lines: ["FC9-007 // THE NINETY-NINE WATTS"]
+
+  # The channel closer, on its own plate. Two lines, as record 06: the
+  # draft's three-line block measured 6.27 s on a 6 s plate. The fiction line
+  # is in the description.
+  - id: closer
+    at: 261.5
+    hold: 2.0
+    size: 40
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-007 // THE NINETY-NINE WATTS"

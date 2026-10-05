@@ -45,10 +45,43 @@ def dur(p):
 # and it was the copy that never learned to strip stage directions.
 paragraphs = ba.narration_paragraphs
 
+def forced_alignment(take, text, key):
+    """Word timings for the file that is actually in the mix.
+
+    Record 07 found the regeneration route broken on eleven_v3: the same seed
+    at the with-timestamps endpoint came back as a different delivery, up to
+    1.44 s longer than the stored take, with words "ending" after the file
+    did. Records 03 and 05 matched to 0.16 s on the same voice, so it is a
+    change on the provider's side, and a caption timed to a delivery nobody
+    hears is the failure this whole script exists to prevent. ElevenLabs'
+    forced-alignment endpoint takes the audio itself and the transcript, and
+    there is nothing left to drift.
+    """
+    bnd = "----fc9" + os.urandom(8).hex()
+    body = b"".join([
+        f"--{bnd}\r\nContent-Disposition: form-data; name=\"text\"\r\n\r\n".encode(),
+        text.encode(), b"\r\n",
+        f"--{bnd}\r\nContent-Disposition: form-data; name=\"file\"; "
+        f"filename=\"{take.name}\"\r\nContent-Type: audio/mpeg\r\n\r\n".encode(),
+        take.read_bytes(), b"\r\n", f"--{bnd}--\r\n".encode()])
+    r = urllib.request.Request(
+        "https://api.elevenlabs.io/v1/forced-alignment", data=body,
+        headers={"xi-api-key": key,
+                 "Content-Type": f"multipart/form-data; boundary={bnd}"})
+    d = json.load(urllib.request.urlopen(r, timeout=180))
+    return [{"w": w["text"].strip(), "t": w["start"], "e": w["end"]}
+            for w in d["words"] if w["text"].strip()]
+
+
 def alignment(pid, text, prev, seed, voice, key, cache_dir):
     cache = cache_dir / f"{pid}_s{seed}.json"
     if cache.exists():
         return json.loads(cache.read_text())
+    take = cache_dir.parent / "narration" / f"{pid}_s{seed}.mp3"
+    if take.exists():
+        words = forced_alignment(take, text, key)
+        cache.write_text(json.dumps(words, indent=1))
+        return words
     body = {"text": text, "model_id": voice["model_id"], "seed": seed}
     if voice.get("settings"):
         body["voice_settings"] = voice["settings"]

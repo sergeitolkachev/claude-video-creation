@@ -1,0 +1,45 @@
+# The thirty-second teaser — record 07. Posted before the record exists, the
+# only piece on this channel allowed a cue under it, closing on SOON.
+#
+# Five lines, as the script nominated: the cabin is warm, a fault drifts and
+# this does not, nothing draws the current, ninety-nine watts checked four
+# times, the patch moved. None explains another. Spaced evenly across 26 s of
+# picture (1.67 s between the last word of one and the next).
+#
+# Timing from audio/alignment/ (2026-10-05, forced alignment). s2p2 is trimmed
+# at 2.88, inside 0.44 s of silence after "drifting.".
+
+runtime_seconds: 30.0
+aspect: "9:16"
+slug: "FC9-007 // THE NINETY-NINE WATTS"
+
+end_card:
+  at: 26.0
+  seconds: 4.0
+  lines: ["SOON", "ON THE CHANNEL"]
+
+shots:
+  - {id: "6.1", at:  0.0, from: 0.0, seconds: 5.0, crop_x: 0.66}
+  - {id: "5.3", at:  5.0, from: 2.0, seconds: 4.5, crop_x: 0.52}
+  - {id: "4.3", at:  9.5, from: 0.0, seconds: 4.0, crop_x: 0.52}
+  - {id: "5.1", at: 13.5, from: 0.0, seconds: 4.5, crop_x: 0.48}
+  - {id: "6.2", at: 18.0, from: 0.0, seconds: 4.0, crop_x: 0.45, crop_to: 0.70}
+  - {id: "7.1", at: 22.0, from: 5.0, seconds: 4.0, crop_x: 0.50}
+
+lines:
+  - {pid: s1p2, at:  0.20}               # "Cabin temperature, twenty-two point eight. Nominal is twenty-one point two."
+  - {pid: s2p2, at:  5.67, trim: 2.88}   # "A fault drifts. This is not drifting."
+  - {pid: s3p3, at:  9.99}               # "...not drawing current."
+  - {pid: s5p3, at: 17.70}               # "That leaves ninety-nine watts. I have checked it four times."
+  - {pid: s6p4, at: 22.74}               # "It was eleven centimeters to the left yesterday."
+
+# Music measured 2026-10-05: -35.4 dBFS mean above 300 Hz, flat from 3 s to
+# 24 s and gone by 27 — already ~16 dB under a voice at about -19 in that
+# band, which is where record 06 put its cue with a -6 trim. So no trim here.
+# The tone is the record's own trim (audio.yaml).
+levels:
+  music: 0
+  tone: 0
+  voice: 0
+
+music: sfx/teaser-music.mp3

@@ -89,6 +89,13 @@ def main():
     only = None
     if "--only" in args:
         i = args.index("--only"); only = args[i+1]; del args[i:i+2]
+    # --tier <name> rolls a shot on another tier from config/models.yaml, for
+    # an A/B against the take it already has. The result lands beside it as
+    # takes/<id>.<tier>.mp4 and never replaces it; which one the record uses
+    # is decided by eye afterwards. Record 07 added it to test Kling O3.
+    tier_override = None
+    if "--tier" in args:
+        i = args.index("--tier"); tier_override = args[i+1]; del args[i:i+2]
     # --dry-run prints the exact body that would be sent and spends nothing.
     #
     # Record 05 paid $0.70 to learn why this is needed. A shots.yaml edit
@@ -141,12 +148,16 @@ def main():
 
     jobs = []
     for s in shots:
-        dest = out / f"{s['id']}.mp4"
+        if tier_override:
+            s = {**s, "model": tier_override}
+        tag = f".{tier_override}" if tier_override else ""
+        pkey = s["id"] + tag
+        dest = out / f"{s['id']}{tag}.mp4"
         if dest.exists():
             print(f"  skip   {dest.name} (already there)"); continue
-        if s["id"] in pend:
+        if pkey in pend:
             # Already paid for on an earlier run that did not collect it.
-            j = pend[s["id"]]
+            j = pend[pkey]
             print(f"  resume {s['id']:<5} id={j.get('request_id')}  "
                   f"(queued {int(time.time() - j['queued_at'])}s ago, "
                   f"${j['price']:.2f} already spent)")
@@ -190,6 +201,16 @@ def main():
                            if s.get("negative_extra") else "")}
             price = tier["price_10s_usd"] if gen == 10 else \
                     tier["price_base_usd"] + max(0, gen - 5) * tier["price_per_extra_second_usd"]
+        elif s["model"] == "test_o3":
+            # Kling O3 has no negative_prompt and a real generate_audio whose
+            # default fal does not document. Audio off on every call, or the
+            # clip bills at $0.112/s for sound that is stripped. The positive
+            # prompt is the workhorse's, unchanged, so an A/B compares models
+            # and not prompts — which means the negative list is simply lost
+            # here, and that is part of what the test measures.
+            body = {"image_url": img, "prompt": prompt, "duration": str(gen),
+                    "generate_audio": False}
+            price = gen * tier["price_per_second_usd"]
         else:
             body = {"image_url": img, "prompt": prompt, "duration": str(gen),
                     "resolution": tier["resolution"], "aspect_ratio": "16:9",
@@ -211,7 +232,7 @@ def main():
         r = req(f"https://queue.fal.run/{tier['id']}", key, body)
         # Written before anything is polled: from here on the request exists on
         # fal's side whatever happens to this process.
-        pend[s["id"]] = {"request_id": r.get("request_id"),
+        pend[pkey] = {"request_id": r.get("request_id"),
                          "status_url": r["status_url"],
                          "response_url": r["response_url"],
                          "price": price, "queued_at": time.time()}
@@ -272,7 +293,7 @@ def main():
                   f"pending.json; rerun downloads it again")
             continue
         spent += price
-        pend.pop(s["id"], None); pending_write(ep, pend)
+        pend.pop(dest.stem, None); pending_write(ep, pend)  # stem == pending key
         print(f"  saved  {dest.name}  ({dest.stat().st_size // 1024} KB)")
 
     print(f"\nSpent ${spent:.2f}.")

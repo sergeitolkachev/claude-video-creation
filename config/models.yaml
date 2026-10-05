@@ -8,8 +8,9 @@
 # Re-check before every episode. Prices and model names drift, and the drift
 # is not announced.
 
-verified_on: 2026-09-18   # whole video board re-checked against fal's pricing
-                         # page and model pages before record 04's stage 6
+verified_on: 2026-10-05   # workhorse and the O3 test tier re-checked against
+                         # fal's model pages before record 07's stage 6;
+                         # the full board was last re-checked 2026-09-18
 
 # --- Why the workhorse tier is Kling, re-answered 2026-09-18 ----------------
 #
@@ -118,6 +119,38 @@ video:
     notes: >
       Generates native audio and exposes no toggle to disable it, which
       collides with the audio-off rule. Strip with `-an` if ever used.
+
+  # Under test on record 07, not in production. Kling 3.0 (O3) Standard,
+  # checked on fal 2026-10-05: $0.084/s with audio off, $0.112/s with it on,
+  # billed per second, any duration from 3 to 15 s. So a 10 s shot is $0.84
+  # against the workhorse's $0.70; per-second billing only pays where a shot
+  # wants a length that is not 5 or 10.
+  #
+  # Two schema differences that matter more than the price:
+  #   - NO negative_prompt. Every failure this channel has learned to name
+  #     (dolly, morphing, a head finishing an animal) goes in negative_extra,
+  #     and on this tier it has nowhere to go: it would have to live in the
+  #     positive prompt or not at all.
+  #   - generate_audio EXISTS here, unlike on the workhorse, and its default
+  #     is not documented. It must be sent as false on every call, or the
+  #     clip is billed at $0.112/s for audio that is then stripped.
+  # gen_takes.py has no branch for this tier yet; it is added when the test
+  # runs, not before.
+  test_o3:
+    id: fal-ai/kling-video/o3/standard/image-to-video
+    price_per_second_usd: 0.084    # audio off
+    duration_seconds: [3, 15]      # integer seconds, sent as a string
+    has_seed: false
+    required_params:
+      generate_audio: false        # real parameter here; never omit it
+    resolution: 1268x724           # measured on the record 07 test, NOT 1080p
+    status: >
+      Tested and rejected, record 07, 2026-10-05, on shot 3.2 against the
+      workhorse with the same still and prompt: 720p output, a 58 px camera
+      drift against an explicit locked-camera prompt, and the requested
+      rotation never happened. Do not route a shot here. If O3 is revisited,
+      it is O3 Pro ($0.112/s), whose output resolution has not been checked,
+      and a new test.
 
   # Not used in episode 01. A single 10 s clip costs $4.00, a fifth of the
   # whole budget, for a shot that then gets grain and a vignette dropped on

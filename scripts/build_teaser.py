@@ -76,8 +76,10 @@ def main():
 
     # --- captions, from the same word timings the cuts use -----------------
     cues = V.caption_cues(ep, cfg["lines"], picks, bc)
-    slug = V.text_plate([cfg["slug"]], spec, tmp / "slug.png", size=34,
-                        centre=False, x=44, y=88)
+    slug = V.text_plate([cfg["slug"]], spec, tmp / "slug.png",
+                        size=spec["captions"]["slug"]["size"], centre=False,
+                        x=spec["captions"]["slug"]["x"],
+                        y=spec["captions"]["slug"]["y"])
     silent = V.overlay_type(joined, slug, cues, total, tmp, tmp / "picture.mp4",
                             bc, slug_until=ec["at"])
 

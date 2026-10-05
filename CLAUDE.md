@@ -216,18 +216,40 @@ listening.** Three tiers, and every shot in `shots.yaml` declares one:
   `static` plate beside it. `local_motion: drift` remains the repair for a
   plate that comes back with something in suspension anyway; it is not the
   rule.
-- `local` — drift or push, built in ffmpeg from the approved still. For shots
-  under narration where the frame is texture rather than event. Free, exact,
-  and steadier than any model, but it is a move across a photograph: no
-  parallax, nothing in the frame is alive.
-- `model` — a video model, normally Kling. **Required** for any shot that
-  runs under silence, and for any shot whose content should physically move:
-  dust, water, frost, the herd, the animal.
+- `local` — push, pull or drift, built in ffmpeg from the approved still.
+  For any shot where nothing in the frame would move by itself — under
+  narration or under silence. Free, exact, and steadier than any model; a
+  move across a photograph, but a move.
+- `model` — a video model, normally Kling. **Only for a shot in which an
+  object moves**: a fan or rotor turning, a wheel, a lamp blinking, a rigid
+  thing rotating or swinging on its mounting, the animal, water. Decided at
+  the still stage — the still must contain the thing that will move.
 
 The rule that matters: **no text on screen and no voice means the picture
 carries the shot alone, and a still frame cannot.** Silence is a format
 choice here, not dead air, and it only reads as intentional if something in
-the frame is moving while nobody is talking.
+the frame is moving while nobody is talking. A push or a pull counts: the
+frame is moving.
+
+**What a model shot is for, since record 07.** Record 07 paid $0.70 each for
+two shots whose only motion was light — a phosphor trace asked to "hold" with
+its glow breathing, a shadow edge asked to sweep up a glass column — and got
+two stills both times; Kling does not move light across a frozen object. And
+the records before it had filled their silences with dust: drifting
+particles are the one motion Kling never refuses, so every shot that had
+nothing to move was given dust, and the record looked it. So:
+
+- **Light, shadow and glow are not motion.** A shot whose only movement is a
+  shadow edge, a glow or a beam on a still subject is `local`, not `model`.
+- **Dust, particles and vapour: at most one or two model shots in ten.** As
+  texture in a shot that has a moving object, fine; as the reason for the
+  shot, no.
+- **A push or pull is better than a dust shot.** It is free and it reads as
+  a camera; dust over a still subject reads as a still subject with dust.
+- Two `local` moves may sit next to each other, and a `static` card plate may
+  sit next to a `local` move. What may not happen is two locked-off frames in
+  a row: that is the twenty seconds with nothing moving that the old
+  adjacency rule existed to prevent.
 
 The budget follows the rule, not the other way round. Locked-off shots are
 free and that is exactly why they are seductive; if an episode comes in
@@ -537,6 +559,11 @@ scratch rather than cut out of something finished.
   block's real pixel extent from the font metrics and fails if it crosses
   either boundary. A caption that reads on one platform and is buried on
   another is not a format, it is luck.
+- **The top of a vertical is a dead zone too.** YouTube's mobile player lays
+  its own top row over the first ~120 px, and record 06's slug at y=88 sat
+  under it. The slug's position is `captions.slug` in `config/type.yaml`
+  (x=80, y=150 since record 07), read by both the vertical and the teaser
+  builder — never a number in a script.
 - **The bottom 30% of a vertical stays clear.** Every platform parks its own
   furniture there — the caption, the handle, the sound name, the buttons — and
   record 01 left only 264 px of 1920 and still ended up underneath the pile.
@@ -671,11 +698,15 @@ extent changes, so there is nothing for the model to invent frame to frame.
   marine snow. Frost spreading across a surface. Vapour rising and leaving
   frame. A rigid object rotating on its mounting: record 05's spare clamp
   turning on its lanyard was correct on the first take. A lamp blinking or
-  pulsing. A beam travelling with the camera. A shadow edge advancing.
-  Anything with an axis belongs here — a fan, a wheel, a counter turning over
-  — because the model recognises the class and turns it rather than redrawing
-  it. (The fan and the counter are inference from the same class, not yet
-  rolled on this channel; the clamp and the lamp are measured.)
+  pulsing. Anything with an axis belongs here — a fan, a wheel, a rotor —
+  because the model recognises the class and turns it rather than redrawing
+  it. Record 07 measured a handwheel (2.1) and a flow-meter rotor (4.5) both
+  turning cleanly; a small bubble crossing a sight glass (4.3) held too.
+  (Dust is reliable and capped — see the Motion Policy.)
+- **Not motion: light on a still subject.** A shadow edge advancing, a glow
+  breathing, a beam on a surface. Record 07 asked for two and got two stills
+  (3.4, 4.1). These used to be listed as reliable; they are reliable only in
+  the sense that nothing goes wrong, because nothing happens.
 - **Unreliable: a soft deformable object whose shape has to be re-drawn every
   frame.** Fabric, cable, a loose flap, a hanging tag. Record 05 asked a
   fabric tether strap to sway and lost three takes and $2.10 on one shot: it
@@ -695,6 +726,34 @@ different motion and let the soft thing hang still, or accept what comes. It
 is not fixed by naming the failure in the negative list; that was tried three
 times. Record 05 shipped its strap as it came, deliberately, after three
 takes and with the evidence in hand — a decision, not a default.
+
+**A model shot pays for motion, so it has to ask for motion an eye sees in the
+first second.** Record 07's 3.4 asked a phosphor trace to "jitter by a hair
+and hold", because the story said the load had not changed — and got exactly
+that: the stillest take of the record (motion 0.93), $0.70 for a frame a
+`local` push would have moved more. "Holds", "settles", "barely" are
+instructions to a model to do nothing. When the subject must not change,
+move something that is not the subject: a beam spot sweeping along the flat
+trace, a shadow crossing the glass. Kept as rolled with a push laid over it in
+assembly (`post_motion: push` in `assemble_scene.py`), which is the repair, not
+the plan.
+
+**A pattern the model can continue, it will.** A ring of twelve ticks under a
+needle is a clock, and record 07's 1.2 grew a second hand by eight seconds; an
+ink trace on chart paper is handwriting, and 2.3 wrote a scribble across the
+strip. Both were clean for their first 3–5 s. The repair that shipped:
+keep the clean head of the take and slow it 2x with motion interpolation
+(`retime_mode: interpolate`, with a `retime_exception` naming why, because it
+is above the 1.3x rule — frame repetition at 2x steps visibly, interpolation
+did not on a thin needle). Approved by eye on both shots; a vertical cut from
+`takes/` runs at real speed and must stay inside the clean window. The cheaper
+answer is at the still stage: give an instrument fewer marks than a clock
+face, and a chart a trace too plain to extend.
+
+**Kling O3 Standard lost to the workhorse on the one shot it was tried on**
+(record 07, 3.2): 720p output, a 58 px camera drift against a locked-camera
+prompt, and no negative prompt to name either failure in. See
+`config/models.yaml`.
 
 **Verify a prompt edit landed before paying for it.** `gen_takes.py --dry-run`
 prints the exact outgoing body — endpoint, final prompt with its motion tail,

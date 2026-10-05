@@ -109,12 +109,25 @@ def place(picks, A, start, end, cfg, anchors=None):
         # spends the remaining time on the paragraphs that are still to come.
         t = start[scene] + lead
         gap = min_gap
+        prev_end = None
         for idx, (pid, f) in enumerate(items):
             t += hold.get(pid, 0)
             if pid in anchors and anchors[pid] > t:
                 t = anchors[pid]          # wait for the card to reach the screen
+            # And the other direction, opt-in per episode. Spreading the scene
+            # evenly pushed record 07's lines four to ten seconds past cards
+            # that were timed for them, so a carded line is pulled back to
+            # `card_pull` seconds after its card — never closer than min_gap
+            # to the line before it, and never ahead of its card. Off unless
+            # audio.yaml asks: records 04-06 were mixed without it, and this
+            # function is also what validate.py checks them against.
+            pull = cfg.get("card_pull")
+            if pull is not None and pid in anchors and t > anchors[pid] + pull:
+                floor = (prev_end + min_gap) if prev_end is not None else start[scene] + lead
+                t = max(floor, anchors[pid] + pull, anchors[pid])
             placed.append((pid, f, t))
             t += dur(f)
+            prev_end = t
             rest = items[idx + 1:]
             if rest:
                 rem = sum(dur(f2) for _, f2 in rest)

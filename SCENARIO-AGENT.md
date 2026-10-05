@@ -159,17 +159,34 @@ listening.**
 | Tier | What it is | When it is allowed |
 |---|---|---|
 | `static` | Locked-off frame, lens breathing only | **Only** for a shot carrying a data card, a title, or burned-in text. The eye is on the text; a moving frame fights the reading. Its prompt must describe a frame with nothing in it that the eye expects to move — see "Nothing moves in a frame that is never animated" below. Free, built in ffmpeg. |
-| `local` | Slow drift or push across the approved still | Shots **under narration** where the frame is texture rather than event. No parallax, nothing in frame is alive. |
-| `model` | A real video clip | **Required** for any shot running under silence, and for any shot whose content should physically move: dust, water, frost, smoke, a drifting object, an animal. |
+| `local` | Slow push, pull or drift across the approved still | Any shot where nothing in the frame would move by itself — under narration **or under silence**. Free. A move across a photograph, but a move. |
+| `model` | A real video clip | **Only for a shot in which an object moves**: a fan or rotor turning, a wheel, a lamp blinking, a rigid thing rotating or swinging on its mounting, an animal, water. |
+
+**Choose the moving object when you write the still, not after.** A `model`
+shot's prompt must contain the thing that will move, named, in frame. If you
+cannot name it, the shot is `local`.
+
+**Light is not motion, and dust is not a subject.** Record 07 paid $0.70
+twice for shots whose only motion was light — a trace asked to "hold" with
+its glow breathing, a shadow asked to sweep up a glass column — and got two
+stills; the video model does not move light across a frozen object. And
+records before it filled every silence with drifting dust, because dust is
+the one motion the model never refuses; the record looked like it. So: a
+shot whose only movement is a shadow, a glow or a beam is `local`. Dust,
+particles and vapour may be the motion of **one or two `model` shots in
+ten**, no more. A push or pull is the better answer for a shot with nothing
+to move — it is free, and it reads as a camera.
 
 **What a `model` shot may be asked to move.** The motion a shot names is not
 free. The rule is rigid against soft: a motion is safe when the thing keeps
 its shape and only its position, orientation or extent changes.
 
-**Safe to write into a shot.** Drifting dust or snow. Frost spreading. Vapour
-rising out of frame. A rigid thing turning on its mounting — a clamp on a
-lanyard, a fan, a wheel, a counter rolling over. A lamp blinking or pulsing. A
-beam travelling with the camera. A shadow edge advancing.
+**Safe to write into a shot.** A rigid thing turning on its mounting — a
+clamp on a lanyard, a fan, a rotor, a wheel, a lamp head on a swivel. A lamp
+blinking or pulsing. A small bubble crossing a sight glass. Frost spreading.
+(Dust, snow and vapour are safe too, and capped at one or two shots in ten —
+above.) **Not motion:** a shadow edge advancing, a glow breathing, a beam on
+a still surface — record 07 got a still back every time.
 
 **Not safe.** Anything soft that has to be re-drawn every frame: fabric, a
 strap, a cable, a loose flap, a hanging tag. Record 05 lost three takes and
@@ -184,6 +201,22 @@ freedom the model recognises; a strap has as many as it invents.
 
 So if a shot's only movement is something soft, give the shot a different
 motion and let the soft thing hang still.
+
+**Ask a `model` shot for motion an eye sees in the first second.** A model
+shot costs $0.35–0.70 because something in it moves. Record 07 asked a
+phosphor trace to "jitter by a hair and hold" — the story said the load had
+not changed — and the model did exactly that: a $0.70 still. "Holds",
+"settles", "barely", "a fraction" ask the model to do nothing. When the
+subject itself must not change, move something that is not the subject: a
+beam spot sweeping along the flat trace, a shadow crossing the glass, dust in
+front of it.
+
+**Do not hand the model a pattern to continue.** It will continue it. A ring
+of twelve ticks with a needle came back as a clock that grew a second hand; an
+ink trace on chart paper came back with new scribbles written across it. An
+instrument face gets fewer marks than a clock — a short arc of ticks, not a
+full ring — and a chart gets a trace too plain to extend: one straight line,
+or a single step.
 
 ### Nothing moves in a frame that is never animated
 
@@ -224,8 +257,9 @@ here, not dead air, and it only reads as intentional if something in the frame
 is moving while nobody is talking.
 
 Consequence for the writer: a long silent hold is a legitimate and powerful
-choice, but it is a `model` shot, and it must contain something that moves.
-"Static, 9 s, long hold, no narration" is not a shot — it is a freeze.
+choice, but it must move — a `model` shot with an object moving in it, or a
+`local` push or pull. "Static, 9 s, long hold, no narration" is not a shot —
+it is a freeze.
 
 Give the **motion split** in the header (`N static / N local / N model`).
 A healthy record looks roughly like 8 / 12 / 14.
@@ -582,12 +616,18 @@ the production side and each failure costs a rewrite.
 - [ ] Word count sits inside the band for that runtime — **per scene**, not
       only overall. Silence between 33% and 55%.
 - [ ] Every shot declares a motion tier, and the header gives the split.
-- [ ] No `static` shot without text on screen. No silent shot that is not
-      `model`.
+- [ ] No `static` shot without text on screen. No silent shot that is
+      `static`.
+- [ ] Every `model` shot names the object that moves, in its still prompt.
+      None moves only light, shadow or glow. Dust, particles or vapour carry
+      at most one or two of every ten `model` shots.
 - [ ] No `static` or `local` prompt contains dust in the air, vapour, mist,
       smoke, a hanging or swinging part, or a lit lamp. Those frames are never
       animated and a frozen photograph of them reads as a stalled player.
 - [ ] Every `model` shot is 5 s or 10 s. No shot exceeds 10 s.
+- [ ] Every `model` shot names a motion visible in its first second — no
+      "holds", "settles" or "barely" as the whole of it — and no instrument or
+      chart in it carries a pattern the model could continue.
 - [ ] Every shot names an anchor; anchors are one per distance; the spine
       contains no camera words; one palette.
 - [ ] No prompt contains readable text, faces, hands, people, grain,
@@ -610,10 +650,9 @@ the production side and each failure costs a rewrite.
 - [ ] Pacing section lists every non-default gap with a reason, and every one
       of them falls between two paragraphs, never inside one.
 - [ ] Every counting readout settles at least 2 s before its shot ends.
-- [ ] No two consecutive shots are both built in ffmpeg — a card plate and a
-      drift next to each other is twenty seconds where nothing in the frame is
-      alive, whatever the tiers say. Order the scene so a `model` shot sits
-      between them.
+- [ ] No two consecutive `static` shots — two locked-off frames in a row is
+      twenty seconds where nothing moves. A card plate beside a `local` push
+      or pull is fine, and so are two `local` moves in a row.
 - [ ] Three verticals nominated, each as a line list and a shot list, each
       with its figures spoken aloud, each working on hard cuts alone.
 - [ ] Four or five teaser lines nominated, in order, each one strange without

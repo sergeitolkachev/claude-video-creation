@@ -1,0 +1,80 @@
+# Thumbnail variants for A/B — record 07. Three plates, three different
+# promises: the number, the thing that moved, and the drift that stopped.
+#
+# Plates are approved stills, frames the viewer actually meets: 6.3 at 3:20
+# (the forward hold hatch), 6.4 at 3:30 (the imager with the cold patch), 1.2
+# at 0:10 (the cabin dial). Nothing is generated for a thumbnail.
+#
+# Judge at 210 px, which is what YouTube renders in a grid. The slug is
+# constant across all three and is never part of what a test varies. Variant
+# ids do not get renamed: a conversion figure gets attached to them later.
+
+episode: ep-07-ninety-nine-watts
+slug: "FC9-007 // The Ninety-Nine Watts"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the number, over the door he will not open. The hatch fills the
+  # centre; the type takes the plain bulkhead on the left.
+  - id: a-the-number
+    plate: "6.3"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      # 140 put the W on the top-left latch; 118 stops short of it.
+      - lines: ["99 W"]
+        size: 118
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["NO SOURCE"]
+        size: 40
+        tracking: 8
+        x: 0.04
+        y: 0.36
+        anchor: left
+        scrim: true
+
+  # B — the patch. The imager's grey field and the dark ellipse low in it;
+  # the type goes top-left on the dark rubber housing, away from the ellipse.
+  - id: b-the-patch
+    plate: "6.4"
+    crop: {zoom: 0.92, bias_y: 0.55}
+    blocks:
+      - lines: ["11 cm"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.06
+        anchor: left
+        scrim: true
+      - lines: ["SINCE YESTERDAY"]
+        size: 36
+        tracking: 8
+        x: 0.04
+        y: 0.32
+        anchor: left
+        scrim: true
+
+  # C — the drift that stopped. The dial right of centre, the dark gap at
+  # the left edge carries the type.
+  - id: c-the-drift
+    plate: "1.2"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      # 110 ran the °C into the bezel; 92 clears it.
+      - lines: ["+1.6 °C"]
+        size: 92
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["THEN IT STOPPED"]
+        size: 32
+        tracking: 6
+        x: 0.04
+        y: 0.32
+        anchor: left
+        scrim: true

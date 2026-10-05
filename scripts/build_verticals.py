@@ -96,8 +96,10 @@ def main():
     ec = spec["captions"]["end_card"]
     card_s = float(ec.get("seconds", 2.0))
 
-    slug = V.text_plate([cfg["slug"]], spec, out / "_slug.png", size=34,
-                        centre=False, x=44, y=88)
+    slug = V.text_plate([cfg["slug"]], spec, out / "_slug.png",
+                        size=spec["captions"]["slug"]["size"], centre=False,
+                        x=spec["captions"]["slug"]["x"],
+                        y=spec["captions"]["slug"]["y"])
 
     for cut in cfg["cuts"]:
         if only and cut["id"] != only:

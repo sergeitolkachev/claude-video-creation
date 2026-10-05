@@ -1,0 +1,986 @@
+# Record No. 7 — "THE NINETY-NINE WATTS"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompt text here is already cleaned for the hygiene rules below. Camera
+# moves for ffmpeg shots live in `local_motion`, never in the still's prompt:
+# a still has no camera move, and "slow drift right" in an image prompt is a
+# motion word the model reads as something drifting. The motion of a model
+# shot lives in `video_prompt`, never in `prompt`, for the same reason.
+
+episode: ep-07-ninety-nine-watts
+runtime_seconds: 267
+aspect: "16:9"
+
+# The operator, first person. Named once, here, and read by gen_narration.py,
+# build_audio.py and build_captions.py alike.
+voice: character
+
+# Summed from the shots below, never from prose. Scene 7 is the draft's 7.1
+# alone: log ninety-eight was inside the coda and the exemption covers cards,
+# not a spoken line (script.md, correction 2).
+scene_runtime: {1: 30, 2: 35, 3: 40, 4: 40, 5: 40, 6: 40, 7: 10, 8: 32}
+
+# Scene 8: five shots, three cards, no voice. Declared, not waived.
+coda: [8]
+
+# --- Prompt hygiene ---------------------------------------------------------
+
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    # Rule 1 — nothing moves in a frame that will never be animated.
+    #
+    # Fifteen shots are built in ffmpeg from one approved still. An industrial
+    # interior is where the image models put dust in the air whether or not it
+    # was asked for, so the plates say "the air completely clear" instead, and
+    # none of these words appears in them. The exception list is exactly the
+    # nineteen model shots.
+    - pattern: '\b(drift\w*|float\w*|motes?|dust|suspended|vapou?r|mist|steam|smoke|condensation|sway\w*|swing\w*|turn\w*|rotat\w*|blink\w*|flash\w*|puls\w*|flicker\w*|shimmer\w*|jitter\w*|creep\w*|advanc\w*|travel\w*|moving|moves|particles?|specks?|bubbles?|stepp?\w*|lengthen\w*|emerging|running|crossing)\b'
+      except: ["1.2", "1.3", "2.1", "2.3", "2.5", "3.2", "3.4", "4.1", "4.3",
+               "4.5", "5.1", "5.3", "6.1", "6.2",
+               # 6.4 became local after its still was approved; the words
+               # describe what is in the plate, accepted as is.
+               "6.4"]
+      why: >
+        A shot built from a single still must contain nothing that the eye
+        expects to see move. Record 04 paid for twelve plates to learn it.
+
+    # Rule 2 — nothing a model can write on. Every instrument in this record
+    # implies a scale, and every scale implies numerals; the prompts fill them
+    # with plain engraved ticks, a ribbed wheel and a field running to every
+    # edge instead of negating the numbers (script.md, correction 7).
+    - pattern: '\b(text|lettering|writing|written|label\w*|plaque|placard|nameplate|stencil\w*|serial|legible|numerals?|digits?|figures?|readout|markings?|scale|dial|gauge|counter|register)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py.
+
+    # Rule 3 — an assembly note is not a prompt. The draft carried "no card on
+    # this shot" in three prompts; the model reads "card" as an object.
+    - pattern: '\b(card|plate|caption|title|overlay)\b'
+      except: []
+      why: >
+        Which shots carry a card is cards.yaml's business.
+
+    # Rule 4 — the lamp appears where it is asked for and nowhere else. A spine
+    # that names a lamp puts it in eight anchors of fifteen (record 03).
+    - pattern: '\b(lamp|lantern|bulb|torch|spotlight|indicator|lit|glowing)\b'
+      except: ["6.1", "6.2", "5.3"]
+      why: >
+        6.1 and 6.2 are the work lamp; 5.3's bar is the phosphor glowing.
+
+    # Rule 5 — one palette. Cold blue-grey, and the phosphor green that the
+    # screens make themselves. No warm light anywhere in this record, the work
+    # lamp included.
+    - pattern: '\b(warm|amber|orange|yellow|gold\w*|tungsten|sodium|candle\w*|fire|sunlight)\b'
+      except: []
+      why: >
+        A second colour of light is a second location.
+
+    # Rule 6 — nobody is here but the voice.
+    - pattern: '\b(person|human|figure|hands?|fingers?|gloves?|operator at)\b'
+      except: []
+      why: >
+        "No people" ends prompts and is not matched here.
+
+    # Rule 7 — the station has no weight. Nothing rests, falls, runs down or
+    # settles; things are seated, clipped or held in foam (correction 9).
+    - pattern: '\b(resting|lying|fall\w*|drip\w*|runs? down|settl\w*|pour\w*|spill\w*)\b'
+      except: ["1.2"]
+      why: >
+        1.2's needle settles, which is a needle, not gravity.
+
+# --- Spine ------------------------------------------------------------------
+# Material, light and palette only. No room noun anywhere in it — no interior,
+# no station, no wall, no ceiling — so the same spine serves the macro and
+# top-down anchors without putting a room into them. The draft's "coming from
+# wide recessed panels" was a light fixture and is gone (correction 11).
+
+spine: &spine >
+  Painted steel and anodised aluminium, worn through to bare metal along
+  every edge that gets touched. Matte, faintly oxidised, nothing polished and
+  nothing new. One palette throughout: cold blue-grey. The light is flat,
+  blue-white, low and diffuse, with no visible source anywhere. Contrast is
+  low, shadows are soft and shallow, blacks are lifted and never crushed. No
+  lettering, no markings, no numerals, no people.
+
+# gen_stills.py reads `exterior_spine` unconditionally. This record has no
+# exteriors; the key points at the one spine so the script can start.
+exterior_spine: *spine
+
+# --- Motion tails -----------------------------------------------------------
+
+# Dust in the air: the passages, the grille, the lamp beam. The geometry holds
+# and only the fine material moves.
+motion_tail_air: &motion_tail_air >
+  Only the fine dust in the air moves, slowly and evenly, and it keeps moving
+  for the whole shot. Every surface, pipe and edge keeps exactly its shape and
+  position. The camera itself does not move at all: no dolly, no push in, no
+  pull back, no pan, no tilt, no parallax. No cuts, no speed changes, no zoom
+  snaps. Nothing enters the frame.
+
+# A rigid part on its mounting: the needle, the wheel, the disc, the rotor,
+# the paper strip, the pencil, the bubble, the bar. One degree of freedom the
+# model recognises; the shape never changes, only its position or extent.
+motion_tail_mech: &motion_tail_mech >
+  The one movement named above happens slowly and steadily, and the moving
+  part keeps exactly its shape the whole time. Nothing else in the frame
+  moves or changes: the housing, the glass and the steel around it stay
+  exactly as they are. The camera itself does not move at all: no dolly, no
+  push in, no pull back, no pan, no tilt, no zoom. No cuts, no speed changes.
+  Nothing enters the frame.
+
+# Light only: a shadow edge, a lamp pulsing, a phosphor field. Nothing solid
+# moves.
+motion_tail_light: &motion_tail_light >
+  Only the light changes, slowly and evenly, for the whole shot. Every object
+  and surface keeps exactly its shape and position, and nothing solid moves.
+  The camera itself does not move at all: no dolly, no push in, no pull back,
+  no pan, no tilt, no parallax, no zoom. No cuts, no speed changes. Nothing
+  enters the frame.
+
+# --- Anchors ----------------------------------------------------------------
+# Five, one per camera distance that recurs. 7.1 and 8.2 reference approved
+# stills (6.3 and 1.2), not an anchor.
+
+anchors:
+  - id: A1-wide
+    model: anchor
+    approved_seed: 22         # approved 2026-10-05, pass 2
+    approved_file: anchors/A1-wide.jpg
+    covers: ["1.1", "2.4", "4.4", "5.4", "6.2", "8.1"]
+    note: >
+      Pass 1 (seeds 11/22/33, all rejected): switch banks down both sides in
+      every seed, so the card corner is never empty; s22 also grew small label
+      plates. Pass 2 changes one property: the switches go to the right side
+      only and the left side is described as a plain wall over a bare floor.
+
+      Pass 2: s22 approved. Left wall and floor bare, card corner empty,
+      one bank of switches on the right. s11 laid a sheet of labelled tags on
+      the floor in the card corner; s33 turned the far end into an open empty
+      cabinet. Known faults, accepted: the camera sits low and close, so the
+      space reads as a tight cab rather than full depth; pastel blue, taken
+      out in the grade.
+    spine: *spine
+    subject: >
+      Camera: 28mm lens at chest height, level, wide, everything in focus.
+      Subject: a cramped equipment compartment of painted steel seen across
+      its full depth, a bank of identical grey toggle switches along the
+      right side only, every switch in the same position and the metal
+      around them dark. The left side is one plain unbroken painted wall with
+      nothing mounted on it, and the floor in front of it is one bare empty
+      steel panel. Every surface is matte and worn to bare metal at the
+      edges. The air is completely clear and nothing is loose or hanging. The
+      lower left quarter of the frame is that plain wall and bare floor and
+      nothing else, because that is where the data cards are drawn.
+
+  - id: A2-passage
+    model: anchor
+    approved_seed: 11         # approved 2026-10-05, pass 1
+    approved_file: anchors/A2-passage.jpg
+    note: >
+      Pass 1: s11 approved. Dark overhead, the far end falling to black, strong recession. s22 and s33 opened the top of the passage to a bright sky and read as an outdoor trench. Known fault, accepted: pastel blue paint rather than blue-grey, taken out in the grade.
+    covers: ["1.3", "3.3", "5.5", "6.1", "8.4"]
+    spine: *spine
+    subject: >
+      Camera: 24mm lens centred in a long narrow passage of painted steel,
+      level, looking straight down its length, the vanishing point in the
+      middle of the frame. Insulated pipe runs clipped flush along both
+      sides, the far end two stops darker than the near end. The air is
+      completely clear and nothing is loose or hanging. The lower left
+      quarter of the frame is empty painted steel.
+
+  - id: A3-macro
+    model: anchor
+    approved_seed: 33         # approved 2026-10-05, pass 1
+    approved_file: anchors/A3-macro.jpg
+    note: >
+      Pass 1: s33 approved. No numerals in any seed — the plain-tick wording held. Two faults across all three: "scratched glass" came back cracked, and a ring of twelve ticks reads as a wall clock. s33 has the finer tick ring and an inner circle, which reads as an instrument; its cracks are light and are accepted as wear. 8.2 inherits them through ref_shot on 1.2.
+    covers: ["1.2", "2.3", "2.5", "3.2", "3.4", "4.1", "4.3", "4.5", "5.1",
+             "5.3", "6.4"]
+    spine: *spine
+    subject: >
+      Camera: 100mm macro lens, the subject filling the frame edge to edge.
+      Subject: a round instrument with a brushed steel bezel and a scratched
+      glass cover set into a painted steel panel, its face a ring of plain
+      engraved tick marks and one fine black needle, the steel around it worn
+      to bare metal at the edges. Shallow depth of field, the background two
+      stops darker and completely soft.
+
+  - id: A4-top
+    model: anchor
+    approved_seed: 33         # approved 2026-10-05, pass 1
+    approved_file: anchors/A4-top.jpg
+    note: >
+      Pass 1: s33 approved. One seam across the upper third, lower left empty steel. s11 grew a camera lens and a panel in the card corner; s22 a tray in the card corner. Known fault, accepted: the steel is glossy with a broad specular sheen where the spine asked for matte.
+    covers: ["2.2", "3.5", "5.2", "6.5", "8.3", "8.5"]
+    spine: *spine
+    subject: >
+      Camera directly overhead, pointing straight down, the sensor parallel
+      to the surface, evenly sharp from edge to edge. Subject: a plain
+      brushed steel desk surface, matte and worn pale along its edges, one
+      straight seam across the upper third. Every part of the picture is that
+      surface at the same distance from the lens; there is no horizon and no
+      depth anywhere in it. The lower left quarter is empty bare steel.
+
+  - id: A5-headon
+    model: anchor
+    approved_seed: 11         # approved 2026-10-05, pass 1
+    approved_file: anchors/A5-headon.jpg
+    note: >
+      Pass 1: s11 approved. Lower left is an empty dark band of bulkhead. s22 has a rusted panel in the card corner; s33's two round ports read as a pair of eyes. Known fault, accepted: two-tone wall, white above and dark blue below.
+    covers: ["2.1", "3.1", "4.2", "6.3"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens, level, square to the subject, flat frontal
+      composition. Subject: a grey steel equipment housing centred in the
+      frame, a blank worn faceplate with two recessed ports, a plain painted
+      steel bulkhead one metre behind it. The air in front of it is
+      completely clear. The lower left quarter of the frame is empty
+      bulkhead.
+
+# --- Shots ------------------------------------------------------------------
+#
+# `approved_seed` is filled at stage 5. Fifteen shots are ffmpeg: ten carry a
+# card and five are texture under narration. No two of them are adjacent
+# anywhere in the record.
+
+shots:
+
+  # SCENE 1 — COLD OPEN (30 s)
+  #
+  # Image first. The slug types into the lower left of 1.1 and is gone by
+  # 4.5 s; the cabin card follows it into the same corner, ahead of its line.
+
+  - id: "1.1"
+    scene: 1
+    approved_seed: 22    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: cabin
+    anchors: [A1-wide]
+    prompt: >
+      A cramped equipment compartment of painted steel seen wide at chest
+      height, a bank of identical grey toggle switches along the right side
+      with every switch in the same position and the metal around them dark,
+      flat blue-white light, the air in front of the subject completely clear,
+      nothing in the frame loose or hanging, the lower left of the frame an
+      empty bare floor panel, no people
+
+  - id: "1.2"
+    scene: 1
+    approved_seed: 22    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    # The take turned the dial into a clock: past ~4 s the needle swings from
+    # two o'clock to twelve and grows a second hand. The first 5 s are clean.
+    # Those 5 s are slowed 2x by motion interpolation to fill the 10 s shot,
+    # which also turns the needle's sweep into the creep the shot asked for.
+    # Serge approved the interpolated version against a frame-repeat one on
+    # 2026-10-05; repeated frames step the needle, interpolated ones do not.
+    retime: 2.0
+    retime_mode: interpolate
+    retime_exception: >
+      Approved by eye, record 07. Above the 1.3x rule because the only clean
+      part of the take is its first half. Verticals cut from takes/ at real
+      speed, so any vertical using 1.2 must stay inside its first 4 s.
+    motion: the needle creeping a fraction of a tick and settling
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The fine black needle creeps a fraction of one tick to the right and
+      settles there. The camera does not move.
+    negative_extra: >
+      needle spinning, needle bending, second needle, numbers appearing,
+      glass cracking, reflections moving
+    anchors: [A3-macro]
+    prompt: >
+      Extreme close view of a round instrument set into a painted steel
+      panel, a ring of plain engraved tick marks under a scratched glass
+      cover, one fine black needle, a brushed steel bezel worn to bare metal,
+      flat cold light raking across the bezel from the left, background two
+      stops darker and unresolvable, no people
+
+  - id: "1.3"
+    scene: 1
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: fine dust drifting through the light halfway along the passage
+    motion_tail: motion_tail_air
+    video_prompt: >
+      Fine dust drifts slowly through the flat blue-white light halfway along
+      the passage. The camera does not move.
+    negative_extra: >
+      fog, smoke, steam, lens dust, specks on the lens, people, doors opening
+    anchors: [A2-passage]
+    prompt: >
+      A long narrow passage of painted steel seen straight down its length,
+      vanishing point centred, insulated pipe runs clipped flush along both
+      sides, fine dust in the flat blue-white light halfway along, cold low
+      contrast, no people
+
+  # SCENE 2 — THE DRIFT STOPPED (35 s)
+
+  - id: "2.1"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the setpoint wheel turning a few degrees and stopping
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The knurled wheel turns a few degrees on its axle and stops. The camera
+      does not move.
+    negative_extra: >
+      wheel spinning fast, wheel wobbling, faceplate changing, numbers
+      appearing, hands, fingers
+    anchors: [A5-headon]
+    prompt: >
+      A small grey controller housing head-on against a plain painted steel
+      surface a metre behind it, a knurled wheel with a plain ribbed edge set
+      into its blank worn faceplate, normal lens, flat frontal composition,
+      cold blue-white light, no people
+
+  - id: "2.2"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    card: stable
+    anchors: [A4-top]
+    prompt: >
+      Directly overhead view of a plain steel desk surface with a closed
+      logbook held flat under a steel clip bar and squared to the edge of the
+      frame, its plain matte cover worn through at the corners, flat even
+      blue-white light, the air above the surface completely clear, nothing
+      loose or hanging anywhere in frame, the lower left of the frame empty
+      bare steel, no people
+
+  - id: "2.3"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    # From ~3 s the take writes on the paper — a double stroke, then a
+    # closed scribble like a map outline — and swings the strip back. Its
+    # first 5 s are kept, slowed 2x by interpolation. The double stroke still
+    # grows at the slot in the last 4 s of the shot, where it reads as the pen
+    # marking a spike under "it has held for six". Serge took it knowing that
+    # over a new still with a rise-and-plateau line ($0.78), 2026-10-05.
+    retime: 2.0
+    retime_mode: interpolate
+    retime_exception: >
+      Approved by eye, record 07, same treatment as 1.2. Verticals cut from
+      takes/ at real speed: a vertical using 2.3 must stay inside its first
+      2.5 s.
+    motion: the paper strip advancing steadily out of the slot
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The paper strip advances slowly and steadily out of the slot, and the
+      ink line travels with it. The camera does not move.
+    negative_extra: >
+      paper curling, paper tearing, paper folding, numbers appearing, words,
+      pen moving, hands
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a strip of pale paper with a plain ruled grid coming out
+      of a narrow slot in a steel recorder housing, one continuous ink line
+      along it, flat cold light, background unresolvable, no people
+
+  - id: "2.4"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A1-wide]
+    prompt: >
+      Wide view of a narrow sleeping alcove, a bunk strapped flat to the
+      bulkhead and empty, restraint webbing pulled tight and flush to the
+      mattress, flat blue-white light, the air completely clear, nothing
+      hanging or loose anywhere in frame, no people
+
+  - id: "2.5"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: fine dust carried past the grille slats on the airflow
+    motion_tail: motion_tail_air
+    video_prompt: >
+      Fine dust is carried slowly past the grille slats on the airflow. The
+      camera does not move.
+    negative_extra: >
+      smoke, steam, water, droplets, slats moving, fog
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a ventilation grille of thin steel slats set into painted
+      steel beside a coolant line union, fine dust in the air in front of the
+      slats, flat cold light, background unresolvable, no people
+
+  # SCENE 3 — THE BUS (40 s)
+
+  - id: "3.1"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-05
+    note: >
+      Pass 1 (s11, s22) rejected: every breaker carried a tiny printed "ON".
+      A static plate holds that text for ten seconds. Pass 2 describes each
+      handle as a smooth plain moulded block.
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: bus
+    anchors: [A5-headon]
+    prompt: >
+      A flat painted steel distribution panel head-on, a single row of
+      identical breaker handles all in the same position, each handle a
+      smooth plain block of black moulded plastic standing out of bare dark
+      steel, plain bulkhead one metre behind, flat blue-white light, the
+      air in front of the panel completely clear, nothing loose or hanging,
+      the lower left of the frame empty painted steel, no people
+
+  # Was a register counter (a drum of numerals); now an induction meter's
+  # disc, which is the bus being measured and has nothing on it to read.
+  - id: "3.2"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-05
+    take_note: >
+      Kept as rolled, 2026-10-05. The disc pivots on a cross-axis like a
+      coin instead of spinning in its own plane, and the stripe never shows;
+      rigid, camera locked, no morph. A Kling O3 Standard roll of the same
+      still was worse (720p, 58 px drift, no rotation) and is not used:
+      takes/3.2.test_o3.mp4.
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the meter disc turning slowly, its stripe passing once
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The thin aluminium disc turns slowly and steadily on its spindle, and
+      the dark stripe on its rim passes the window once. The camera does not
+      move.
+    negative_extra: >
+      disc wobbling, disc warping, sparks, numbers appearing, digits, spinning
+      fast
+    anchors: [A3-macro]
+    prompt: >
+      Macro view through a scratched glass window of a thin aluminium disc
+      seen edge-on on its spindle inside a steel meter housing, one dark
+      painted stripe on its rim, a brass bracket holding the spindle, nothing
+      else inside the housing, flat cold light across the glass, background
+      unresolvable, no people
+
+  - id: "3.3"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A2-passage]
+    prompt: >
+      A service passage lined with insulated pipe runs clipped tight to the
+      sides, vanishing point centred, flat blue-white light from the near end
+      only, the air completely clear, every line clipped flush with nothing
+      hanging or slack anywhere in frame, no people
+
+  - id: "3.4"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-05
+    # The take is a near-still: the prompt asked the line to "hold", and the
+    # model did nothing else (motion 0.93, the lowest of the record). Kept
+    # rather than rerolled, with a centred push laid over it in assembly so
+    # the frame is not read as stopped.
+    post_motion: push
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the phosphor trace jittering by a hair and holding
+    motion_tail: motion_tail_light
+    video_prompt: >
+      The flat phosphor line jitters by a hair and holds, its glow breathing
+      very slightly. The camera does not move.
+    negative_extra: >
+      numbers, digits, letters, grid lines appearing, waveform spikes,
+      screen flicker, scanlines
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a small round phosphor screen in a worn steel bezel, one
+      flat horizontal line across its middle with a coarse green phosphor
+      glow, the rest of the screen dark, dark surroundings, no people
+
+  - id: "3.5"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A4-top]
+    prompt: >
+      Overhead view of a steel workbench, a spanner and a flow fitting seated
+      in fitted cut-outs of a grey foam tray and squared to the surface, flat
+      even light, the air above completely clear, nothing loose or hanging in
+      frame, no people
+
+  # SCENE 4 — THE RADIATOR (40 s)
+
+  - id: "4.1"
+    scene: 4
+    approved_seed: 22    # selected 2026-10-05
+    # Nothing moves in the take (motion 1.31): the shadow sweep was not
+    # drawn. Kept with a push over it, as 3.4.
+    post_motion: push
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: a slow shadow edge travelling up the column, the thread still
+    motion_tail: motion_tail_light
+    video_prompt: >
+      A soft shadow edge sweeps steadily up the whole glass column from its
+      bottom to its top over the course of the shot, already moving in the
+      first second. The silver thread inside it does not move. The camera
+      does not move.
+    negative_extra: >
+      thread rising, thread falling, liquid moving, glass breaking, numbers,
+      digits
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a glass capillary column with a thin silver thread inside
+      it, set into a painted steel panel beside a strip of plain evenly spaced
+      engraved lines, flat cold light, background unresolvable, no people
+
+  - id: "4.2"
+    scene: 4
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: radiator
+    anchors: [A5-headon]
+    prompt: >
+      A plain instrument housing head-on against a painted steel bulkhead a
+      metre behind, a blank matte faceplate with two recessed ports and a
+      worn grey finish, flat blue-white light, the air in front of it
+      completely clear, nothing loose or hanging anywhere in frame, the lower
+      left of the frame empty bulkhead, no people
+
+  - id: "4.3"
+    scene: 4
+    approved_seed: 22    # selected 2026-10-05
+    # The bubble crosses cleanly for 5 s, then the camera pulls back. The
+    # clean head, slowed 2x by interpolation.
+    retime: 2.0
+    retime_mode: interpolate
+    retime_exception: >
+      Approved repair, record 07, as 1.2. A vertical using 4.3 stays inside
+      its first 5 s.
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: a single bubble crossing the sight glass left to right
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      A single small bubble crosses the sight glass slowly from left to right
+      in the clear fluid. The camera does not move.
+    negative_extra: >
+      many bubbles, foam, boiling, splashing, fluid level changing, glass
+      cracking
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a round sight glass in a steel coolant line, clear fluid
+      filling it, a single small bubble at its left edge, flat cold light,
+      background unresolvable, no people
+
+  - id: "4.4"
+    scene: 4
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-wide]
+    prompt: >
+      Wide view of a pump bay, two identical steel pump bodies bolted to the
+      deck, every pipe clipped flush to the frame, flat blue-white light, the
+      air completely clear, nothing hanging or loose anywhere in frame, no
+      people
+
+  - id: "4.5"
+    scene: 4
+    approved_seed: 22    # selected 2026-10-05
+    # The rotor turns for 3.25 s, then the camera trucks right and a second
+    # window enters. The clean head, stretched 1.54x by interpolation.
+    retime: 1.54
+    retime_mode: interpolate
+    retime_exception: >
+      Approved repair, record 07. A vertical using 4.5 stays inside its
+      first 3.2 s.
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the flow-meter rotor turning at a steady slow rate
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The small vaned rotor turns at a steady slow rate behind the window.
+      The camera does not move.
+    negative_extra: >
+      rotor spinning fast, vanes bending, rotor wobbling, window cracking,
+      numbers
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a small vaned flow-meter rotor behind a scratched round
+      window in a steel coolant line, flat cold light, background
+      unresolvable, no people
+
+  # SCENE 5 — THE NUMBER (40 s)
+
+  # Was a sheet of paper lifting — a soft shape, and gravity. Now the one
+  # shot that says where this is.
+  - id: "5.1"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: a pencil floating free and turning slowly end over end
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The pencil floats in place and turns slowly end over end. The camera
+      does not move.
+    negative_extra: >
+      pencil bending, pencil breaking, second pencil, hands, fingers, writing,
+      pencil falling, pencil flying out of frame
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a plain wooden pencil floating free in the air in front
+      of a soft dark painted steel background, flat raking light from the
+      left, background unresolvable, no people
+
+  - id: "5.2"
+    scene: 5
+    approved_seed: 22    # selected 2026-10-05
+    note: >
+      Pass 1 (s11, s22) rejected: the slide rule came back with a numbered
+      scale in both seeds, and s22's was a thermometer. A slide rule is a
+      scale by definition; it is now a plain steel straightedge.
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: balance
+    anchors: [A4-top]
+    prompt: >
+      Directly overhead view of a plain steel desk surface with a sheet of
+      paper bearing only printed ruled lines held flat under a steel clip bar
+      and squared to the frame, a plain smooth steel straightedge seated in a
+      slot beside it, flat
+      even blue-white light, the air above the surface completely clear,
+      nothing loose or hanging in frame, the lower left of the frame empty
+      bare steel, no people
+
+  # Was "the trailing digit of a figure stepping" — a request for lettering.
+  # Was a phosphor bar asked to lengthen — a screen, where light is the only
+  # thing that can move, and record 07 paid twice to learn Kling will not
+  # move light. Now a fan: a rigid thing turning on its axis, decided at the
+  # still stage, which is where the moving object is chosen.
+  - id: "5.3"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the cooling fan turning steadily behind its guard
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The fan blades turn slowly and steadily behind the guard for the whole
+      shot, already turning in the first second. The guard and the panel do
+      not move. The camera does not move.
+    negative_extra: >
+      blades bending, blades multiplying, blades melting, fan stopping,
+      motion blur disc, guard moving, label, sticker, text, sparks
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of a small square cooling fan set into a painted steel
+      equipment panel behind a round steel wire fan guard, five plain grey
+      plastic blades around a plain dark hub, the steel around it worn to
+      bare metal at the edges, flat cold light, background unresolvable, no
+      people
+
+  - id: "5.4"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: unaccounted
+    anchors: [A1-wide]
+    prompt: >
+      Wide view at chest height of a narrow galley recess, a single steel cup
+      seated in its retaining ring on a bare shelf, flat blue-white light,
+      nothing else on any surface, the air completely clear, nothing loose or
+      hanging anywhere in frame, the lower left of the frame empty painted
+      steel, no people
+
+  # Was a model shot asking a shadow to travel. Built in ffmpeg as a push
+  # down the passage: record 07 rule — no light-only moves on Kling.
+  - id: "5.5"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A2-passage]
+    prompt: >
+      A long narrow passage of painted steel seen straight down its length,
+      vanishing point centred, insulated pipe runs clipped flush along both
+      sides, flat blue-white light, cold low contrast, no people
+
+  # SCENE 6 — THE SWEEP (40 s)
+  #
+  # The pump is out of the bed for the whole scene (script.md, Sound design).
+
+  - id: "6.1"
+    scene: 6
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: the work lamp pulsing slowly between two brightnesses
+    motion_tail: motion_tail_light
+    video_prompt: >
+      The work lamp pulses slowly between two brightnesses, and the light on
+      the passage around it follows. The camera does not move.
+    negative_extra: >
+      lamp moving, lamp swinging, cable swaying, cable moving, sparks, fire,
+      warm light, orange light, strobe, people
+    anchors: [A2-passage]
+    prompt: >
+      A long narrow passage of painted steel seen straight down its length
+      with a single cold-white work lamp clamped to the right side halfway
+      along, vanishing point centred, cold blue-grey surfaces, no people
+
+  # Was dust drifting through a beam. Now the lamp itself: a rigid lamp
+  # head turning on its swivel clamp, so its oval of light slides across
+  # the bulkhead — the sweep the narration describes, done by an object.
+  - id: "6.2"
+    scene: 6
+    approved_seed: 22    # selected 2026-10-05
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the work lamp turning on its swivel clamp, its beam sliding
+    motion_tail: motion_tail_mech
+    video_prompt: >
+      The work lamp head turns slowly on its swivel clamp from right to
+      left, already turning in the first second, and its bright oval of
+      light slides across the bulkhead with it. The clamp and the bulkhead do
+      not move. The camera does not move.
+    negative_extra: >
+      lamp detaching, lamp flying, lamp swinging on a cable, cable, flicker,
+      strobe, warm light, orange light, people, hands, fingers
+    anchors: [A1-wide]
+    prompt: >
+      Wide view at chest height of a painted steel bulkhead, a compact
+      cold-white work lamp on a steel swivel clamp fixed at the right edge of
+      the frame, its hard beam landing on the bulkhead in one bright oval,
+      the surface worn through to bare metal along one edge, the air
+      completely clear, no people
+
+  - id: "6.3"
+    scene: 6
+    approved_seed: 22    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: ir-sweep
+    anchors: [A5-headon]
+    prompt: >
+      A heavy steel hatch head-on filling the frame, six identical latches
+      around its rim all in the same position, worn paint across the face,
+      plain bulkhead to each side, flat blue-white light, the air in front of
+      it completely clear, nothing loose or hanging anywhere in frame, the
+      lower left of the frame empty painted steel, no people
+
+  # Was a model shot asking the thermal field to shimmer. A screen moves
+  # only light; built in ffmpeg as a push into the screen.
+  - id: "6.4"
+    scene: 6
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of the screen of a handheld thermal imager in a worn rubber
+      housing, a coarse monochrome grey thermal field running to every edge
+      of the screen with one dark ellipse low in the picture, nothing else on
+      the screen, dark surroundings, no people
+
+  - id: "6.5"
+    scene: 6
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A4-top]
+    prompt: >
+      Overhead view of a bare steel deck panel, a handheld thermal imager in a
+      worn rubber housing seated face down in a fitted cut-out of a grey foam
+      tray, flat even blue-white light, the air above completely clear,
+      nothing loose or hanging in frame, no people
+
+  # SCENE 7 — LOG NINETY-EIGHT (10 s)
+  #
+  # The pump returns on this cut. The same hatch as 6.3, from its approved
+  # still: an anchor would make it the same kind of hatch, the still makes it
+  # the same one. The draft's "with the work lamp now off" is gone — 6.3 has
+  # no lamp, and naming one puts it in the frame.
+
+  # Was a model shot asking a shadow to creep; now a slow push toward the
+  # hatch under "I am not going into the forward hold" — the camera goes
+  # where he will not.
+  - id: "7.1"
+    scene: 7
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "6.3"
+    prompt: >
+      The same heavy steel hatch head-on, exactly as in the reference, six
+      identical latches around its rim, worn paint across the face, flat
+      blue-white light, no people
+
+  # SCENE 8 — CODA (32 s)
+  #
+  # Cards only, no voice. The pump is cut on 8.5; the room tone is not.
+
+  - id: "8.1"
+    scene: 8
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: cooling
+    anchors: [A1-wide]
+    prompt: >
+      Wide view at chest height of a single operator's work position, an
+      empty seat with its restraint webbing pulled tight and flush, bare
+      steel surfaces around it, flat blue-white light, the air completely
+      clear, nothing loose or hanging anywhere in frame, the lower left of
+      the frame empty bare deck, no people
+
+  # The 1.2 dial again, from its approved still. Was a shadow across the
+  # glass; now a slow push, between two card plates.
+  - id: "8.2"
+    scene: 8
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.2"
+    prompt: >
+      The same round instrument exactly as in the reference, a ring of plain
+      engraved tick marks under a scratched glass cover, one fine black
+      needle, flat cold light, no people
+
+  - id: "8.3"
+    scene: 8
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: hook
+    anchors: [A4-top]
+    prompt: >
+      Directly overhead view of a plain steel desk surface, empty, a single
+      flat-headed fastener seated in a threaded hole off centre, flat even
+      blue-white light, the air above completely clear, nothing loose or
+      hanging in frame, the lower left of the frame empty bare steel, no
+      people
+
+  # Was dust drifting at the far end. Now the camera pulls back down the
+  # passage, away from the hold, before the closer. Its first plate kept the
+  # dust of the model-shot prompt, and frozen under a pull it read as specks
+  # on a photograph — Serge caught it on the rough cut. The plate is now
+  # 5.5's: the same passage, clear air, the push of scene 5 run backwards.
+  # The old plate is in approved/retired/.
+  - id: "8.4"
+    scene: 8
+    approved_seed: 11    # 5.5's plate, reused 2026-10-05
+    plate_from: "5.5"
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A2-passage]
+    prompt: >
+      A long narrow passage of painted steel seen straight down its length,
+      vanishing point centred, insulated pipe runs clipped flush along both
+      sides, flat blue-white light, cold low contrast, no people
+
+  # The closer's plate. Its text is in titles.yaml, not cards.yaml, so the
+  # static exception is declared rather than inferred.
+  - id: "8.5"
+    scene: 8
+    approved_seed: 11    # selected 2026-10-05
+    motion_tier: static
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    static_exception: channel closer (titles.yaml)
+    anchors: [A4-top]
+    prompt: >
+      Directly overhead view of a bare painted steel deck panel filling the
+      frame, matte, worn through along one seam, flat even blue-white light,
+      the air above completely clear, nothing loose or hanging in frame, the
+      lower left of the frame empty painted steel, no people

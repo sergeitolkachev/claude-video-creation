@@ -1,0 +1,113 @@
+# Record 07's mix. Scene boundaries are summed from shots.yaml:
+#   scene 1    0-30    scene 4  105-145   scene 7  225-235
+#   scene 2   30-65    scene 5  145-185   scene 8  235-267 (coda)
+#   scene 3   65-105   scene 6  185-225
+#
+# Stage 7 fills in layers and levels against measured beds. Only the pause
+# table from script.md is here now, because it is a script decision.
+
+runtime_seconds: 267
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+# A carded line starts at most this long after its card begins typing. The
+# even spread put six of seven lines 4-10 s after their cards; see place().
+card_pull: 1.5
+
+# Extra air before specific lines, on top of the 1.2 s minimum gap. Every one
+# falls on a paragraph boundary.
+hold:
+  # The figure the record is built on, on its own: 2.5 s.
+  s5p3: 1.3
+  # "It was eleven centimeters to the left yesterday." The pump is already
+  # out of the bed, so this is the record's one near-silence: 2.5 s.
+  s6p4: 1.3
+  # The refusal, its own paragraph so the gap can be cut: 2.5 s.
+  s7p2: 1.3
+
+# --- Layers (stage 7) -------------------------------------------------------
+# tone  — room tone. The FLOOR: runs 0-267, never gated, including under all
+#         of scene 6 and the coda. Record 03 gated its only bed and fell to
+#         -90 dBFS; this one never stops.
+# pump  — low cycling hum, a beat about every 11 s. In from 0, through scene
+#         5; gated OFF for all of scene 6 (185-225); back ON at the cut into
+#         scene 7 (225) at its scene-1 level; OFF at the start of 8.5 (261).
+# clicks — mixed by build_cards.py, never by hand.
+# Every level is a trim on a measured file, never a target. Measure first,
+# through the same high-pass record 06 settled on, and judge it on a phone.
+
+# --- Levels -----------------------------------------------------------------
+# Measured 2026-10-05 after the 250 Hz high-pass, per-second RMS of the flat
+# middle used in the loop:
+#   room   -42 to -44     pump  -33 to -35     voice above 300 Hz about -19
+#
+#   tone   -43, ~24 dB under the voice: the floor, present on a phone.  ->  0
+#   pump   -40, 3 dB over the floor: tone and pump together sit near -38,
+#          so its stop on the cut into scene 6 is a 4 dB drop to the
+#          floor — heard as the room going quiet, not as a file ending.  -> -6
+#   clicks the same +23 as records 05 and 06.                         -> +23
+# Arithmetic, not a judgement. Judge it on a phone (CLAUDE.md, Audio Rules).
+levels: {tone: 0, pump: -6, clicks: 23}
+
+layers:
+  # The FLOOR: ventilation hiss, 0-267, never gated — under scene 6 when the
+  # pump is off and under every coda card.
+  tone:
+    file: sfx/room.mp3
+    trim: [1.5, 19.5]       # the generator fades both ends; loop the flat middle
+    loop_to_fill: true
+    filter: highpass=f=250:poles=2,highpass=f=250:poles=2
+
+  # The recurring element. Hard off on the cut into scene 6 (185 s, he stops
+  # circulation for the sweep), hard on at the cut into scene 7 (225 s), at
+  # the same level; faded out across the second before the closer's plate
+  # (8.5, 261 s). The room tone stays under all of it.
+  pump:
+    file: sfx/pump.mp3
+    trim: [0.5, 20.5]       # last second carries a -1.4 dBFS knock; out
+    loop_to_fill: true
+    filter: highpass=f=250:poles=2,highpass=f=250:poles=2
+    silence_at: [185, 40]
+    fade_out: [260.0, 1.0]
+
+# Regenerable from here: nothing under audio/ is versioned. Prompts describe
+# what is there and what a small speaker can carry (record 06: beds with
+# their energy under 150 Hz were inaudible on a phone).
+sfx:
+  room:
+    file: sfx/room.mp3
+    seconds: 22
+    prompt: >
+      Inside a small sealed metal equipment room, recorded close: a steady
+      soft hiss of air moving through a ventilation grille, with a faint even
+      electrical hum under it. Even and continuous from the first second to
+      the last.
+
+  pump:
+    file: sfx/pump.mp3
+    seconds: 22
+    prompt: >
+      A small coolant circulation pump running in a metal pipe bay, recorded
+      close: a steady mechanical whirr with a soft swish of fluid moving
+      through pipes, and every ten to twelve seconds one slow surge as the
+      pump cycles before settling back to the steady whirr.
+
+# The click bed: one click per glyph across every card, mixed by
+# build_cards.py.
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser -----------------------------------------------------------------
+# The one piece on this channel allowed a cue. Generated at the music
+# endpoint, never licensed, and it never goes under the record.
+teaser_sfx:
+  music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold, sparse ambient music for a documentary about a lone
+      operator on a silent space station. A low steady synth drone with a
+      faint pulse in it like machinery heard through a wall, thin glassy
+      high tones drifting over it, and one gradual tightening across the
+      whole piece that never resolves. Quiet enough to sit under a calm
+      speaking voice the whole way through.
