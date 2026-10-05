@@ -1,0 +1,31 @@
+# Burned-in titles — channel furniture only. Data cards are in cards.yaml.
+#
+# Times are absolute seconds on the 300 s timeline. Shot boundaries, for
+# reading these numbers against:
+#
+#   1.1   0-10    7.1 276-281   7.2 281-288   7.3 288-294   7.4 294-300
+#
+# Every figure here must be re-derived from shots.yaml if any duration
+# anywhere changes. Rendered by build_cards.py --titles.
+
+cards:
+  # The slug types into the lower left over the opening haze and is gone
+  # before the first card arrives at 13 s. Short form, as records 04 and 05.
+  - id: slug
+    at: 0.8
+    hold: 4.0
+    lines: ["FC9-006 // THE CHEAP SKY"]
+
+  # The channel closer, on its own plate. Record 05 had nowhere to put one and
+  # flagged it for this record; the coda was budgeted for it. Two lines, as
+  # the script wrote it: the fiction line of records 02–04 would need 7.7 s
+  # and the plate is 6. The description carries the fiction line in full.
+  - id: closer
+    at: 294.5
+    hold: 5.0
+    size: 40
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-006 // THE CHEAP SKY"

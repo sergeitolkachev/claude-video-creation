@@ -1,0 +1,152 @@
+# Data cards — record 6.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script and never by hand.
+#
+# `with:` names the paragraph the card answers to, and validate.py measures
+# the gap once narration exists. Times are seconds from the start of the
+# card's own shot. The coda cards have no `with:` — there is no voice left.
+#
+# Every plate here is framed with its lower left empty — see the prompts in
+# shots.yaml. Typing time is checked against every plate by validate.py with
+# the real card_schedule / card_end, so this file cannot quietly disagree with
+# the builder. The tight one is h2-budget: four lines, 99 characters.
+#
+# Figures changed on intake (script.md, corrections 5–7): WASTE HEAT stays
+# 2.6 W and the voice now says so; COOLING TIME replaces TIME TO AMBIENT;
+# the chemistry is McKay and Smith's 334 kJ/mol, so PER H2 is 111 and the
+# total is 1.8 GW.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: human-flight
+    with: s1p2
+    shot: "1.2"
+    pos: lower-left
+    build: line
+    at: 4.2       # latest start that still finishes: needs 5.8 s
+    hold_until: 9.6
+    lines:
+      - "HUMAN + 2 m² WING"
+      - "TITAN       4.2 m/s"
+      - "EARTH        24 m/s"
+
+  # --- Scene 2 -------------------------------------------------------------
+  # On a model plate: the distant shapes drift behind it. A card may sit on a
+  # moving frame; what may not happen is a still frame without one.
+  - id: flight-power
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 1.0
+    hold_until: 9.6
+    lines:
+      - "FLIGHT POWER, 4 kg"
+      - "TITAN        0.65 W"
+      - "EARTH          27 W"
+
+  # Lands with "Nothing has them.", which is its own paragraph. The plate
+  # moved from 2.3 to 2.4 (the last shot of the scene) after narration put
+  # that line at 71.9 s.
+  - id: walking-forms
+    with: s2p4
+    shot: "2.4"
+    pos: lower-left
+    build: line
+    at: 5.0
+    hold_until: 9.6
+    lines:
+      - "WALKING FORMS RECORDED    0"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: heat
+    with: s3p3
+    shot: "3.3"
+    pos: lower-left
+    build: line
+    at: 2.3       # latest start that still finishes: needs 7.7 s
+    hold_until: 9.6
+    lines:
+      - "CONVECTION    25 W/m²K"
+      - "WASTE HEAT      2.6 W"
+      - "SPARROW         +40 K"
+      - "THIS           +0.4 K"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: chemistry
+    with: s4p3
+    shot: "4.3"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 9.6
+    lines:
+      - "C2H2 + 3H2 -> 2CH4"
+      - "dG       -334 kJ/mol"
+      - "PER H2   -111 kJ/mol"
+
+  # --- Scene 5 -------------------------------------------------------------
+  - id: margin
+    with: s5p2
+    shot: "5.2"
+    pos: lower-left
+    build: line
+    at: 0.8
+    hold_until: 9.6
+    lines:
+      - "Ea             50 kJ/mol"
+      - "RATE LOSS AT -0.4 K   24%"
+      - "FLIGHT MARGIN        <24%"
+
+  - id: cooling
+    with: s5p4
+    shot: "5.4"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 9.6
+    lines:
+      - "COOLING TIME       ~90 min"
+      - "RELAUNCHES OBSERVED      0"
+
+  # --- Scene 6 -------------------------------------------------------------
+  - id: h2-budget
+    with: s6p2
+    shot: "6.3"
+    pos: lower-left
+    build: line
+    at: 1.5       # latest start that still finishes: needs 8.5 s
+    hold_until: 9.6
+    lines:
+      - "H2 FLUX        1E28 /s"
+      - "              16,600 mol/s"
+      - "PER H2          111 kJ/mol"
+      - "TOTAL              1.8 GW"
+
+  # --- Scene 7 — coda ------------------------------------------------------
+  # The last two figures in the record. Never spoken.
+  - id: biosphere-dam
+    shot: "7.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 6.6
+    lines:
+      - "TITAN BIOSPHERE    1.8 GW"
+      - "HOOVER DAM        2.08 GW"
+
+  - id: surface-area
+    shot: "7.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    hold_until: 5.6
+    lines:
+      - "SURFACE AREA    8.3E7 km²"

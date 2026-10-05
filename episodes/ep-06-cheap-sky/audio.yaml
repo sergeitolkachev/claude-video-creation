@@ -1,0 +1,151 @@
+# Record 06's mix. Scene boundaries are summed from shots.yaml:
+#   scene 1  0-36    scene 3  76-126   scene 5  171-216   scene 7  276-300
+#   scene 2  36-76   scene 4  126-171  scene 6  216-276
+#
+# Stage 7 fills in layers and levels against measured beds. Only the pause
+# table from script.md is here now, because it is a script decision.
+
+runtime_seconds: 300
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+
+# Extra air before specific lines, on top of the 1.2 s minimum gap. Every one
+# falls on a paragraph boundary.
+hold:
+  # Image first: the haze moves for 3 s before anyone speaks (lead_in 2 + 1).
+  s1p1: 1.0
+  # "Nothing has them." lands as the WALKING FORMS card finishes: 1.8 s.
+  s2p4: 0.6
+  # The turn of the episode. The script asked 2.5 s; after narration it is
+  # 4.0 on top of the spread, which lands ~7 s of silence before "Nothing
+  # here is warm." over the drizzle shot — and, because later holds tighten
+  # the gaps before them, pulls s3p3 to 100.2 s, inside range of the heat
+  # card (which cannot start later than 2.3 s into 3.3 and still finish).
+  s3p4: 4.0
+  # Hypothesis against the record's own material: 2.0 s.
+  s4p4: 0.8
+  # Flattest line in the record: 2.5 s before it.
+  s5p5: 1.3
+  # 6.1 is silent for its full 10 s: the first line waits for 6.2.
+  s6p1: 8.5
+
+# --- Layers (stage 7) -------------------------------------------------------
+# tone     — dense, pressurised wind. The FLOOR: runs 0-300, never gated,
+#            including under 6.1 and the coda.
+# wingbeat — soft irregular double-beat, far off. In from scene 2, through 3
+#            and 4, gated off for all of scene 5, one close double-beat in the
+#            first second of 6.1 before the flyer enters, then gone.
+# Every level is a trim on a measured file, never a target. Measure first.
+
+# --- Levels -----------------------------------------------------------------
+# Draft 1 had no audible background at all on a phone or a laptop: the three
+# beds carried almost all their energy under 150 Hz, and the trims were
+# chosen against full-band means that were mostly that rumble. Every bed now
+# goes through a 250 Hz high-pass (`filter:` below) and the trim is set
+# against what is left — the band a small speaker actually plays.
+#
+# Measured 2026-09-27 after the high-pass, mean (peak):
+#   wind            -56.6 (-26.1)   pass 2 file
+#   wingbeat        -57.9 (-36.1)   pass 1 file — its flaps carried more above
+#                                   300 Hz than pass 2's (-52.6 vs -65.8)
+#   wingbeat-close  -42.0 (-12.8)   pass 2 file
+#   voice above 300 Hz about -19
+#
+#   tone            -42, ~23 dB under the voice: present on a phone.    -> +14
+#   wingbeat        -48, clearly under the wind; felt more than heard.  -> +10
+#   wingbeat_close  -37 (peak ~-8): the nearest sound in the record,
+#                   alone over the silent 6.1.                          -> +5
+#   clicks          -35, 18 dB under the voice, same as record 05.     -> +23
+#
+# Arithmetic against a measurement is not a judgement: draft 1 was
+# defensible on every number and inaudible. The phone test is the gate.
+levels: {tone: 14, wingbeat: 10, wingbeat_close: 5, clicks: 23}
+
+layers:
+  # The floor: wind, 0-300 s, never gated — including under 6.1 and under
+  # the coda cards.
+  tone:
+    file: sfx/wind.mp3
+    loop_to_fill: true
+    filter: highpass=f=250:poles=2,highpass=f=250:poles=2
+
+  # The recurring element. Established with scene 2 (36 s), present through
+  # scenes 3 and 4, gone at the first frame of scene 5 (171 s) and absent
+  # after. One silence window per layer, so the entry is the window and the
+  # exit is a one-second fade ending on 171.
+  wingbeat:
+    file: sfx/wingbeat.mp3
+    loop_to_fill: true
+    filter: highpass=f=250:poles=2,highpass=f=250:poles=2
+    silence_at: [0, 36]
+    fade_out: [170.0, 1.0]
+
+  # Returned once: one close double beat in the first second of 6.1 (216 s),
+  # off screen, before the flyer enters. Plays once.
+  wingbeat_close:
+    file: sfx/wingbeat-close.mp3
+    filter: highpass=f=250:poles=2,highpass=f=250:poles=2
+    delay: 216.3
+
+# Regenerable from here: nothing under audio/ is versioned. Prompts describe
+# what is there, not what is not — every named absence in a prompt on this
+# channel has come back as a presence.
+sfx:
+  # Pass 1 (sfx/rejected-1/) was inaudible on a phone or a laptop: all three
+  # beds had their energy below 150 Hz — "low, muffled rumble", "muffled
+  # double thump" — and sat at -52 to -57 dBFS above 300 Hz before trims.
+  # Small speakers reproduce almost nothing under ~200 Hz, so the record
+  # played as voice and clicks alone. These prompts describe what a small
+  # speaker can carry: the hiss and rustle of moving air, the flap of a soft
+  # surface. Measure the band above 300 Hz before choosing a level.
+  wind:
+    file: sfx/wind.mp3
+    seconds: 22
+    prompt: >
+      Steady wind blowing across an open plain, recorded close: a broad soft
+      hiss and rustle of moving air brushing past the microphone, with a
+      gentle low rush underneath. Even and continuous from the first second
+      to the last.
+
+  # The file in use is pass 1's (it carried more above 300 Hz than this
+  # prompt's pass 2). Regenerating from this spec gives pass 2; pass 1's
+  # prompt was: "Wind in thick heavy air, and far off in it a large soft wing
+  # beats twice, a slow muffled double thump, then only the wind. The distant
+  # double beat comes back every five to eight seconds at an uneven interval,
+  # always far away, low and soft."
+  wingbeat:
+    file: sfx/wingbeat.mp3
+    seconds: 22
+    prompt: >
+      Soft steady wind, and at a distance a large leathery wing flaps twice,
+      a soft papery double whoosh of a membrane catching air. The double flap
+      comes back every five to eight seconds at an uneven interval, always at
+      the same distance, quieter than the wind.
+
+  wingbeat_close:
+    file: sfx/wingbeat-close.mp3
+    seconds: 3
+    prompt: >
+      Close to the microphone, one slow double flap of a large leathery
+      membrane wing: two soft whooshing beats of air with a papery rustle in
+      them, then only a faint breeze.
+
+# The click bed: one click per glyph across every card, mixed by
+# build_cards.py.
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser -----------------------------------------------------------------
+# The one piece on this channel allowed a cue. Generated at the music
+# endpoint, never licensed, and it never goes under the record.
+teaser_sfx:
+  music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold, spacious ambient music for a documentary about a survey of
+      Titan, Saturn's moon, under a thick orange haze. A warm low synth pad
+      that breathes slowly, soft airy textures drifting over it, and one
+      gradual build across the whole piece that never resolves. Sparse and
+      quiet enough to sit under a calm speaking voice the whole way through.

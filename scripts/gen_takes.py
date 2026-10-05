@@ -6,7 +6,7 @@ Only approved/ is ever animated. This is the expensive stage: a clip costs
 
 Usage: gen_takes.py <scene> [--only 2.1] [episode dir]
 """
-import os, sys, json, time, pathlib, urllib.request, urllib.error, yaml
+import os, subprocess, sys, json, time, pathlib, urllib.request, urllib.error, yaml
 
 print = __import__('functools').partial(print, flush=True)
 
@@ -40,6 +40,37 @@ def req(url, key, body=None, method=None):
         headers={"Authorization": f"Key {key}", "Content-Type": "application/json"},
         method=method)
     return json.load(urllib.request.urlopen(r, timeout=60))
+
+def fetch_ranges(url, dest, parts=8):
+    """Download url to dest as `parts` parallel byte ranges. True on success."""
+    head = subprocess.run(["curl", "-sSI", "--max-time", "60", url],
+                          capture_output=True, text=True).stdout.lower()
+    size = next((int(l.split(":")[1]) for l in head.splitlines()
+                 if l.startswith("content-length:")), 0)
+    if not size or "accept-ranges: bytes" not in head:
+        parts = 1
+    step = -(-size // parts) if size else 0
+    segs, procs = [], []
+    for i in range(parts):
+        seg = dest.with_suffix(f".seg{i}")
+        a = i * step; b = min(size, a + step) - 1
+        cmd = ["curl", "-sS", "--fail", "--retry", "5", "--retry-all-errors",
+               "--speed-limit", "2000", "--speed-time", "120",
+               "-C", "-", "-o", str(seg), url]
+        if parts > 1:
+            cmd[1:1] = ["-r", f"{a}-{b}"]
+        segs.append(seg); procs.append(subprocess.Popen(cmd))
+    ok = all(p.wait() == 0 for p in procs)
+    if ok:
+        with open(dest.with_suffix(".part"), "wb") as out:
+            for seg in segs:
+                out.write(seg.read_bytes())
+        ok = not size or dest.with_suffix(".part").stat().st_size == size
+        if ok:
+            dest.with_suffix(".part").rename(dest)
+    for seg in segs:
+        seg.unlink(missing_ok=True)
+    return ok
 
 def upload(path, key, cache):
     c = json.loads(cache.read_text()) if cache.exists() else {}
@@ -145,10 +176,16 @@ def main():
                     "generate_audio": False,
                     "negative_prompt":
                         # every item here is something a probe actually produced
+                        # — on a station interior. An episode whose approved
+                        # frames contain liquid (record 06: methane pools, a
+                        # drizzle shot) replaces the base with `negative_base`
+                        # in its shots.yaml, or the negative list argues with
+                        # the picture it is animating.
+                        " ".join((doc.get("negative_base") or
                         "fast motion, camera shake, dolly, rapid push in, zoom, "
                         "water, wet floor, puddles, reflections on the floor, "
                         "morphing geometry, changing architecture, brightening, "
-                        "blur, distortion, low quality, people, text, watermark"
+                        "blur, distortion, low quality, people, text, watermark").split())
                         + (", " + " ".join(s["negative_extra"].split())
                            if s.get("negative_extra") else "")}
             price = tier["price_10s_usd"] if gen == 10 else \
@@ -216,15 +253,20 @@ def main():
         # feeding mid-file, and the traceback took the rest of the run with it.
         # The clip is paid for and finished either way, so this retries rather
         # than dying, and leaves the request in pending.json if it cannot.
+        #
+        # And the fal CDN throttles each connection to about 30 KB/s on some
+        # clips, so one stream of a 40 MB take runs for twenty minutes or more.
+        # Record 06 found that the slow way: a per-read socket timeout never
+        # tripped, and then a wall-clock cap killed 3.5 at 26 of 31 MB and the
+        # retry started from zero. The file is fetched as parallel byte ranges
+        # instead, each retried on its own, and it only takes its real name
+        # once the assembled size matches the server's.
         for attempt in range(3):
-            try:
-                dest.write_bytes(
-                    urllib.request.urlopen(r["video"]["url"], timeout=300).read())
+            if fetch_ranges(r["video"]["url"], dest):
                 break
-            except Exception as e:
-                print(f"  ... download failed for {s['id']} "
-                      f"({type(e).__name__}), attempt {attempt + 1} of 3")
-                time.sleep(5)
+            print(f"  ... download failed for {s['id']}, "
+                  f"attempt {attempt + 1} of 3")
+            time.sleep(5)
         else:
             print(f"  FAIL   {dest.name} — generated and paid for, still in "
                   f"pending.json; rerun downloads it again")

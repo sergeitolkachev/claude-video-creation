@@ -97,7 +97,18 @@ def wrap(text):
         score = abs(len(a) - len(b))
         if best is None or score < best[0]:
             best = (score, [a, b])
-    return best[1] if best else [text]
+    if best:
+        return best[1]
+    # A cue can be legal (<= cue_chars) and still have no split with both
+    # lines <= line_chars: record 06's "Legs are a solution to a problem that
+    # does not exist here." is 58 characters and its best split is 24 + 33.
+    # Returning it as one line made render() shrink it to 30 px and still run
+    # it off both edges of the teaser. Take the most balanced split instead;
+    # render() then sizes the font so the longer line fits safe_width.
+    splits = [(" ".join(words[:i]), " ".join(words[i:]))
+              for i in range(1, len(words))]
+    a, b = min(splits, key=lambda ab: max(len(ab[0]), len(ab[1])))
+    return [a, b]
 
 def chunk(words):
     """Group words into cues of at most two lines.

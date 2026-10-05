@@ -139,14 +139,15 @@ def main():
             nonlocal idx
             ins.extend(["-i", str(p)]); idx += 1; return idx - 1
 
-        tone = ep / "audio" / "sfx" / "tone.mp3"
+        tone, tflt = V.layer_source(ep, acfg, "tone")
         if tone.exists():
             i = add(tone)
-            fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,volume={lv.get('tone', 0)}dB,"
+            fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,{tflt}"
+                      f"volume={lv.get('tone', 0)}dB,"
                       f"apad,atrim=0:{total}[tone]")
             mixed.append("[tone]")
         else:
-            print("  no audio/sfx/tone.mp3 — this cut has no floor under it")
+            print(f"  no {tone} — this cut has no floor under it")
 
         fan = ep / "audio" / "sfx" / "fan.mp3"
         fan_on = str(cut.get("fan", "on")).lower() not in ("off", "false", "no")

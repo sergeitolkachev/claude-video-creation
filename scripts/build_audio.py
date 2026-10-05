@@ -184,6 +184,13 @@ def main():
             fc.append(f"[{name}1][{name}2]"
                       f"acrossfade=d={layer['loop_crossfade']}:c1=tri:c2=tri[{name}L]")
             chain = [f"[{name}L]"]
+        if layer.get("filter"):
+            # An episode-level EQ for a bed, written into audio.yaml so the
+            # step lives in the repository. Record 06's generated beds put
+            # nearly all their energy under 150 Hz, where a phone or a laptop
+            # plays almost nothing, and the first draft read as voice and
+            # clicks alone. A level is then a trim on what is audible.
+            chain.append(f"{layer['filter']},")
         chain.append(f"volume={levels.get(name, -20)}dB,")
         if layer.get("delay"):
             d = int(layer["delay"] * 1000)

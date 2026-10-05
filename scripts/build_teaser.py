@@ -128,14 +128,15 @@ def main():
     # silence gate in build_audio.py: record 04's beds are called tone and
     # pump, and a teaser built from it would have had no room tone at all under
     # the music. A layer is named by the episode, never by the code.
+    acfg = yaml.safe_load((ep / "audio.yaml").read_text())
     for name, trim in lv.items():
         if name in ("music", "drone", "voice"):
             continue
-        f = ep / "audio" / "sfx" / f"{name}.mp3"
+        f, flt = V.layer_source(ep, acfg, name)
         if not f.exists():
             print(f"  no bed for level '{name}' — {f} is not there"); continue
         i = add(f)
-        fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,volume={trim}dB,"
+        fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,{flt}volume={trim}dB,"
                   f"afade=t=out:st={ec['at'] - 0.5:.2f}:d=0.6,"
                   f"apad,atrim=0:{total}[{name}bed]")
         mixed.append(f"[{name}bed]")

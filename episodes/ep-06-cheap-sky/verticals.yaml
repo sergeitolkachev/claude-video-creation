@@ -1,0 +1,75 @@
+# The vertical cuts — record 06. Assembled, not carved.
+#
+# Every shot is a take from takes/ in which something physically moves — the
+# draft's V1 was built from 1.2, 1.3 and 1.4, all ffmpeg at the time, and a
+# cut made of photographs does not hold a thumb. Every line is a paragraph the
+# record already contains. No cards, no click bed, no music; every figure is
+# spoken. Each closes on the channel card.
+#
+# Timing from audio/alignment/ (2026-09-27): each line starts 0.6 s after
+# the previous line's last word ends, and the picture runs ~0.8 s past the
+# last word. All three end at a paragraph end, so none needs a `trim` and none
+# can sever a word.
+#
+# `runtime_seconds` is the whole piece, closing card included.
+
+slug: "FC9-006 // THE CHEAP SKY"
+
+cuts:
+  # ---------------------------------------------------------------- a -------
+  # A human could fly here. Good news, read flat. Nothing in it says what the
+  # record is about, which is the point: the cut sells the premise.
+  - id: fc9-006-a-a-human-could-fly
+    runtime_seconds: 22.4
+    shots:
+      # Particulate on the current, under "the only moon … with a real
+      # atmosphere". The thumb stops on moving air, not on a still plain.
+      - {id: "1.1", at:  0.0, from: 1.0, seconds: 5.0, crop_x: 0.50}
+      # The plain, low and close, under the flight line.
+      - {id: "1.3", at:  5.0, from: 1.0, seconds: 5.5, crop_x: 0.55}
+      # Dust drifting over the surface, under the end of the flight line.
+      - {id: "2.3", at: 10.5, from: 2.0, seconds: 5.5, crop_x: 0.45}
+      # The macro, last, under "On Earth, the same wing needs twenty-four."
+      - {id: "1.4", at: 16.0, from: 0.2, seconds: 4.4, crop_x: 0.72}
+    lines:
+      - {pid: s1p1, at:  0.20}   # only moon with a real atmosphere, 4.4x
+      - {pid: s1p2, at:  8.51}   # one seventh gravity, 4.2 m/s
+      - {pid: s1p3, at: 17.05}   # "On Earth, the same wing needs twenty-four."
+    ends_on: "On Earth, the same wing needs twenty-four."
+
+  # ---------------------------------------------------------------- b -------
+  # Four tenths of a kelvin. The sparrow is the cut and it stays inside it.
+  - id: fc9-006-b-four-tenths
+    runtime_seconds: 28.0
+    shots:
+      - {id: "3.1", at:  0.0, from: 1.0, seconds: 6.5, crop_x: 0.50}
+      # Vapour lifting off the wet cobble, under the heat-loss line.
+      - {id: "3.2", at:  6.5, from: 1.0, seconds: 6.5, crop_x: 0.68}
+      # The distant shapes, under "four tenths of a kelvin above the air it
+      # is flying through". Set crop_x on the take where the domes are.
+      - {id: "2.2", at: 13.0, from: 2.0, seconds: 6.0, crop_x: 0.50}
+      # Drizzle on the pool, last, under the sparrow.
+      - {id: "3.4", at: 19.0, from: 1.0, seconds: 7.0, crop_x: 0.45}
+    lines:
+      - {pid: s3p1, at:  0.20}   # "Lift is free. Heat is not." 94 K
+      - {pid: s3p2, at:  7.81}   # 25 W/m2K, 2.6 W
+      - {pid: s3p3, at: 16.77}   # 0.4 K; a sparrow runs forty
+    ends_on: "A sparrow runs forty kelvin above the air around it."
+
+  # ---------------------------------------------------------------- c -------
+  # The margin. Stops on "quarter." and does not go on to the ninety minutes:
+  # that line answers the question this cut is asking.
+  - id: fc9-006-c-the-margin
+    runtime_seconds: 20.8
+    shots:
+      - {id: "5.1", at:  0.0, from: 1.0, seconds: 5.0, crop_x: 0.45}
+      - {id: "5.3", at:  5.0, from: 1.0, seconds: 5.5, crop_x: 0.50}
+      # The domes, under "exceeds what flight costs".
+      - {id: "4.4", at: 10.5, from: 2.0, seconds: 4.5, crop_x: 0.50}
+      # The particulate slowing to nothing, last.
+      - {id: "6.5", at: 15.0, from: 4.0, seconds: 3.8, crop_x: 0.50}
+    lines:
+      - {pid: s5p1, at:  0.20}   # reaction rates depend on temperature
+      - {pid: s5p2, at:  6.09}   # four tenths is worth a quarter
+      - {pid: s5p3, at: 13.10}   # "...by less than that quarter."
+    ends_on: "Its power output in flight exceeds what flight costs by less than that quarter."

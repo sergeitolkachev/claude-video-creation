@@ -323,3 +323,18 @@ def voice_chains(ep, lines, picks, total, level, start_idx):
               + (f"  first {ln['trim']}s" if ln.get("trim") else ""))
         i += 1
     return ins, fc, labels, i
+
+def layer_source(ep, acfg, name):
+    """(file, filter prefix) for one of the record's beds, read from its
+    audio.yaml layer — the same file and the same EQ the master mix uses.
+
+    There were three copies of "which file is the room tone": build_audio.py
+    read the layer, build_verticals.py hard-coded audio/sfx/tone.mp3 and
+    build_teaser.py guessed audio/sfx/<level name>.mp3. Record 06 named its
+    floor wind.mp3 and put a 250 Hz high-pass on it, and the two guessers would
+    have built cuts with no floor and a teaser with an inaudible one."""
+    layer = ((acfg or {}).get("layers") or {}).get(name) or {}
+    f = (ep / "audio" / layer["file"]) if layer.get("file") \
+        else (ep / "audio" / "sfx" / f"{name}.mp3")
+    flt = f"{layer['filter']}," if layer.get("filter") else ""
+    return f, flt
