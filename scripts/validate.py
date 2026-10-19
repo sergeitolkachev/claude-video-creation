@@ -538,6 +538,72 @@ def main(ep):
                     fail.append(f"thumbnail {v['id']}: a block reaches {bot:.0f}px, "
                                 f"into the slug band at {slug_top:.0f}px")
 
+    # 10. The sound, from record 08: a synthesised floor, the record's own cue
+    # ducked under the voice, and nothing else. Records 01-07 ran generated
+    # room beds — fans, pumps, ventilation — whose energy sat above 3 kHz and
+    # read on YouTube as whine; they are frozen and are not checked here.
+    m = re.match(r"ep-(\d+)", ep.name)
+    if m and int(m.group(1)) >= 8 and (ep / "audio.yaml").exists():
+        snd = yaml.safe_load(pathlib.Path("config/sound.yaml").read_text())
+        acfg = yaml.safe_load((ep / "audio.yaml").read_text()) or {}
+        layers = acfg.get("layers") or {}
+        floors = [n for n, l in layers.items() if l.get("synth") == "floor"]
+        cues = [n for n, l in layers.items() if l.get("duck")]
+        beds = [n for n in layers if n not in floors + cues]
+        print(f"\n  sound: floor {floors or 'MISSING'}, cue {cues or 'MISSING'}"
+              f"{', other beds ' + str(beds) if beds else ''}")
+        if not floors:
+            fail.append("audio.yaml: no `synth: floor` layer — nothing under the record")
+        if len(cues) != 1:
+            fail.append(f"audio.yaml: {len(cues)} ducked cues, want exactly one")
+        if beds:
+            fail.append(f"audio.yaml: beds {beds} — from record 08 the record "
+                        "carries the floor and its cue, nothing else")
+        for n in cues:
+            spec = next((s for s in (acfg.get("sfx") or {}).values()
+                         if s.get("file") == layers[n].get("file")), None)
+            if not spec or spec.get("kind") != "music":
+                fail.append(f"cue {n}: no `kind: music` spec under sfx: for "
+                            f"{layers[n].get('file')} — not regenerable")
+                continue
+            sec = spec.get("seconds", 0)
+            if not (doc["runtime_seconds"] <= sec <= snd["music"]["max_seconds"]):
+                fail.append(f"cue {n}: {sec}s, needs {doc['runtime_seconds']}-"
+                            f"{snd['music']['max_seconds']}s (the whole record, "
+                            f"one cue, inside the endpoint's limit)")
+
+        # Spot effects: a few, short, in the pauses. Not a bed by another name.
+        evs = acfg.get("events") or []
+        es = snd["events"]
+        if evs:
+            sys.path.insert(0, str(pathlib.Path(__file__).parent))
+            from build_audio import event_times
+            ids = {str(s["id"]) for s in shots}
+            sfx = acfg.get("sfx") or {}
+            if len(evs) > es["max_count"]:
+                fail.append(f"events: {len(evs)}, at most {es['max_count']} per "
+                            "record — places, not throughout")
+            bad = [e for e in evs if e.get("sfx") not in sfx
+                   or sfx[e["sfx"]].get("kind") == "music"
+                   or str(e.get("shot")) not in ids]
+            for e in bad:
+                fail.append(f"event {e}: needs an sfx spec (not music) and a real shot")
+            if not bad:
+                speech = [(t, t + dur_of(f)) for _, f, t in at_full]
+                for e, t, sec, f in event_times(acfg, shots, ep):
+                    if float(e.get("seconds") or 0) > es["max_seconds"]:
+                        fail.append(f"event {e['sfx']} on {e['shot']}: "
+                                    f"{e['seconds']}s, at most {es['max_seconds']}")
+                    hit = [(a, b) for a, b in speech
+                           if t < b + es["clear_of_voice"] and t + sec > a - es["clear_of_voice"]]
+                    mark = "UNDER VOICE" if hit else ("ok" if speech else "unplaced")
+                    print(f"  event {e['sfx']:<10} on {e['shot']:<4} {t:6.1f}s "
+                          f"{sec:4.1f}s  {mark}")
+                    if hit:
+                        fail.append(f"event {e['sfx']} at {t:.1f}s lands under the "
+                                    f"voice ({hit[0][0]:.1f}-{hit[0][1]:.1f}s) — "
+                                    "spot effects live in the pauses")
+
     print()
     if fail:
         print("FAILED:"); [print("  -", f) for f in fail]; return 1

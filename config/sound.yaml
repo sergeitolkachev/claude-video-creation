@@ -1,0 +1,65 @@
+# The channel's sound furniture, from record 08. Locked like grain and type:
+# the same floor and the same duck under every record, never varied for an
+# episode. A record that sounds different from the last one reads as a
+# different source.
+#
+# Why this file exists. Records 01-07 ran a generated room bed under the
+# voice — ventilation, a pump, a scrubber fan — high-passed at 250 Hz so a
+# phone could hear it. Measured on record 07, nearly all of that energy sat
+# above 3 kHz: the high-pass removed the body and left the hiss. On YouTube it
+# reads as whine and noise, not as a room. Record 08 replaces it with a floor
+# nobody hears as a sound and a music cue under the whole record, ducked under
+# the voice. Chosen by ear on 2026-10-19 against three 60 s variants of record
+# 07 (out/audio-demo/: quiet floor only, cue ducked 7 dB, cue ducked 20 dB).
+
+# The floor. Absolute digital silence still reads as a file that has ended,
+# so something runs under every record, every vertical and every card — but
+# it is synthesised, not generated: pink noise band-limited to where tape hiss
+# is warm rather than sharp, byte-identical between records because it comes
+# from a seed. Measured on the demo at about -60 dBFS: present, not audible as
+# a sound on a phone. build_audio.py renders it to audio/sfx/floor.wav.
+floor:
+  color: pink
+  seed: 9
+  seconds: 60            # looped to fill; a noise loop has no audible seam
+  highpass: 120
+  lowpass: 1500
+  gain_db: -46           # on anoisesrc at amplitude 1
+
+# The duck. The cue sits under the voice 7 dB lower than it sits in the
+# silences. Driven by the paragraph placements, not by a compressor: a
+# sidechain pumps between sentences inside a paragraph, this does not, and it
+# is frame-exact and the same on every build. A gap shorter than the two ramps
+# plus the margins stays ducked, so the music only comes back up in a pause
+# long enough to be one.
+duck:
+  db: 7
+  ramp: 0.6              # seconds, linear in gain
+  pre: 0.35              # duck is complete this long before the first word
+  post: 0.5              # and holds this long after the last
+
+# Spot effects. Not a bed: a few short natural sounds where the world would
+# make one — ice settling under load, a single drip, a latch, a cable
+# ticking as it cools — placed in the pauses, never under the voice and never
+# continuous. Serge, 2026-10-19: the old beds read as whine because they ran
+# the whole record and lived above 3 kHz; an event that happens a few times
+# and sounds like the thing it is reads as a real place.
+# Band-limited 60 Hz - 7 kHz so nothing reaches the whine band, a 10 ms
+# fade-in so a transient keeps its attack, a 0.3 s fade-out so nothing is
+# cut off mid-ring. validate.py holds the count, the length and the pauses.
+events:
+  highpass: 60
+  lowpass: 7000
+  fade_in: 0.01
+  fade_out: 0.3
+  max_seconds: 10        # a passage of meltwater, at most; a tick is ~1-2 s
+  max_count: 12          # per record — "places", not "throughout"
+  clear_of_voice: 0.3    # seconds between an event and the nearest word
+
+# The cue. One per record, generated at the ElevenLabs music endpoint at the
+# record's full runtime so it carries its own build and its own ending.
+# The endpoint takes 3 s to 600 s (checked 2026-10-19), which is the channel's
+# own 10:00 ceiling, so one cue always covers a record. Re-check: it drifts.
+music:
+  highpass: 80           # rumble only; the cue's body is what a phone plays
+  max_seconds: 600

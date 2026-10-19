@@ -42,7 +42,9 @@ image:
   # from text, because there is nothing to reference yet.
   anchor:
     id: fal-ai/bytedance/seedream/v4/text-to-image
-    price_per_image_usd: 0.03
+    # Re-checked 2026-10-19 for record 08: fal's own comparison article puts
+    # v4 at $0.04, a tracker still says $0.03. Budgeted at the higher one.
+    price_per_image_usd: 0.04
     notes: >
       Priced at 1MP; higher resolutions scale proportionally. Cinematic
       composition, holds atmosphere better than the cheap explorers.
@@ -63,7 +65,7 @@ image:
   # the style carried in words.
   exterior:
     id: fal-ai/bytedance/seedream/v4/text-to-image
-    price_per_image_usd: 0.03
+    price_per_image_usd: 0.04
     notes: Same endpoint as the anchor tier. No reference image by design.
 
   # Only when hunting for a direction that does not exist yet. Never in the

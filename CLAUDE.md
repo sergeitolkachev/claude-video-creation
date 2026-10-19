@@ -299,7 +299,10 @@ episode, never A/B tested.
 - **Each character lands with a short click**, one per glyph, dry and quiet,
   sitting under the narration rather than over it. Synthesised locally so it
   is byte-identical between episodes — a sound that drifts is worse than no
-  sound.
+  sound. The trim that lays the click bed into the mix is `clicks:` in the
+  record's `audio.yaml`: +23 for records 05–07, **+20 from record 08** — on
+  the first mix with the music cue under it, Serge asked for the clicks a
+  little quieter, not louder. Carry +20 forward; it is furniture too.
 - Numbers that count up (an odometer, a draining bar) tick per digit change,
   same click, same level. **A counter settles before the cut**, with the same
   two seconds a card holds after its last character: a figure nobody has time
@@ -347,13 +350,61 @@ episode, never A/B tested.
 - If a line still reads hurried after the gaps are in, edit the sentence:
   shorter clauses, a period where a comma was. Never reach for the speed
   parameter.
-- Room tone runs under the entire episode. Absolute digital silence
-  destroys the illusion of a recording. **This includes the moments where a
-  sound-design layer is deliberately removed.** Record 03 gated its scrubber
-  fan off for scene 3 and under the closing cards, and because the fan was
-  also doing duty as the room tone, both fell to -90 dBFS: not silence, but a
-  file that has ended. The fan is the effect; a second ungated bed underneath
-  it is the floor, and it never stops.
+- **The bed under a record is a floor and a music cue, nothing else — since
+  record 08.** Records 01 to 07 ran generated room beds under the voice:
+  ventilation, a pump, a scrubber fan, high-passed at 250 Hz so a phone could
+  hear them. Measured on record 07, nearly all of that energy sat above 3 kHz —
+  the high-pass removed the body and kept the hiss — and on YouTube it read as
+  whine and noise, not as a room. It was the most disliked thing in the
+  records. Chosen by ear on 2026-10-19 against three variants of a minute of
+  record 07 (`ep-07/out/audio-demo/`): the floor alone, the cue ducked 7 dB
+  under the voice, the cue ducked 20 dB. The 7 dB version won.
+  - **The floor** is synthesised, not generated: seeded pink noise band-limited
+    to 120–1500 Hz at about -60 dBFS, rendered by `build_audio.py` into
+    `audio/sfx/floor.wav`, byte-identical in every record. It is there because
+    absolute digital silence reads as a file that has ended — never gated,
+    under every card and every coda. Nobody should hear it as a sound.
+  - **The cue** is one ElevenLabs music generation per record, at the
+    record's full runtime (the endpoint takes up to 600 s, which is the
+    channel's own ceiling), so it has its own build and its own ending. It
+    runs under the whole record and is ducked **7 dB** wherever the voice is
+    speaking — a gain curve driven by the paragraph placements, not a
+    compressor, so it never pumps between sentences and comes back up only in
+    a pause long enough to be one. Spec and constants in `config/sound.yaml`,
+    locked like grain: same floor, same duck, every record.
+  - **What the cue is:** ambient, slow, cold, no melody anyone could hum, no
+    beat, no drums, no vocals, no resolution. It is the weather of the record,
+    not a score commenting on it — a cue that swells on a reveal turns the
+    narrator into an actor in a film, which is the one thing he must never be.
+    Write the prompt for **the mid register** (sustained strings, pads, glassy
+    tones from about 200 Hz to 3 kHz): record 07's teaser cue put its body
+    below 250 Hz, which is where a phone plays almost nothing.
+  - **No beds besides those two** — no fans, hum, pumps, ventilation, beeps,
+    nothing that runs under the record. `validate.py` fails a record from 08
+    on that declares another layer.
+  - **Spot effects are welcome — in places, never throughout.** A few short
+    natural sounds where the world would make one: ice settling under load, a
+    single drip, a latch, a hull ticking as it cools. What was wrong with the
+    old beds was not that they were sound effects; it was that they ran the
+    whole record and lived in the whine band. An event that happens a handful
+    of times and sounds like the thing it is reads as a real place. Rules
+    (constants in `config/sound.yaml`, checked by `validate.py`):
+    - at most **12 per record**, each at most **10 s** (a tick is 1–2 s; a
+      passage of meltwater in a silent shot is the long end);
+    - **in the pauses only**, at least 0.3 s clear of any word — the world
+      happens while nobody is talking;
+    - anchored like a card, `shot:` + `at:` in `audio.yaml` under `events:`,
+      so a retimed shot list carries them;
+    - band-limited 60 Hz–7 kHz in the build, 10 ms fade-in to keep the
+      attack, 0.3 s fade-out so nothing is cut mid-ring;
+    - prompted as a **single dry close event with a body** — "a deep creak and
+      a soft crack", not "a sharp tick" — and never anything electronic,
+      tonal or high-pitched. Judge each one on a phone; a beep is rejected,
+      not EQ'd.
+    - Verticals and the teaser carry no spot effects: they are placed on the
+      record's timeline, and a cut is not on it.
+  - Records 01–07 are frozen with their old beds and keep building as they
+    were; `build_audio.py` reproduces record 07's master mix byte for byte.
 - **A level in `audio.yaml` is a trim applied to the file, not a target level
   in the mix.** Measure the bed, then choose the trim. Record 03 set the fan
   to -26 meaning "quiet" against a bed that was already -37.9 dBFS, landing it
@@ -442,12 +493,15 @@ ffmpeg handles everything after generation. No models involved.
   `takes/`; every line is a paragraph already approved and reproducible from
   its seed. A shot may be used twice; a sentence the record does not contain
   may not appear at all.
-- **No music under a vertical cut.** The teaser is the only piece on this
-  channel allowed a cue, and that exemption does not spread. The room tone
-  runs under the whole cut, including under the closing card, and its level
-  is inherited from the record's own `audio.yaml` so the cut sounds like the
-  record — measured on record 03, the assembled form lands its floor within
-  0.3 dB of the master's.
+- **A vertical carries the record's own cue (record 08 on).** It takes the
+  cue from the moment in the record where the cut's first line sits — or
+  from `music_from:` on the cut — ducked under the cut's lines by the same
+  7 dB, faded across the closing card. Never a different cue and never the
+  teaser's: the cut sounds like the record it advertises. The floor runs
+  under the whole cut, closing card included, and every level is inherited
+  from the record's own `audio.yaml` — measured on record 03, the assembled
+  form lands its floor within 0.3 dB of the master's. Verticals of records
+  01–07 have no cue and are not rebuilt.
 - **`runtime_seconds` means the whole piece, closing card included**, in
   `verticals.yaml` and in `teaser.yaml` alike. The first version of the
   assembled builder read it as picture-only in one file and total in the
@@ -484,8 +538,9 @@ ffmpeg handles everything after generation. No models involved.
 ## The Teaser
 
 Thirty seconds, vertical, posted before the record exists. It is the only piece
-on this channel that is allowed to sound composed, and the only one built from
-scratch rather than cut out of something finished.
+on this channel built from scratch rather than cut out of something finished,
+and the only one with a cue of its own, composed for thirty seconds rather
+than taken from the record's.
 
 - **It is a vertical, so every vertical rule applies to it**: captions burned
   in from real word timings, the bottom 30% clear, and a voice inside the first
@@ -496,19 +551,20 @@ scratch rather than cut out of something finished.
   line list and the levels. Since record 04 the vertical cuts are built the
   same way, through the same `scripts/vertical.py`, so this is no longer what
   separates the two. What separates them is the bed and the card: the teaser
-  is the only piece allowed music under it, and it closes on `SOON`.
+  has its own thirty-second cue with a build in it where a cut carries the
+  record's, and it closes on `SOON`.
 - **Every line is already in the record.** Nothing is generated for a teaser.
   A sentence the episode does not contain is the audio version of a thumbnail
   promising a frame that is not there, and the trim points come from
   `audio/alignment/` so a paragraph can give its first sentence and no more.
-- **Music is generated, and only here.** ElevenLabs' music endpoint, not the
-  sound-effect one — two prompts at the effect endpoint returned 15 dB and then
-  20 dB of variation, because a sound-effect model makes material, not beds,
-  while the music endpoint returns a cue with its own build and its own tail.
-  It does not draw on the character quota. **Music never goes under the record
-  itself.** That rule is not relaxed for anything: a man reading numbers under
-  music is an actor in a film, and the whole record depends on him not being
-  one.
+- **Music is generated.** ElevenLabs' music endpoint, not the sound-effect one
+  — two prompts at the effect endpoint returned 15 dB and then 20 dB of
+  variation, because a sound-effect model makes material, not beds, while the
+  music endpoint returns a cue with its own build and its own tail. It does
+  not draw on the character quota. Until record 07 music never went under the
+  record itself; from record 08 the record has its own cue (see Audio Rules),
+  and the teaser's is a separate generation, never the record's cue cut short
+  and never under the record.
 - **Never a licensed track.** A Content ID claim on a channel built out of
   recovered recordings costs more than any cue is worth, and generated audio
   has no rights-holder to file one.
@@ -707,6 +763,19 @@ extent changes, so there is nothing for the model to invent frame to frame.
   breathing, a beam on a surface. Record 07 asked for two and got two stills
   (3.4, 4.1). These used to be listed as reliable; they are reliable only in
   the sense that nothing goes wrong, because nothing happens.
+- **Water moves only where the still shows a thing with an edge.** Record 08
+  asked Kling to run meltwater in nine shots and the line fell exactly on the
+  still. Where the approved frame held a discrete thing — a bead at the top
+  of a face (4.4, 6.1), drips hanging off an edge (2.3, 8.2), a visible thread
+  (6.4) — the water ran, on the first roll. Where it held only a wet sheen —
+  "a thin film of meltwater running down the wall" of a bore (1.1, 3.1, 5.3),
+  "a run of meltwater tracking down the side" of a core (4.1) — two came back
+  still, one slid the whole core 59 px along the bench, one breathed a zoom
+  in and out. $2.45, all four rebuilt as `local` moves. A film is texture,
+  not an object: there is no edge in it for the model to carry. So water is a
+  `model` motion only when the still already shows the bead, the drip or the
+  end of the thread, and the shot is judged on that at the stills stage, the
+  same as anything else that has to move.
 - **Unreliable: a soft deformable object whose shape has to be re-drawn every
   frame.** Fabric, cable, a loose flap, a hanging tag. Record 05 asked a
   fabric tether strap to sway and lost three takes and $2.10 on one shot: it

@@ -1,0 +1,29 @@
+# Burned-in titles — channel furniture only. Data cards are in cards.yaml.
+#
+# Times are absolute seconds on the 261 s timeline. Shot boundaries, for
+# reading these numbers against:
+#
+#   1.1   0-10    8.1 237-243   8.3 248-252   8.5 256-261
+#
+# Every figure here must be re-derived from shots.yaml if any duration
+# anywhere changes. Rendered by build_cards.py --titles.
+
+cards:
+  # The slug types into the lower left of 1.1, over the bore: 19 characters,
+  # 1.1 s of typing, 2 s of hold, gone by 3.6 s — long before the first line.
+  - id: slug
+    at: 0.5
+    hold: 2.0
+    lines: ["FC9-008 // THE RIND"]
+
+  # The channel closer, on its own plate. Two lines, 34 characters: 4.2 s on
+  # a 5 s plate.
+  - id: closer
+    at: 256.5
+    hold: 2.0
+    size: 40
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-008 // THE RIND"

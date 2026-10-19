@@ -142,6 +142,78 @@ def place(picks, A, start, end, cfg, anchors=None):
     return placed
 
 
+# --- channel sound furniture (config/sound.yaml), from record 08 -------------
+#
+# One copy. build_verticals.py and build_teaser.py import these, for the same
+# reason the paragraph parser lives here: a floor or a duck written twice is a
+# floor or a duck that drifts.
+
+def sound_spec():
+    return yaml.safe_load(pathlib.Path("config/sound.yaml").read_text())
+
+
+def ensure_floor(ep, ff=None):
+    """The synthesised floor, rendered once into audio/sfx/floor.wav.
+
+    Seeded, so it is byte-identical between builds and between records. It
+    replaces the generated room beds of records 01-07, whose energy sat above
+    3 kHz and read on YouTube as whine rather than as a room."""
+    ff = ff or os.environ.get("FFMPEG_BIN", "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
+    f = ep / "audio" / "sfx" / "floor.wav"
+    if f.exists():
+        return f
+    fl = sound_spec()["floor"]
+    f.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([ff, "-y", "-v", "error", "-f", "lavfi", "-i",
+                    f"anoisesrc=color={fl['color']}:amplitude=1:seed={fl['seed']}:"
+                    f"d={fl['seconds']}:r=44100",
+                    "-af", f"highpass=f={fl['highpass']},lowpass=f={fl['lowpass']},"
+                           f"volume={fl['gain_db']}dB",
+                    "-ac", "2", "-c:a", "pcm_s16le", str(f)], check=True)
+    print(f"  floor: rendered {f}")
+    return f
+
+
+def duck_filter(spans, depth=None):
+    """A volume filter: 0 dB in the silences, -depth dB under every span.
+
+    `spans` are (start, end) of speech in the piece's own clock. Spans closer
+    together than the ramps and margins merge — the cue stays down across an
+    ordinary gap between paragraphs and only comes back in a real pause."""
+    d = sound_spec()["duck"]
+    depth = d["db"] if depth is None else depth
+    r, pre, post = d["ramp"], d["pre"], d["post"]
+    if not spans:
+        return "anull"
+    # Single-quoted, so the commas belong to the expression, not the graph.
+    terms = [f"clip(min((t-({a - pre - r:.3f}))/{r},({b + post + r:.3f}-t)/{r}),0,1)"
+             for a, b in spans]
+    return f"volume='pow(10,-{depth}*clip({'+'.join(terms)},0,1)/20)':eval=frame"
+
+
+def music_head():
+    """What goes in front of a ducked cue: a high-pass for rumble only."""
+    return f"highpass=f={sound_spec()['music']['highpass']}"
+
+
+def event_times(cfg, shots, ep):
+    """[(event, start, seconds, file)] for audio.yaml's `events:`.
+
+    A spot effect is anchored to a shot and an offset inside it, the same way
+    a card is, so a retimed shot list moves its sounds with it. Seconds are
+    the event's own `seconds:`, else the whole file, never past the cap."""
+    cap = sound_spec()["events"]["max_seconds"]
+    at, acc = {}, 0
+    for sh in shots:
+        at[str(sh["id"])] = acc; acc += sh["timeline_seconds"]
+    out = []
+    for e in cfg.get("events") or []:
+        f = ep / "audio" / (cfg.get("sfx") or {})[e["sfx"]]["file"]
+        sec = float(e.get("seconds") or (dur(f) if f.exists() else cap))
+        out.append((e, at[str(e["shot"])] + float(e.get("at", 0)), min(sec, cap), f))
+    return out
+
+
 def main():
     args = sys.argv[1:]
     # The verticals carry no cards, so they must not carry the sound of cards
@@ -174,7 +246,9 @@ def main():
     for name, layer in (cfg.get("layers") or {}).items():
         if name == "relay":
             continue                      # placed as clicks, below
-        f = A / layer["file"]
+        # From record 08 the floor is synthesised, not generated: see
+        # config/sound.yaml for why the old room beds came out of the mix.
+        f = ensure_floor(ep, ff) if layer.get("synth") == "floor" else A / layer["file"]
         if not f.exists():
             print(f"  layer {name}: missing {f} — skipped")
             continue
@@ -183,7 +257,7 @@ def main():
         if layer.get("trim"):
             a, b = layer["trim"]
             chain.append(f"atrim={a}:{b},asetpts=N/SR/TB,")
-        if layer.get("loop_to_fill"):
+        if layer.get("loop_to_fill") or layer.get("synth") == "floor":
             # A 22-second bed under a 279-second record. aloop works in
             # samples, so the clip is looped past the runtime and trimmed
             # back — the seam is inaudible on a bed with no events in it,
@@ -204,7 +278,14 @@ def main():
             # plays almost nothing, and the first draft read as voice and
             # clicks alone. A level is then a trim on what is audible.
             chain.append(f"{layer['filter']},")
+        if layer.get("duck"):
+            # The record's music cue, from record 08: under the whole record,
+            # down by config/sound.yaml's duck wherever the voice is speaking.
+            chain.append(f"{music_head()},")
         chain.append(f"volume={levels.get(name, -20)}dB,")
+        if layer.get("duck"):
+            spans = [(t, t + dur(pf)) for _, pf, t in placed]
+            chain.append(f"{duck_filter(spans)},")
         if layer.get("delay"):
             d = int(layer["delay"] * 1000)
             chain.append(f"adelay={d}|{d},")
@@ -226,6 +307,28 @@ def main():
         chain.append(f"apad,atrim=0:{total}[{name}]")
         fc.append("".join(chain))
         mixed.append(f"[{name}]")
+
+    # Spot effects, from record 08: a handful of short natural sounds — ice
+    # settling, a drip, a latch — placed in the pauses, not a bed under the
+    # whole record. Band-limited so nothing reaches the whine the old beds
+    # lived in, with a fade long enough at the tail that no event is cut off.
+    ev_spec = sound_spec().get("events") or {}
+    for n, (e, t, sec, f) in enumerate(event_times(cfg, shots, ep)):
+        if not f.exists():
+            print(f"  event {e['sfx']} at {t:.1f}s: missing {f} — skipped")
+            continue
+        i = add(f)
+        d = int(t * 1000)
+        fo = min(ev_spec["fade_out"], sec / 2)
+        fc.append(f"[{i}:a]atrim={float(e.get('from', 0))}:"
+                  f"{float(e.get('from', 0)) + sec},asetpts=N/SR/TB,"
+                  f"highpass=f={ev_spec['highpass']},lowpass=f={ev_spec['lowpass']},"
+                  f"afade=t=in:d={ev_spec['fade_in']},"
+                  f"afade=t=out:st={sec - fo:.3f}:d={fo:.3f},"
+                  f"volume={float(e.get('level', 0)) + levels.get('events', 0)}dB,"
+                  f"adelay={d}|{d},apad,atrim=0:{total}[ev{n}]")
+        mixed.append(f"[ev{n}]")
+        print(f"  event {e['sfx']:<10} {t:6.1f}s  {sec:4.1f}s")
 
     # Uneven on purpose, so it never reads as a metronome. One input, split
     # into as many copies as there are clicks — a filter input cannot be

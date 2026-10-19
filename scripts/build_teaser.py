@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """Stage 9b — the thirty-second teaser, assembled from teaser.yaml.
 
-Out before the record exists, and the only piece on this channel allowed to
-sound composed. It takes the shots where something physically moves and the
+Out before the record exists, and built from scratch rather than cut out of
+something finished. It takes the shots where something physically moves and the
 lines that escalate on their own, reorders them freely, and ends before the
 answer.
 
 Since record 04 the vertical cuts are assembled the same way, so the picture,
 the type and the caption timings come out of scripts/vertical.py — one copy,
 two callers. What stays here is the sound, and that is the whole difference:
-the teaser gets a generated cue under it and a vertical cut never does. Two
-mixes that must differ by rule do not belong behind one function.
+the teaser gets a cue of its own, composed for thirty seconds before the record
+exists, and a vertical cut carries the record's cue (record 08 on). Two mixes
+that must differ by rule do not belong behind one function.
 
 Three things it must not do, all of them enforced by what it is given rather
 than by a check here:
@@ -134,6 +135,8 @@ def main():
     for name, trim in lv.items():
         if name in ("music", "drone", "voice"):
             continue
+        if (((acfg.get("layers") or {}).get(name)) or {}).get("duck"):
+            continue                  # the record's cue never goes under the teaser's
         f, flt = V.layer_source(ep, acfg, name)
         if not f.exists():
             print(f"  no bed for level '{name}' — {f} is not there"); continue

@@ -75,7 +75,7 @@ Required structure, in this order:
    ... cards, shots, narration
 ## Pacing (assembly)
 ## Voice direction
-## Sound design
+## Sound design (music prompt + spot effects)
 ## Verticals — three candidate moments
 ## Appendix — what is real and what is invented
 ```
@@ -91,6 +91,32 @@ Every scene contains: its data/title cards, its shots, its narration.
 
 That is: id, **motion tier**, duration, anchor. A shot missing its tier is an
 incomplete script.
+
+**Narration entry format.** Exactly this, once per scene, after the shots —
+the heading with its colon, then **one continuous quoted block**, paragraphs
+separated by a `>` line on its own:
+
+```
+**Narration:**
+> *[over 1.2]* Four kilometres under the Antarctic ice there is a lake two
+> hundred and fifty kilometres long.
+>
+> *[over 1.3, with the card]* The ice above it weighs three hundred and fifty
+> bar.
+```
+
+- The narration is read by a parser, not by a person. It takes the block that
+  follows `**Narration:**` and splits it into paragraphs on the bare `>` lines;
+  every paragraph becomes one voice file. Record 08 arrived as `**Narration**`
+  without the colon, with `*(over 1.2)*` lines **between** separate quote
+  blocks — the parser found no narration at all, so nothing could be counted,
+  voiced or captioned until the script was rewritten by hand.
+- Which shot a paragraph is spoken over goes **inside** the paragraph, at its
+  start, as `*[over 1.2]*` — square brackets inside asterisks. That form is a
+  stage direction: it is stripped before the words are counted, voiced or
+  aligned. Any other form — `*(over 1.2)*`, a plain line, a heading — is
+  either lost or read aloud.
+- A scene with no narration has no `**Narration:**` heading at all.
 
 ---
 
@@ -187,6 +213,17 @@ blinking or pulsing. A small bubble crossing a sight glass. Frost spreading.
 (Dust, snow and vapour are safe too, and capped at one or two shots in ten —
 above.) **Not motion:** a shadow edge advancing, a glow breathing, a beam on
 a still surface — record 07 got a still back every time.
+
+**Water is safe only as a thing with an edge.** A single bead gathering at
+the top of a face and running down, drips hanging off an edge and falling, a
+thin thread with a visible end: record 08 asked for these five times and got
+running water on every first roll. A wet sheen is not a thing — "a film of
+meltwater running down the wall", "a run of water tracking down the side":
+four shots, four failures (two came back still, one slid the whole object
+along the bench, one zoomed in and out), $2.45, all rebuilt as pushes. So
+when water is the motion, write **the bead, the drip or the thread into the
+shot's still prompt** — the frame must already contain the drop that will
+move — and never a film, a sheen or "wet walls" as the reason for the shot.
 
 **Not safe.** Anything soft that has to be re-drawn every frame: fabric, a
 strap, a cable, a loose flap, a hanging tag. Record 05 lost three takes and
@@ -508,12 +545,57 @@ target audience, not a hazard.
   sentence needs air after it, end the paragraph on it.
 - If a line reads hurried after the gaps are in, **edit the sentence** —
   shorter clauses, a period where a comma was.
-- **Room tone runs under the entire episode.** Absolute digital silence
-  destroys the illusion of a recording.
-- A recurring sound element that changes across the episode is welcome and
-  cheap — establish it, remove it, bring it back. Say where in a Sound design
-  section. Most viewers will not consciously notice and will feel all three
-  moments.
+- **Under the record: a floor and one music cue, nothing else.** Records 01
+  to 07 ran generated room beds — ventilation, pumps, fans, hum — and on
+  YouTube they read as whine and noise, not as a room; they were the most
+  disliked thing in the records. From record 08 the bed is fixed by the
+  channel: a near-inaudible synthesised floor (so it is never digital
+  silence) and one generated ambient cue under the whole record, dropped 7 dB
+  wherever the voice speaks and back up in the pauses. You do not write the
+  floor or the duck. **You write the cue.**
+- **Do not write room tone, hum, machinery, ventilation, wind or anything
+  else that runs under the record.** The production side will not build it,
+  and the validator fails a record that declares it.
+- **Spot effects are welcome — in places, never throughout.** A few short
+  natural sounds where the world would make one: ice settling, one drip, a
+  latch, a hull ticking as it cools. They make the place real exactly
+  because they are rare. Rules:
+  - **At most 12 in the record**, each at most 10 s. A tick or creak is
+    1–2 s; a passage of meltwater over a silent shot is the long end.
+  - **Only in the pauses** — at least 0.3 s clear of any spoken word. Put
+    them on the silent shots and in the long gaps the Pacing section asks for.
+  - Each one is written as **shot + offset + a one-line prompt**, e.g.
+    `1.1 at 2.5 s — a single deep creak and soft crack of ice settling under
+    load, recorded close, dry, short`.
+  - Write each as **one dry close event with a body** — "a deep creak", "a
+    soft crack", "a single heavy drop" — never "a sharp tick", never anything
+    electronic, tonal, whistling or high-pitched. The old beds failed by
+    sounding like whine; a spot effect that sounds like a beep fails the same
+    way.
+  - A recurring effect may establish, vanish and return — that arc is cheap
+    and works — but it lives in where the events are placed, not in a layer.
+  - No spot effects in verticals or the teaser; do not nominate any there.
+- **The Sound design section is one music prompt plus the spot-effect
+  list.** The music prompt is up to 450 characters, for the ElevenLabs music
+  endpoint, generated at the record's full runtime. Rules for it, each paid
+  for:
+  - Ambient, slow, cold. **No melody anyone could hum, no beat, no drums, no
+    vocals, no resolution, no swell on a reveal.** The cue is the weather of
+    the record, not a score commenting on it. A cue that rises when the twist
+    lands makes the narrator an actor in a film, which is the one thing the
+    format cannot survive.
+  - **Mid register.** Sustained strings, pads, glassy tones, roughly
+    200 Hz–3 kHz. A cue whose body is a sub-bass drone is inaudible on a phone,
+    which is where most of the audience listens — record 07's teaser cue put
+    nearly all its energy under 250 Hz.
+  - **Quiet enough to sit under a calm speaking voice the whole way
+    through**, and say so in the prompt.
+  - **One shape across the record**, described in words — "one gradual
+    tightening that never resolves", "thinning towards the end" — never in
+    timestamps; the model does not follow them.
+  - Name the world in the prompt in material terms (ice, cold steel, a sealed
+    room), never the plot. Do not name the twist; a cue that knows the ending
+    plays it.
 - Video models are always generated with audio off. Never write sound into a
   shot prompt.
 
@@ -545,7 +627,10 @@ for you:
 - **Hard cuts only. There are no transitions on this channel.** Nominate an
   order that works on hard cuts. If a sequence needs a dissolve to hold
   together, the order is wrong, not the build.
-- **No music under a cut.** Only the teaser gets a bed. Do not write one in.
+- **A cut carries the record's own cue**, from the moment its first line sits
+  at in the record, ducked under the voice the same way. Nothing to write:
+  do not nominate a different cue for a cut. Only the teaser gets a cue of
+  its own.
 
 Constraints that change how the script is written:
 
@@ -616,9 +701,14 @@ the production side and each failure costs a rewrite.
 - [ ] Word count sits inside the band for that runtime — **per scene**, not
       only overall. Silence between 33% and 55%.
 - [ ] Every shot declares a motion tier, and the header gives the split.
+- [ ] Every scene's narration is `**Narration:**` (with the colon) followed by
+      one quoted block, paragraphs split by bare `>` lines, the shot marked
+      inside each paragraph as `*[over N.N]*`.
 - [ ] No `static` shot without text on screen. No silent shot that is
       `static`.
 - [ ] Every `model` shot names the object that moves, in its still prompt.
+      Water moves only as a bead, a drip or a thread with an end — never a
+      film or a sheen.
       None moves only light, shadow or glow. Dust, particles or vapour carry
       at most one or two of every ten `model` shots.
 - [ ] No `static` or `local` prompt contains dust in the air, vapour, mist,
@@ -649,6 +739,11 @@ the production side and each failure costs a rewrite.
       rates and dates. Appendix lists real and invented separately.
 - [ ] Pacing section lists every non-default gap with a reason, and every one
       of them falls between two paragraphs, never inside one.
+- [ ] Sound design is one music prompt of at most 450 characters (ambient,
+      mid register, no melody, beat, vocals or swell, quiet under a voice)
+      plus at most 12 spot effects, each shot + offset + prompt, each in a
+      pause, each a natural event with a body. Nothing that runs under the
+      record: no room tone, hum or machinery.
 - [ ] Every counting readout settles at least 2 s before its shot ends.
 - [ ] No two consecutive `static` shots — two locked-off frames in a row is
       twenty seconds where nothing moves. A card plate beside a `local` push

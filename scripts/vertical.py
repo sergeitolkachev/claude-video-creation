@@ -12,10 +12,12 @@ that existed in three places and was fixed in two, and this was the same
 shape of fault waiting to happen: the slug plate had a shrink-to-fit guard in
 one copy and not the other.
 
-What is NOT shared is the sound bed, and that is deliberate. The teaser is
-the one piece on this channel allowed a generated cue under it; a vertical cut
-never is. Two mixes that must differ by rule do not belong behind one
-function — the difference is the rule.
+What is NOT shared is the sound bed, and that is deliberate. The teaser has a
+cue of its own, composed for thirty seconds and generated before the record
+exists; a vertical cut carries the record's own cue, from the moment it was cut
+out of (record 08 on — records 01-07 had none). Two mixes that differ by rule
+do not belong behind one function — the difference is the rule. The floor and
+the duck are shared, and live in build_audio.py.
 
 Also here: the word-timing helpers that decide where a cut may stop. The
 builder and validate.py read cut points through the same two functions, so a
@@ -324,6 +326,43 @@ def voice_chains(ep, lines, picks, total, level, start_idx):
         i += 1
     return ins, fc, labels, i
 
+@functools.lru_cache(None)
+def _ba():
+    """build_audio.py, which owns the floor and the duck."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "build_audio", pathlib.Path(__file__).parent / "build_audio.py")
+    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+    return m
+
+
+def floor_layer(acfg):
+    """The name of the layer that never stops: `synth: floor` from record 08,
+    `tone` before it."""
+    for name, layer in ((acfg or {}).get("layers") or {}).items():
+        if layer.get("synth") == "floor":
+            return name
+    return "tone"
+
+
+def music_layer(acfg):
+    """The record's ducked cue, or None (records 01-07)."""
+    for name, layer in ((acfg or {}).get("layers") or {}).items():
+        if layer.get("duck"):
+            return name, layer
+    return None
+
+
+def line_spans(ep, lines, picks):
+    """(start, end) of each line on the cut's clock, for the duck."""
+    out = []
+    for ln in lines:
+        f = ep / "audio" / "narration" / f"{ln['pid']}_s{picks[ln['pid']]}.mp3"
+        d = float(ln["trim"]) if ln.get("trim") else dur(f)
+        out.append((float(ln["at"]), float(ln["at"]) + d))
+    return out
+
+
 def layer_source(ep, acfg, name):
     """(file, filter prefix) for one of the record's beds, read from its
     audio.yaml layer — the same file and the same EQ the master mix uses.
@@ -334,6 +373,8 @@ def layer_source(ep, acfg, name):
     floor wind.mp3 and put a 250 Hz high-pass on it, and the two guessers would
     have built cuts with no floor and a teaser with an inaudible one."""
     layer = ((acfg or {}).get("layers") or {}).get(name) or {}
+    if layer.get("synth") == "floor":       # record 08 on: config/sound.yaml
+        return _ba().ensure_floor(ep), ""
     f = (ep / "audio" / layer["file"]) if layer.get("file") \
         else (ep / "audio" / "sfx" / f"{name}.mp3")
     flt = f"{layer['filter']}," if layer.get("filter") else ""

@@ -1,0 +1,48 @@
+# The thirty-second teaser — record 08. Posted before the record exists, a cue
+# of its own under it, closing on SOON.
+#
+# The script nominated no teaser lines (script.md, correction 10). Four,
+# chosen at stage 9, each a first sentence and each strange without context:
+# a lake under the ice, the oxygen in it, a gradient running backwards, and
+# an animal that does not eat. None explains another. The last one lands over
+# 6.1 — the one shot of the specimen, held back from the vertical cuts for
+# exactly this.
+#
+# Timing from audio/alignment/ (2026-10-19, forced alignment). Each trim sits
+# inside the silence after its sentence's last word:
+#   s1p1 "long."  ends 5.06, next word 5.90 -> trim 5.35
+#   s2p3 "litre." ends 3.12, next word 3.70 -> trim 3.40
+#   s3p2 "way."   ends 1.84, next word 2.42 -> trim 2.10
+#   s6p1 "feed."  ends 1.04, next word 1.56 -> trim 1.30
+
+runtime_seconds: 30.0
+aspect: "9:16"
+slug: "FC9-008 // THE RIND"
+
+end_card:
+  at: 26.0
+  seconds: 4.0
+  lines: ["SOON", "ON THE CHANNEL"]
+
+shots:
+  - {id: "1.1", at:  0.0, from: 1.0, seconds: 6.0, crop_x: 0.50}
+  - {id: "2.3", at:  6.0, from: 1.0, seconds: 6.0, crop_x: 0.60}
+  - {id: "4.4", at: 12.0, from: 1.0, seconds: 6.0, crop_x: 0.47}
+  # The mass sits left of the face's centre; the bead runs across it.
+  - {id: "6.1", at: 18.0, from: 1.0, seconds: 8.0, crop_x: 0.38}
+
+lines:
+  - {pid: s1p1, at:  0.20, trim: 5.35}   # "Four kilometres under the Antarctic ice there is a lake two hundred and fifty kilometres long."
+  - {pid: s2p3, at:  7.00, trim: 3.40}   # "Around seven hundred and thirty milligrams of oxygen per litre."
+  - {pid: s3p2, at: 13.40, trim: 2.10}   # "The gradient here runs the other way."
+  - {pid: s6p1, at: 21.00, trim: 1.30}   # "It does not feed."
+
+# Cue measured 2026-10-19: -25 dBFS mean above 300 Hz, building from -53 to
+# -17 (per 2 s, >200 Hz) and gone by 28 s. Records 06 and 07 sat their cues
+# about -35 above 300 Hz, ~16 dB under the voice; -10 lands it there.
+levels:
+  music: -10
+  floor: 0
+  voice: 0
+
+music: sfx/teaser-music.mp3

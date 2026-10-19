@@ -1,0 +1,73 @@
+# The vertical cuts — record 08. Assembled, not carved.
+#
+# Every shot is a take from takes/ in which something moves: water on Kling
+# (2.3, 4.4, 6.4, 8.2) or a push, pull or drift built in ffmpeg. Static card
+# plates are not used. 6.1 — the specimen — is kept out of the cuts: it is
+# the record's one appearance and the teaser's hook.
+#
+# Every line is a paragraph the record already contains, whole. No cards, no
+# click bed, no spot effects; the record's own cue runs under each cut from
+# where its first line sits in the record, ducked under the voice
+# (CLAUDE.md, record 08 on). Each closes on the channel card.
+#
+# Timing from audio/alignment/ (2026-10-19, forced alignment on the takes in
+# the mix): each line starts 0.6 s after the previous line's last word, and
+# the picture runs 0.8 s past the last word. Every cut ends on a paragraph
+# end. Nominations from script.md and publish.md.
+#
+# `runtime_seconds` is the whole piece, closing card included.
+
+slug: "FC9-008 // THE RIND"
+
+cuts:
+  # ---------------------------------------------------------------- a -------
+  # V1 — 730 against 15. The cages opening, under the line about them.
+  - id: fc9-008-a-730-against-15
+    runtime_seconds: 27.6
+    shots:
+      - {id: "2.1", at:  0.0, from: 0.0, seconds: 4.8, crop_x: 0.50}
+      # The bubbles break out low and right of centre.
+      - {id: "2.3", at:  4.8, from: 1.0, seconds: 6.0, crop_x: 0.60}
+      - {id: "1.2", at: 10.8, from: 0.0, seconds: 4.5, crop_x: 0.40}
+      # The bead gathers just left of centre at the top of the face.
+      - {id: "4.4", at: 15.3, from: 1.0, seconds: 5.5, crop_x: 0.47}
+      - {id: "1.1", at: 20.8, from: 2.0, seconds: 4.8, crop_x: 0.50}
+    lines:
+      - {pid: s2p1, at:  0.20}   # clathrates, the cages open
+      - {pid: s2p2, at:  9.28}   # 2.5 L/kg, fifty times
+      - {pid: s2p3, at: 18.54}   # "...Surface water at this temperature holds about fifteen."
+    ends_on: "Surface water at this temperature holds about fifteen."
+
+  # ---------------------------------------------------------------- b -------
+  # V2 — nothing is thin. The idea rather than a number; post it first.
+  - id: fc9-008-b-nothing-is-thin
+    runtime_seconds: 27.96
+    shots:
+      - {id: "3.1", at:  0.0, from: 0.0, seconds: 5.0, crop_x: 0.50}
+      - {id: "3.2", at:  5.0, from: 1.0, seconds: 4.5, crop_x: 0.50}
+      # The window rides up the fracture plane, lower left to upper right.
+      - {id: "3.4", at:  9.5, from: 0.0, seconds: 5.5, crop_x: 0.30, crop_to: 0.65}
+      - {id: "4.2", at: 15.0, from: 2.0, seconds: 6.0, crop_x: 0.35}
+      - {id: "6.4", at: 21.0, from: 0.0, seconds: 4.96, crop_x: 0.55}
+    lines:
+      - {pid: s3p1, at:  0.20}   # oxygen is the limiting resource; low-O2 animals go thin
+      - {pid: s3p2, at:  9.22}   # the gradient runs the other way
+      - {pid: s3p3, at: 18.10}   # "...Nothing down here is thin."
+    ends_on: "Nothing down here is thin."
+
+  # ---------------------------------------------------------------- c -------
+  # V3 — the ledger. Stops on "micromoles" and never says the two figures do
+  # not match. Do not extend into s5p4.
+  - id: fc9-008-c-the-ledger
+    runtime_seconds: 26.7
+    shots:
+      - {id: "5.1", at:  0.0, from: 0.0, seconds: 5.0, crop_x: 0.50}
+      - {id: "4.1", at:  5.0, from: 2.0, seconds: 4.6, crop_x: 0.55}
+      - {id: "5.5", at:  9.6, from: 0.0, seconds: 4.8, crop_x: 0.50}
+      - {id: "8.2", at: 14.4, from: 0.0, seconds: 4.9, crop_x: 0.45}
+      - {id: "7.1", at: 19.3, from: 3.0, seconds: 5.4, crop_x: 0.42}
+    lines:
+      - {pid: s5p1, at:  0.20}   # four electrons, one to one
+      - {pid: s5p2, at:  9.00}   # seventy-six millimoles a litre
+      - {pid: s5p3, at: 17.84}   # "...Seven micromoles."
+    ends_on: "Seven micromoles."

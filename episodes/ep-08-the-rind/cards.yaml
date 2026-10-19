@@ -1,0 +1,134 @@
+# Data cards — record 8.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script and never by hand.
+#
+# `with:` names the paragraph the card answers to, and validate.py measures
+# the gap once narration exists. Times are seconds from the start of the
+# card's own shot. The coda cards have no `with:` — there is no voice left.
+# Every card sits on a static plate: the draft's 2.2 card was on a drift.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: seal
+    with: s1p2
+    shot: "1.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "ICE ABOVE        ~4,000 m"
+      - "PRESSURE          350 bar"
+      - "WATER               -3 C"
+      - "SEALED          ~15 Myr"
+
+  # --- Scene 2 -------------------------------------------------------------
+  - id: gas
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "DISSOLVED GAS    2.5 L/kg"
+      - "VS FRESHWATER         50x"
+
+  - id: oxygen
+    with: s2p3
+    shot: "2.4"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "O2, LAKE (EST.)     730 mg/L"
+      - "O2, SURFACE AT 0 C  14.6 mg/L"
+
+  # --- Scene 3 -------------------------------------------------------------
+  # Its last line lands with "Nothing down here is thin." (script.md, Pacing).
+  - id: thin
+    with: s3p3
+    shot: "3.3"
+    pos: lower-left
+    build: line
+    at: 2.5   # 0.5 typed it 4.8 s ahead of its line (stage 7)
+    lines:
+      - "LOW O2  ->  THIN, HIGH AREA"
+      - "HIGH O2 ->  COMPACT, LOW AREA"
+      - "THIN FORMS RECORDED       0"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: specimen
+    with: s4p3
+    shot: "4.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "OUTER DIAMETER     120 mm"
+      - "LIVING CORE         40 mm"
+      - "SHIELD BY VOLUME     96%"
+      - "O2 TO CORE    8.6 nmol/s"
+
+  # --- Scene 5 -------------------------------------------------------------
+  - id: ledger
+    with: s5p2
+    shot: "5.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "PER O2              4 e-"
+      - "PER CARBON          4 e-"
+      - "EXCHANGE           1 : 1"
+      - "CARBON NEEDED  76 mmol/L"
+
+  - id: measured
+    with: s5p3
+    shot: "5.4"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "CARBON MEASURED    86 ug/L"
+      - "                0.007 mmol/L"
+      - "DEFICIT           10,600x"
+
+  # --- Scene 6 -------------------------------------------------------------
+  # Both answers on screen: 37 is what a viewer with a calculator gets.
+  - id: seven
+    with: s6p2
+    shot: "6.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "OXIDISABLE CARBON   10 mol"
+      - "AT INITIAL RATE       37 y"
+      - "INTEGRATED           7.1 y"
+
+  # --- Scene 8, coda -------------------------------------------------------
+  # The two figures the record is about, side by side, never spoken together.
+  - id: isolation
+    shot: "8.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "ISOLATION    15,000,000 y"
+      - "SHIELD LIFE          7.1 y"
+
+  # The last real fact in the file. Never spoken. The melting shot before it
+  # is the 2 s of air the script asked for, and more.
+  - id: no-sample
+    shot: "8.3"
+    pos: lower-left
+    build: line
+    at: 0.3
+    lines:
+      - "NO CLEAN SAMPLE EXISTS"

@@ -29,10 +29,10 @@ def main():
             "https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3",
             data=body, headers={"Authorization": f"Key {key}",
                                 "Content-Type": "application/json"})
-        d = json.load(urllib.request.urlopen(r))
+        d = json.load(urllib.request.urlopen(r, timeout=60))
         put = urllib.request.Request(d["upload_url"], data=f.read_bytes(),
                                      headers={"Content-Type": "image/jpeg"}, method="PUT")
-        urllib.request.urlopen(put)
+        urllib.request.urlopen(put, timeout=120)
         urls[aid] = d["file_url"]
         print(f"  uploaded {aid}  ({f.stat().st_size // 1024} KB)")
 

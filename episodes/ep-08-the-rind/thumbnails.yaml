@@ -1,0 +1,80 @@
+# Thumbnail variants for A/B — record 08. Three plates, three different
+# promises: the animal that is mostly shield, the oxygen in the water, and
+# the ledger that does not balance.
+#
+# Plates are approved stills the viewer actually meets: 6.1 at 3:12 (the
+# specimen in the core), 1.1 at 0:00 (the bore, the cold open), 5.2 at 2:42
+# (the core end-on, under the ledger card). Nothing is generated for a
+# thumbnail.
+#
+# Judge at 210 px, which is what YouTube renders in a grid. The slug is
+# constant across all three and is never part of what a test varies. Variant
+# ids do not get renamed: a conversion figure gets attached to them later.
+
+episode: ep-08-the-rind
+slug: "FC9-008 // The Rind"
+export: {width: 1280, height: 720}
+
+variants:
+  # A — the title's promise: the dark mass in the ice, the figure beside it.
+  # The core fills the centre-right; the type takes the black on the left.
+  - id: a-the-shield
+    plate: "6.1"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      - lines: ["96%"]
+        size: 130
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["SHIELD"]
+        size: 44
+        tracking: 10
+        x: 0.04
+        y: 0.36
+        anchor: left
+        scrim: true
+
+  # B — the oxygen. The bore receding to black; the type on the glowing
+  # left wall above the slug band.
+  - id: b-the-oxygen
+    plate: "1.1"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      - lines: ["730 mg/L"]
+        size: 96
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["OXYGEN. SURFACE: 15"]
+        size: 34
+        tracking: 6
+        x: 0.04
+        y: 0.32
+        anchor: left
+        scrim: true
+
+  # C — the ledger. The core end-on, right of centre; the type on the dark
+  # steel at the left.
+  - id: c-the-ledger
+    plate: "5.2"
+    crop: {zoom: 0.92, bias_y: 0.50}
+    blocks:
+      - lines: ["10,600x"]
+        size: 104
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["SHORT OF CARBON"]
+        size: 36
+        tracking: 8
+        x: 0.04
+        y: 0.34
+        anchor: left
+        scrim: true

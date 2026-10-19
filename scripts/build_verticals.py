@@ -22,8 +22,10 @@ line list out of the paragraphs already in the record. What does NOT change:
   - No data cards and no click bed. A card is composed for the lower left of a
     16:9 frame and the crop takes its numbers away; a typing sound over
     nothing typing is a fault. Every figure that matters is spoken.
-  - No music, ever. The teaser is the only piece on this channel allowed a cue
-    under it. A man reading numbers over music is an actor in a film.
+  - The record's own music, from record 08: the cut carries the cue from the
+    moment its first line sits at in the record (or `music_from:`), ducked
+    under the cut's lines by the same config/sound.yaml duck. Records 01-07
+    had no cue, and their cuts have none.
   - A voice inside the first second, captions burned in from real word
     timings, the bottom 30% clear, and the channel's closing card at the end.
 
@@ -65,6 +67,22 @@ def _load(name, path):
 
 V = _load("vertical", _here / "vertical.py")
 bc = _load("bc", _here / "build_captions.py")
+
+
+_placed = {}
+
+
+def record_at(ep, acfg):
+    """{pid: seconds} — where each paragraph sits in the record's own mix,
+    placed by the same function that placed it there."""
+    if ep not in _placed:
+        ba = V._ba()
+        shots = yaml.safe_load((ep / "shots.yaml").read_text())["shots"]
+        picks = yaml.safe_load((ep / "audio" / "narration.yaml").read_text())["picks"]
+        start, end = ba.scene_bounds(shots)
+        _placed[ep] = {pid: t for pid, _, t in ba.place(
+            picks, ep / "audio", start, end, acfg, ba.card_anchors(ep, shots))}
+    return _placed[ep]
 
 
 def main():
@@ -141,15 +159,35 @@ def main():
             nonlocal idx
             ins.extend(["-i", str(p)]); idx += 1; return idx - 1
 
-        tone, tflt = V.layer_source(ep, acfg, "tone")
+        fname = V.floor_layer(acfg)
+        tone, tflt = V.layer_source(ep, acfg, fname)
         if tone.exists():
             i = add(tone)
             fc.append(f"[{i}:a]aloop=loop=-1:size=2e+09,{tflt}"
-                      f"volume={lv.get('tone', 0)}dB,"
+                      f"volume={lv.get(fname, 0)}dB,"
                       f"apad,atrim=0:{total}[tone]")
             mixed.append("[tone]")
         else:
             print(f"  no {tone} — this cut has no floor under it")
+
+        # The record's cue, taken from where the cut's first line sits in the
+        # record so the cut sounds like that moment of it. Faded across the
+        # closing card; the floor runs on under the card alone.
+        ml = V.music_layer(acfg)
+        if ml and (ep / "audio" / ml[1]["file"]).exists():
+            mname, mlayer = ml
+            mfrom = cut.get("music_from")
+            if mfrom is None:
+                mfrom = record_at(ep, acfg).get(cut["lines"][0]["pid"], 0.0)
+            i = add(ep / "audio" / mlayer["file"])
+            spans = V.line_spans(ep, cut["lines"], picks)
+            fc.append(f"[{i}:a]atrim=start={float(mfrom):.2f},asetpts=N/SR/TB,"
+                      f"{V._ba().music_head()},volume={lv.get(mname, 0)}dB,"
+                      f"{V._ba().duck_filter(spans)},"
+                      f"afade=t=out:st={body:.2f}:d={card_s:.2f},"
+                      f"apad,atrim=0:{total}[music]")
+            mixed.append("[music]")
+            print(f"  music: from {float(mfrom):.1f}s of the record's cue")
 
         fan = ep / "audio" / "sfx" / "fan.mp3"
         fan_on = str(cut.get("fan", "on")).lower() not in ("off", "false", "no")

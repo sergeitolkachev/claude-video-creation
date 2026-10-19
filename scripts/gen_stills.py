@@ -40,7 +40,8 @@ def post(url, body, key):
 def get(url, key):
     try:
         return json.load(urllib.request.urlopen(
-            urllib.request.Request(url, headers={"Authorization": f"Key {key}"})))
+            urllib.request.Request(url, headers={"Authorization": f"Key {key}"}),
+            timeout=60))
     except urllib.error.HTTPError as e:
         # The same fix post() already had, in the copy that did not have it.
         # A 422 here is fal saying the generation itself failed, and the reason
@@ -61,10 +62,10 @@ def upload(path, key, cache):
         data=json.dumps({"content_type": "image/jpeg",
                          "file_name": path.name}).encode(),
         headers={"Authorization": f"Key {key}", "Content-Type": "application/json"})
-    d = json.load(urllib.request.urlopen(r))
+    d = json.load(urllib.request.urlopen(r, timeout=60))
     urllib.request.urlopen(urllib.request.Request(
         d["upload_url"], data=path.read_bytes(),
-        headers={"Content-Type": "image/jpeg"}, method="PUT"))
+        headers={"Content-Type": "image/jpeg"}, method="PUT"), timeout=120)
     c[path.name] = d["file_url"]; cache.write_text(json.dumps(c, indent=2))
     return d["file_url"]
 
@@ -204,7 +205,9 @@ def main():
             res = post(f"https://queue.fal.run/{model['id']}", body, key)
             jobs.append((dest, res["status_url"], res["response_url"],
                          model["price_per_image_usd"]))
-            print(f"  queued {dest.name:<16} refs: {kind}")
+            # The request id goes to the log, so a run that dies after this
+            # line can still collect what it paid for.
+            print(f"  queued {dest.name:<16} refs: {kind}  {res['response_url']}")
 
     cost = sum(j[3] for j in jobs)
     print(f"\nscene {scene}: {len(shots)} shots, {len(jobs)} generations, "
@@ -228,7 +231,19 @@ def main():
             print(f"  FAILED  {dest.name}  — see the body above"); continue
         if not r.get("images"):
             print(f"  EMPTY   {dest.name}  {str(r)[:120]}"); continue
-        dest.write_bytes(urllib.request.urlopen(r["images"][0]["url"]).read())
+        # The download had no timeout. Record 08's scene 4 hung on it for
+        # twenty minutes with the socket to fal's CDN open and the batch's
+        # request ids held only in memory — the failure CLAUDE.md describes,
+        # in the one call the earlier fix missed. A timeout and three tries.
+        for attempt in range(3):
+            try:
+                dest.write_bytes(urllib.request.urlopen(
+                    r["images"][0]["url"], timeout=120).read())
+                break
+            except (TimeoutError, urllib.error.URLError) as e:
+                print(f"  retry  {dest.name}  download {attempt + 1}/3: {e}")
+        else:
+            print(f"  LOST   {dest.name}  {r['images'][0]['url']}"); continue
         done += 1; spent += price
         print(f"  saved  {dest.name}  ({dest.stat().st_size // 1024} KB)")
 

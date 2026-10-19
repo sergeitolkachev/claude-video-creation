@@ -1,0 +1,859 @@
+# Record No. 8 — "THE RIND"
+#
+# Derived from script.md. The script is the source of truth for the words;
+# this file is the source of truth for what gets generated and what it costs.
+#
+# Prompt text here is already cleaned for the hygiene rules below. Camera
+# moves for ffmpeg shots live in `local_motion`, never in the still's prompt:
+# a still has no camera move, and "slow push in" in an image prompt is a
+# motion word the model reads as something moving. The motion of a model shot
+# lives in `video_prompt`, never in `prompt`, for the same reason.
+#
+# Intake changes against the submitted draft are listed in script.md,
+# "Corrections on intake". Shot ids here are the corrected ones.
+
+episode: ep-08-the-rind
+runtime_seconds: 261
+aspect: "16:9"
+
+# Third person, present tense: the channel narrator.
+voice: narrator
+
+# Summed from the shots below, never from prose. Scene 7 is the draft's 7.1
+# alone, lengthened to 10 s; scene 8 is the card block, no voice.
+scene_runtime: {1: 34, 2: 38, 3: 40, 4: 40, 5: 40, 6: 35, 7: 10, 8: 24}
+
+# Scene 8: five shots, two cards and the closer, no voice. Declared.
+coda: [8]
+
+# --- Prompt hygiene ---------------------------------------------------------
+
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    # Rule 1 — nothing moves in a frame that will never be animated. Twenty-two
+    # shots are built in ffmpeg from one approved still. Ice under a beam is
+    # where the image models put running water, drops and vapour whether or
+    # not it was asked for, so the plates say "glassy and still" instead and
+    # none of these words appears in them. The exception list is exactly the
+    # nine model shots. Bubbles are allowed everywhere: a bubble frozen in ice
+    # is an object, not a motion.
+    - pattern: '\b(drift\w*|float\w*|motes?|dust|suspended|vapou?r|mist|steam|smoke|condensation|meltwater|drips?|dripping|drops?|beads?|beaded|trickl\w*|stream\w*|running|runs|flow\w*|thaw\w*|melt\w*|sublimat\w*|moving|moves|rising|rises|travel\w*|crossing|particles?|specks?)\b'
+      except: ["2.3", "4.4", "6.1", "6.4", "8.2",
+               # 1.1, 3.1, 4.1 and 5.3 became local after their Kling rolls
+               # failed; the words describe the approved plates, kept as is.
+               "1.1", "3.1", "4.1", "5.3"]
+      why: >
+        A shot built from a single still must contain nothing that the eye
+        expects to see move. Record 04 paid for twelve plates to learn it.
+
+    # Rule 2 — nothing a model can write on.
+    - pattern: '\b(text|lettering|writing|written|label\w*|plaque|placard|nameplate|stencil\w*|serial|legible|numerals?|digits?|figures?|readout|markings?|scale|dial|gauge|counter|display|screen)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py. The
+        draft's 3.2 said "no display" — the noun is enough to summon one.
+
+    # Rule 3 — an assembly note is not a prompt.
+    - pattern: '\b(card|plate|caption|title|overlay)\b'
+      except: []
+      why: >
+        Which shots carry a card is cards.yaml's business.
+
+    # Rule 4 — the light has no fixture. "One hard white source held close"
+    # is a light, not an object, and a noun for it puts a torch in frame.
+    - pattern: '\b(lamp|lantern|bulb|torch|flashlight|spotlight|headlamp)\b'
+      except: []
+      why: >
+        A spine that names a lamp puts it in eight anchors of fifteen
+        (record 03).
+
+    # Rule 5 — one palette.
+    - pattern: '\b(warm|amber|orange|yellow|gold\w*|tungsten|sodium|candle\w*|fire|sunlight|green|red)\b'
+      except: []
+      why: >
+        Pale blue-grey, bone white, black, dull steel. Green belongs to the
+        cards alone.
+
+    # Rule 6 — nobody is here.
+    - pattern: '\b(person|human|figure|hands?|fingers?|gloves?|diver)\b'
+      except: []
+      why: >
+        "No people" ends prompts and is not matched here.
+
+    # Rule 7 — the lake is never in this record. No shot looks into open
+    # water; the only water is meltwater on ice (script.md, Style spine).
+    - pattern: '\b(underwater|lake|open water|seabed|lakebed|swimming|submerged)\b'
+      except: []
+      why: >
+        Nobody has reached the water and the camera does not either. It is
+        also what keeps this record from looking like FC9-003.
+
+# --- Spine ------------------------------------------------------------------
+# Material, light and palette only. No room noun, no camera word — "one hard
+# white source held close" is the light; distance belongs to each shot.
+
+spine: &spine >
+  Deep glacial ice lit by one hard white source close to it, so the ice glows
+  from within where the light enters and falls off to black beyond it. The
+  ice is pale blue-grey and very dense, shot through with flattened bubbles
+  and fine crystal planes, every cut face wet and glassy. Anything that is
+  not ice is scuffed cold stainless steel holding a thin rime of frost. One
+  narrow palette: pale blue-grey, bone white, black, dull steel. No colour,
+  no lettering, no markings, no people.
+
+# Pass 2 spines (2026-10-19). Pass 1 used `spine` above for every anchor and
+# lost two properties across the board: "lit by one hard white source close
+# to it" put a light fixture in five of twelve frames — a source is a noun —
+# and "glacial ice" came back as stacked ice bricks, an ice-hotel wall, in
+# nine of twelve. Two failures, two changes, nothing else touched: the light
+# is described only by what it does to the ice, and the ice is one continuous
+# mass. A2 was right on pass 1 and keeps `spine`.
+ice_spine: &ice_spine >
+  Glacier ice as one continuous solid mass, like the inside of a glacier,
+  pale blue-grey and very dense, layered with flattened bubbles and fine
+  crystal planes. Light comes into the ice from one side; the ice glows from
+  within where it enters and falls off to black beyond. Every cut surface is
+  wet and glassy. Anything that is not ice is scuffed cold stainless steel
+  holding a thin rime of frost. One narrow palette: pale blue-grey, bone
+  white, black, dull steel. No colour, no lettering, no markings, no people.
+
+# The macro distance gets its own spine with no steel in it, for the same
+# reason record 03 split one out: pass 1's A3 put a steel pot, a steel rod
+# and a bench into all three macro frames, because the spine says anything
+# that is not ice is steel.
+macro_spine: &macro_spine >
+  A macro photograph taken inside glacier ice. The ice is one continuous
+  mass, pale blue-grey and very dense, layered with flattened lens-shaped
+  bubbles and fine crystal planes, glowing from within where light enters it
+  from behind and falling off to black at the edges. One narrow palette:
+  pale blue-grey, bone white, black. No colour, no lettering, no markings,
+  no people.
+
+# gen_stills.py reads `exterior_spine` unconditionally. This record has no
+# exteriors; the key points at the one spine.
+exterior_spine: *spine
+
+negative_base: >
+  fast motion, camera shake, dolly, push in, pull back, pan, zoom, morphing
+  geometry, ice reshaping, brightening, blur, distortion, low quality,
+  people, text, watermark, underwater scene, fish
+
+# --- Motion tails -----------------------------------------------------------
+
+# Meltwater: every model shot but 2.3, 4.4 and 6.4. The water moves; the ice
+# it moves over is rigid and keeps exactly its shape.
+motion_tail_water: &motion_tail_water >
+  Only the meltwater named above moves, slowly and steadily, and it keeps
+  moving for the whole shot. The ice itself is rigid: every edge, bubble,
+  crystal plane and surface keeps exactly its shape and position, and
+  nothing in the ice changes. The camera does not move at all: no dolly, no
+  push in, no pull back, no pan, no tilt, no zoom. No cuts, no speed changes.
+  Nothing enters the frame.
+
+# Bubbles carried in or out of a water film: 2.3, 6.4. Small rigid spheres on
+# a path, nothing for the model to redraw.
+motion_tail_bubbles: &motion_tail_bubbles >
+  Only the small bubbles move, each one keeping its round shape as it
+  travels, steadily for the whole shot. The ice around them is rigid and
+  keeps exactly its shape. The camera does not move at all: no dolly, no push
+  in, no pull back, no pan, no tilt, no zoom. No cuts, no speed changes.
+  Nothing enters the frame.
+
+# --- Anchors ----------------------------------------------------------------
+# Four, one per camera distance that recurs. The draft's A4 ("the mass in
+# ice") is not generated: 6.1 is the only shot it covered and it references
+# the approved 4.1 instead, as the script asks.
+
+anchors:
+  - id: A1-bore
+    model: anchor
+    approved_seed: 22         # approved by Serge 2026-10-19, pass 2
+    approved_file: anchors/A1-bore.jpg
+    covers: ["1.1", "3.1", "5.3"]
+    note: >
+      Pass 1 (s11/s22/s33, all rejected): an ice-hotel tunnel of stacked ice
+      bricks with a steel trough down the floor in all three; s11 and s22 put
+      the light fixture in frame. s33 was closest — symmetric, no fixture.
+      Pass 2: ice_spine, and the bore described as a drilled round tube whose
+      floor is the same curved ice as its walls.
+      Pass 2: s22 approved. A true round bore, no fixture, no railing,
+      the far end black, the left wall glowing. s11 grew steel handrails down
+      both sides (a walkway); s33 put a riveted panel on the right wall.
+      Known fault: a bright ring around the far opening that could read as a
+      rim — judge it in the stills.
+    spine: *ice_spine
+    subject: >
+      Camera: 24mm lens centred inside a narrow round borehole drilled
+      through glacier ice, level, looking straight along it, the vanishing
+      point in the middle of the frame. The bore is a smooth round tube cut
+      through solid ice, its wall one continuous curved surface, wet and
+      glassy, flattened bubbles visible inside the wall. Its floor is the
+      same curved ice as its walls and nothing stands in it. The near wall
+      glows pale blue and the far end falls away to black. The lower left
+      quarter of the frame is plain glowing ice wall.
+
+  - id: A2-core
+    model: anchor
+    approved_seed: 33         # approved by Serge 2026-10-19, pass 1
+    approved_file: anchors/A2-core.jpg
+    note: >
+      Pass 1: s33 is the one. Cylinder right of centre, frost along the
+      contact line, lower left empty bench, dark background. s11 lit the cut
+      face warm, outside the palette; s22 centred the cylinder. Known fault:
+      the core reads as segmented, ice bricks again, faintly.
+    covers: ["1.3", "2.2", "2.4", "3.3", "4.1", "4.3", "5.2", "6.3", "7.1"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens, level, square to the subject, close. Subject: a
+      cylinder of pale blue-grey glacial ice about fifteen centimetres
+      across, lying on its side on a scuffed stainless steel bench, its cut
+      end facing the lens and lit across from the right so the face glows,
+      a line of white frost along the contact where ice meets metal. The
+      cylinder sits right of centre. The lower left quarter of the frame is
+      empty frosted steel bench and nothing else.
+
+  - id: A3-macro
+    model: anchor
+    approved_seed: 11         # approved by Serge 2026-10-19, pass 2
+    approved_file: anchors/A3-macro.jpg
+    covers: ["1.2", "1.4", "2.1", "2.3", "3.4", "4.2", "4.4", "5.4", "5.5",
+             "6.2", "6.4", "8.1", "8.2", "8.3", "8.4", "8.5"]
+    note: >
+      Pass 1 (all rejected): none is a macro. Ice cubes in a steel pot (s11),
+      a wall of ice bricks beside a lamp (s22), a steel rod over a slab of
+      ice (s33). Pass 2: macro_spine, no steel and no light noun, and the
+      frame described as only ice.
+      Pass 2: s11 approved. Bubbles inside ice, blue, the lower left
+      falling to black. s22 has a warm cast at the top; s33 left loose ice
+      beads on a surface in front, which a static plate cannot carry. Known
+      fault: the bubbles came back round and dense rather than flattened and
+      in planes — shot prompts ask for sparse, cloudy and planar where it
+      matters.
+    spine: *macro_spine
+    subject: >
+      Camera: 100mm macro lens close to a polished face of ice, the frame
+      filled edge to edge with the inside of the ice: flattened lens-shaped
+      bubbles lying in parallel planes, the nearest in sharp focus and the
+      rest falling off into soft blue. Every part of the frame is ice. Shallow
+      depth of field. The lower left quarter is clear ice going darker.
+
+  - id: A5-steel
+    model: anchor
+    approved_seed: 22         # approved by Serge 2026-10-19, pass 2
+    approved_file: anchors/A5-steel.jpg
+    covers: ["3.2", "5.1"]
+    note: >
+      Pass 1 (all rejected): s11 is a plain steel cube with a latch on a
+      beige concrete slab, outside the palette; s22 and s33 put a hinged
+      cabinet beside a wall of ice bricks. Pass 2: ice_spine, and the floor
+      is described as glacier ice to every edge.
+      Pass 2: s22 approved. Plain frosted steel box on an ice floor, ice
+      formations behind it, falling to black. s11 is flanked by ice bricks
+      again; s33 leaks warm light from an open door gap. Known fault: hinges
+      on the front face, read as a case rather than blank hardware.
+    spine: *ice_spine
+    subject: >
+      Camera: 50mm lens, level, square to the subject, close. Subject: a
+      squat block of scuffed stainless steel and dull anodised grey
+      hardware standing on a flat floor of pale glacier ice that runs to
+      every edge of the frame, its faces plain and blank, frost along every
+      edge, worn through to bare metal at the corners, the light raking low
+      across it from the left. Behind it the ice falls to black. The lower
+      left quarter of the frame is empty ice floor.
+
+# --- Shots ------------------------------------------------------------------
+#
+# Every A2 core prompt says what is inside the ice — crystal planes and a few
+# small bubbles. 1.3's first pass put a dragonfly in the core unasked: an ice
+# core on a lab bench reads to the model as a specimen in ice, and the record
+# must show nothing inside the ice before 6.1.
+#
+# `approved_seed` is filled at stage 5. 22 shots are ffmpeg: eleven static
+# plates carry a card or the closer, eleven are local moves. No two static
+# plates are adjacent anywhere in the record.
+
+shots:
+
+  # SCENE 1 — THE SEAL (34 s)
+  #
+  # Image first: ten seconds of the bore and running water, no voice. The
+  # slug types into its lower left and is gone by 4.5 s (titles.yaml).
+
+  - id: "1.1"
+    scene: 1
+    approved_seed: 11    # selected 2026-10-19
+    # Kling first roll came back still (motion 2.0): the film of water on the far wall never moved ($0.70/$0.35, takes/rejected/).
+    # A film of water has no edge for the model to move; local push from
+    # the approved still instead (2026-10-19). The prompt describes the
+    # plate as approved and is kept.
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-bore]
+    prompt: >
+      A cylindrical bore through solid pale blue-grey glacial ice seen
+      straight down its length, the near walls glowing where the light enters
+      and the far end black, a thin film of meltwater running down the left
+      wall, the lower left of the frame plain glowing ice wall, no people
+
+  - id: "1.2"
+    scene: 1
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro view inside pale blue-grey glacial ice, backlit so it glows,
+      flattened lens-shaped bubbles lying in parallel planes, the nearest in
+      sharp focus and the rest falling off into soft blue, the ice glassy and
+      perfectly still, no people
+
+  - id: "1.3"
+    scene: 1
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: seal
+    anchors: [A2-core]
+    # Pass 1 (s11/s22): s11 returned no image; s22 put a dragonfly inside
+    # the core — a fossil-in-ice the prompt never asked for, and the one
+    # thing this record must not show before 6.1. Pass 2 fills the ice with
+    # what is in it instead: crystal planes and a few small bubbles.
+    prompt: >
+      A cylinder of pale glacial ice lying on a scuffed stainless steel bench,
+      its cut end lit across so it glows, the face wet, glassy and perfectly
+      still, the ice clear all the way through with only fine crystal planes
+      and a few small flattened bubbles inside it, white frost along the line
+      where ice meets metal, the cylinder right of centre, the lower left of
+      the frame empty frosted steel, no people
+
+  - id: "1.4"
+    scene: 1
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 4
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-macro]
+    prompt: >
+      Macro view inside dense clear glacial ice with no bubbles at all, only
+      faint crystal planes set across the frame, glowing where the light
+      enters, glassy and perfectly still, no people
+
+  # SCENE 2 — THE CAGES (38 s)
+  #
+  # The draft carried its first card on a local drift (2.2) and the second on
+  # the static plate after it. Both cards are on static plates now, with the
+  # silent bubble shot between them: the clathrate cages opening is the
+  # picture of the line before it.
+
+  - id: "2.1"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro view inside pale glacial ice packed with small rounded gas
+      inclusions at high density, each one catching the backlight as a bright
+      point, the ice between them glowing pale blue, glassy and perfectly
+      still, no people
+
+  - id: "2.2"
+    scene: 2
+    approved_seed: 33    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: gas
+    # Pass 1 (the close oblique cut face with open pits came back as 1.3 again). A2 returns the same core in the same framing
+    # every time. Pass 2 goes text-only with the spine in words.
+    exterior: true
+    spine_key: ice_spine
+    prompt: >
+      The cut face of a cylinder of pale glacial ice on a scuffed stainless
+      steel bench seen close and slightly oblique, the face wet and glassy,
+      fine open pits across it where gas inclusions have opened at the
+      surface, the lower left of the frame empty wet steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  - id: "2.3"
+    scene: 2
+    approved_seed: 33    # selected 2026-10-19
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: fine gas bubbles breaking out of the cut face and rising through the water film
+    motion_tail: motion_tail_bubbles
+    video_prompt: >
+      A steady stream of fine gas bubbles breaks out of the cut face of the
+      ice and rises up through the thin film of meltwater on it. The camera
+      does not move.
+    negative_extra: >
+      boiling, foam, froth, bubbles merging, large bubbles, ice cracking
+      open, water pouring
+    # Pass 1 (no water film and no escaping bubbles — the anchor itself again). A3 locks composition so hard that every
+    # macro handed it returned the anchor. Pass 2 goes text-only, the record
+    # 03 route: no reference, the spine in words.
+    exterior: true
+    spine_key: macro_spine
+    prompt: >
+      Macro view of a cut edge of pale glacial ice where it is melting, a thin
+      film of meltwater over the face, fine gas bubbles breaking out of the
+      face and rising through the film, backlit pale blue, no people
+
+  - id: "2.4"
+    scene: 2
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: oxygen
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench, its
+      cut end lit across, the face wet, glassy and perfectly still, the
+      cylinder right of centre, the lower left of the frame empty frosted
+      steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  # SCENE 3 — NOTHING IS THIN (40 s)
+
+  - id: "3.1"
+    scene: 3
+    approved_seed: 22    # selected 2026-10-19
+    # Kling first roll came back still (motion 1.0, the frozen floor): the threads on the bore walls never moved ($0.70/$0.35, takes/rejected/).
+    # A film of water has no edge for the model to move; local drift from
+    # the approved still instead (2026-10-19). The prompt describes the
+    # plate as approved and is kept.
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A1-bore]
+    prompt: >
+      A cylindrical bore through pale glacial ice seen straight down its
+      length, the near walls glowing and the far end black, meltwater running
+      down both walls in several thin threads, no people
+
+  - id: "3.2"
+    scene: 3
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A5-steel]
+    prompt: >
+      Close head-on view of a squat block of scuffed stainless steel and dull
+      anodised grey hardware standing on pale ice, every face plain and blank,
+      white frost along every edge, worn through to bare metal at the
+      corners, the light raking low across it from the left, no people
+
+  - id: "3.3"
+    scene: 3
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: thin
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench, set
+      high and right in the frame, its cut end lit across and glassy, white
+      frost along the contact line, the lower left of the frame empty frosted
+      steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  # The draft's motion was the light travelling along a fracture plane as the
+  # source shifts. Light on a still subject is not motion (CLAUDE.md, since
+  # record 07): a push along the plane instead, free and steadier.
+  - id: "3.4"
+    scene: 3
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro view inside pale glacial ice, backlit and glowing, a single long
+      fracture plane set diagonally across the frame like a sheet of
+      frozen glass, the ice on either side clear, no people
+
+  # SCENE 4 — THE SPECIMEN (40 s)
+  #
+  # 4.1 is the core the specimen is in, before the camera is close enough to
+  # see it. 6.1 references this still once it is approved.
+
+  - id: "4.1"
+    scene: 4
+    approved_seed: 11    # selected 2026-10-19
+    # Kling first roll slid the core 59 px along the bench and back; the meltwater barely moved ($0.70/$0.35, takes/rejected/).
+    # A film of water has no edge for the model to move; local push from
+    # the approved still instead (2026-10-19). The prompt describes the
+    # plate as approved and is kept.
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A2-core]
+    prompt: >
+      A long cylinder of pale blue-grey glacial ice lying along a scuffed
+      stainless steel bench, lit along its length, wet all over, meltwater
+      tracking down its side and pooling on the steel, the ice cloudy all the way through with only fine crystal planes
+      and small bubbles inside it, no people
+
+  - id: "4.2"
+    scene: 4
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro view into cloudy glacial ice where the clarity breaks down into a
+      dense white scattering, the light entering from the left and dying out
+      within a few centimetres, nothing resolved inside it, no people
+
+  - id: "4.3"
+    scene: 4
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: specimen
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench
+      laid across the upper half of the frame, its cut end lit across,
+      wet, glassy and perfectly still, the lower left of the frame empty wet
+      steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  - id: "4.4"
+    scene: 4
+    approved_seed: 33    # selected 2026-10-19
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: a bead of meltwater gathering at the top of the cut face and running down across it
+    motion_tail: motion_tail_water
+    video_prompt: >
+      A single bead of meltwater gathers at the top of the cut face, grows,
+      and runs down across the glowing ice in one slow line. The camera does
+      not move.
+    negative_extra: >
+      several drops, splashing, ice cracking, shape inside the ice, dark
+      mass
+    # Pass 1 (no bead of meltwater — the anchor itself again). A3 locks composition so hard that every
+    # macro handed it returned the anchor. Pass 2 goes text-only, the record
+    # 03 route: no reference, the spine in words.
+    exterior: true
+    spine_key: macro_spine
+    prompt: >
+      Macro view of the cut face of pale glacial ice with the light behind it,
+      the glow uneven, a bead of meltwater gathered at the top of the face,
+      no people
+
+  # SCENE 5 — THE LEDGER (40 s)
+  #
+  # The draft put its two cards on adjacent static plates (5.2, 5.3). The
+  # silent bore shot moves between them and the cards keep their lines:
+  # 5.3 is the draft's 5.4, 5.4 the draft's 5.3.
+
+  - id: "5.1"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A5-steel]
+    prompt: >
+      Close head-on view of frosted dull anodised grey hardware standing on
+      ice, the light low and raking, every edge worn and the surface finely
+      scratched, frost crystals standing on the colder faces, no people
+
+  - id: "5.2"
+    scene: 5
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: ledger
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench, its
+      cut end lit across, wet, glassy and perfectly still, the cylinder right
+      of centre, the lower left of the frame empty frosted steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  - id: "5.3"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-19
+    # Kling first roll breathed in and out on the far rim, a zoom nobody asked for, and the thread did not run ($0.70/$0.35, takes/rejected/).
+    # A film of water has no edge for the model to move; local pull from
+    # the approved still instead (2026-10-19). The prompt describes the
+    # plate as approved and is kept.
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A1-bore]
+    prompt: >
+      A cylindrical bore through pale glacial ice seen straight down its
+      length, the far end black, meltwater running down one wall in a
+      continuous thread, no people
+
+  - id: "5.4"
+    scene: 5
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: measured
+    # Pass 1 (sparse bubbles and an even glow came back as the dense anchor). A3 locks composition so hard that every
+    # macro handed it returned the anchor. Pass 2 goes text-only, the record
+    # 03 route: no reference, the spine in words.
+    exterior: true
+    spine_key: macro_spine
+    prompt: >
+      Macro view inside pale backlit glacial ice, bubbles sparse and the glow
+      even, glassy and perfectly still, the lower left of the frame nearly
+      clear ice going to black, no people
+
+  - id: "5.5"
+    scene: 5
+    approved_seed: 33    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    # Pass 1 (cloudy white scattering came back as the dense anchor). A3 locks composition so hard that every
+    # macro handed it returned the anchor. Pass 2 goes text-only, the record
+    # 03 route: no reference, the spine in words.
+    exterior: true
+    spine_key: macro_spine
+    prompt: >
+      Macro view into cloudy white glacial ice, the light dying within a short
+      distance, nothing resolved inside it, glassy and perfectly still, no
+      people
+
+  # SCENE 6 — SEVEN YEARS (35 s)
+  #
+  # 6.1 is the only appearance, silent for its full 10 s. Generated against
+  # the approved 4.1, so it is the same piece of ice seen closer.
+
+  - id: "6.1"
+    scene: 6
+    approved_seed: 11    # selected 2026-10-19, pass 2 (pass 1 read as an eye)
+    motion_tier: model
+    timeline_seconds: 10
+    model: workhorse
+    generate_seconds: 10
+    motion: a single bead of meltwater running down the face across the mass and off the bottom of frame
+    motion_tail: motion_tail_water
+    video_prompt: >
+      A single bead of meltwater runs slowly down the cut face of the ice,
+      across the dark shape behind it, and off the bottom of the frame. The
+      dark shape inside the ice does not move or change at all. The camera
+      does not move.
+    # No "dark mass" in the negative: Kling reads a negative list as a bag of
+    # concepts, and naming the subject there invites the clip to remove it.
+    negative_extra: >
+      growing, swelling, sharpening, outline appearing, eye, mouth,
+      tentacles, limbs, creature emerging, ice cracking, ice clearing
+    ref_shot: "4.1"
+    # Pass 1 (s11, s22): the core seen end-on with the dark mass dead
+    # centre in a ring of radial white — both read as an eye, and s11 drew
+    # an outline inside it. Pass 2 moves the mass off centre and turns the
+    # core a little, so nothing is concentric.
+    prompt: >
+      The same ice cylinder exactly as in the reference, now seen close and
+      slightly from the side at its cut face, with a dark rounded mass held
+      inside the ice a few centimetres behind the face, low and to the left
+      of the face's centre, its edge diffused by the cloudy ice in front of
+      it and never resolving into an outline, the ice around it cloudy and
+      uneven, a bead of meltwater at the top of the face, no people
+  - id: "6.2"
+    scene: 6
+    approved_seed: 44    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    # Pass 1 (cloudy low-lit scattering came back as the dense anchor). A3 locks composition so hard that every
+    # macro handed it returned the anchor. Pass 2 goes text-only, the record
+    # 03 route: no reference, the spine in words.
+    exterior: true
+    spine_key: macro_spine
+    prompt: >
+      Macro view into the cut face of cloudy glacial ice, the light entering
+      low, the white scattering dense enough that depth reads only as
+      dimming, glassy and perfectly still, no people
+
+  - id: "6.3"
+    scene: 6
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: seven
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench set
+      high in the frame, its cut end lit across, wet, glassy and perfectly
+      still, the lower left of the frame empty wet steel,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  - id: "6.4"
+    scene: 6
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the meltwater film running and carrying fine bubbles across the frame
+    motion_tail: motion_tail_bubbles
+    video_prompt: >
+      The thin film of meltwater on the ice runs across the frame and carries
+      fine bubbles along with it. The camera does not move.
+    negative_extra: >
+      boiling, foam, froth, bubbles merging, ice cracking, flood
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of pale backlit glacial ice with a thin film of meltwater
+      running across it, carrying fine bubbles, no people
+
+  # SCENE 7 — THE LAST LINE (10 s)
+  #
+  # The draft's 7.1, alone and 2 s longer: the coda holds no voice (record
+  # 06, correction 8; record 07, correction 2). 41% silent.
+
+  - id: "7.1"
+    scene: 7
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A2-core]
+    prompt: >
+      A cylinder of pale glacial ice on a scuffed stainless steel bench seen
+      from further back, lit flat across it, the steel wet, the ice dull and
+      softened at its edges, glassy and still,
+      the ice clear all the way through with only fine crystal planes and a few small flattened bubbles inside it, no people
+
+  # SCENE 8 — CODA (24 s)
+  #
+  # Cards, the melting shot between them so the last fact arrives alone,
+  # and the closer. Static, model, static, local, static.
+
+  - id: "8.1"
+    scene: 8
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    card: isolation
+    anchors: [A3-macro]
+    prompt: >
+      Macro view into dark, nearly clear glacial ice with the light almost out
+      of frame, glassy and perfectly still, graded to black at the lower left
+      of the frame, no people
+
+  - id: "8.2"
+    scene: 8
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: model
+    timeline_seconds: 5
+    model: workhorse
+    generate_seconds: 5
+    motion: the meltwater film running continuously across the frame
+    motion_tail: motion_tail_water
+    video_prompt: >
+      The film of meltwater runs continuously across the cut face of the ice
+      from top to bottom. The camera does not move.
+    negative_extra: >
+      ice dissolving, ice reshaping, ice collapsing, flood, splashing
+    anchors: [A3-macro]
+    prompt: >
+      Macro view of pale glacial ice that is visibly melting, the cut face wet
+      and soft at its edges, a film of meltwater running across it, no people
+
+  - id: "8.3"
+    scene: 8
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 4
+    source: ffmpeg_still
+    motion: static
+    card: no-sample
+    anchors: [A3-macro]
+    prompt: >
+      Macro view into dark glacial ice, dimmer still, almost a single tone,
+      one bubble catching a trace of light near the top of the frame, glassy
+      and perfectly still, no people
+
+  - id: "8.4"
+    scene: 8
+    approved_seed: 22    # selected 2026-10-19
+    motion_tier: local
+    timeline_seconds: 4
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A3-macro]
+    prompt: >
+      Macro view into dark glacial ice, a few flattened bubbles faintly lit
+      near the centre, the rest falling to black, glassy and perfectly still,
+      no people
+
+  # The closer's plate. Its text is in titles.yaml.
+  - id: "8.5"
+    scene: 8
+    approved_seed: 11    # selected 2026-10-19
+    motion_tier: static
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    static_exception: channel closer (titles.yaml)
+    anchors: [A3-macro]
+    prompt: >
+      Dark glacial ice at its dimmest, near a flat tone across the whole
+      frame, glassy and perfectly still, no people
