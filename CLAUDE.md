@@ -24,16 +24,35 @@ Channel URL: https://www.youtube.com/@fileclassnine
 
 ## The Scripting Contract
 
-Scripts are written outside this repository, by an agent that cannot read it.
-`SCENARIO-AGENT.md` is the brief handed to that agent: it restates, in full,
-every rule a script has to satisfy — runtime, motion tiers, card colour,
-prompt hygiene, arithmetic, verticals — so that a submitted script is
-buildable without a rewrite.
+**From record 09, ideas and scripts are written here, in this session, with
+Serge** — not by an outside agent. Records 01–08 were scripted outside the
+repository and arrived to be rebuilt; writing the script next to the pipeline
+removes the handoff that made a rewrite the normal state of stage 1.
 
-**Any change here that affects what a script may contain goes into
+The order for every new record, never skipped:
+
+1. **Discuss the idea first.** Before a line of `script.md` exists: the
+   premise, the real physical barrier and its number, the one invented thing,
+   the arithmetic that carries it, how it ends, and a rough runtime. Claude
+   recommends one idea and names its weak spot; Serge decides. No script is
+   written for an idea that has not been agreed in chat.
+2. **Then the script**, then `publish.md`, then the pipeline stages below.
+
+**Formats alternate: a documentary record, then an operator record, then a
+documentary record.** The narrator formats (documents read by the narrator,
+and the nature-documentary record about something that does not exist) count
+as the documentary turn; the first-person operator log is the other turn.
+Records 02/04/06/08 were narrator, 03/05/07 operator, so **record 09 is an
+operator record.** The idea backlog and the queue live in `IDEAS.md`; an idea
+that gets made is moved out of the backlog with its record number.
+
+`SCENARIO-AGENT.md` stays the full writing contract — formats, the Weir
+principle, how fear is built, runtime, motion tiers, card colour, prompt
+hygiene, arithmetic, verticals — and is checked against every script before
+stage 2. **Any change here that affects what a script may contain goes into
 `SCENARIO-AGENT.md` in the same edit.** A model constraint, a runtime rule, a
-card colour, a motion rule. The two files drifting apart is how a rewrite
-becomes the normal state of stage 1.
+card colour, a motion rule. The two files drifting apart is how a script
+stops being buildable.
 
 ## Repository Layout
 
@@ -99,20 +118,31 @@ that swapping a model is a config edit, not a code change.
 | Anchor stills | Seedream / Flux 2 | cinematic composition, atmosphere |
 | Shot stills | Nano Banana (Pro or 2) | pass anchors as references |
 | Bulk exploration | cheap fast model | only when hunting for direction |
-| Video — workhorse | Kling Pro, **audio off** | most shots land here |
+| Video — workhorse | Kling 3.0 Pro, **audio off** (2.5 Turbo for records 01–08) | most shots land here |
 | Video — filler | Wan / Seedance Fast | pans, textures, static drift |
-| Video — hero shots | Seedance / Veo | max 5–10 shots per episode |
+| Video — hero shots | Seedance 2.0 Fast (720p) | behaviour over resolution; a few shots per episode |
 | Narration, SFX, music | ElevenLabs | direct API key |
 
 Audio is always disabled on video models. Narration comes from
 ElevenLabs; paying for native audio is pure waste here.
 
-**Seedance is not used.** Episode 01 established why: asked for a locked-off
+**Seedance 1 is not used.** Episode 01 established why: asked for a locked-off
 shot it dollied eight metres down a corridor, and saying "the camera does not
 move at all" made it travel further. Asked for a slow drift it pushed in and
 pulled back, and grew a hinged bolted rim onto a porthole halfway through,
 then removed it. `camera_fixed: true` changes nothing. It does not hold a
 frame and it does not hold geometry. Kling holds both.
+
+**From record 09 the workhorse is Kling 3.0 Pro and the hero tier is Seedance
+2.0 Fast** — decided on a bake-off of 2026-10-26 (`research/model-bakeoff/`):
+three shots Kling 2.5 had already failed, one roll each on three models. Kling
+3.0 kept a fabric strap on its hook and an ice core in place, camera held to
+2 px, at $0.112/s billed per whole second (3–15 s), so a 7 s shot costs 7 s.
+Seedance 2 — a different model from the one banned above — was the best
+behaved of all, but its fast tier is 720p and $0.24/s; it is for the few shots
+where what moves matters more than pixels. Veo 3.1 Fast invented a spray of
+droplets nobody asked for and is not used. One roll per cell is evidence, not
+proof: record 09's first scene confirms it, and the two-failures rule stands.
 
 **Locked-off shots are built in ffmpeg, not generated.** A still with a
 1.000 -> 1.006 zoom over the shot is steadier than any model, costs nothing,
@@ -258,7 +288,9 @@ cheap because half of it is frozen, the saving was taken out of the episode.
 ## On-Screen Text — the channel signature
 
 Every character that appears on screen on this channel is drawn by one
-renderer, in one font, and types itself on with a sound. This is channel
+renderer, in one font, and types itself on with a sound. (Pencil on paper inside the picture is
+the exception: it is part of the world, not of the record's layer — see
+"Paper in frame is not blank".) This is channel
 furniture, like the slug: identical in every record, never varied for an
 episode, never A/B tested.
 
@@ -293,6 +325,40 @@ episode, never A/B tested.
 - **A graphic says what it is measuring.** The first energy card drew two
   unlabelled rectangles under the numbers and they read as a progress bar for
   nothing. Every bar carries its own label inside it.
+- **Paper in frame is not blank — from record 09.** A record about a man doing
+  arithmetic kept showing empty sheets on his desk. Now a sheet in a plate
+  carries the work the voice is describing — a decay curve worked three times,
+  a map of the modules with one shut off — in pencil, drawn onto the approved
+  still by `scripts/build_paper.py` from the record's `paper.yaml` and written
+  as `approved/<id>.screen.jpg`, which `build_static.py` already prefers, so
+  the marks move with the push exactly. Free, and Serge's call on the first
+  test: "выглядит супер". Three limits:
+  - **Handwriting on paper is allowed — Serge, 2026-10-27.** A labelled plot,
+    a figure worked in the margin, a date at the top of a sheet: pencil,
+    in the operator's hand, drawn by `build_paper.py`. It belongs to the world
+    in the frame, not to the record's own layer, so the one-renderer rule
+    below does not reach it — the green Menlo cards stay the record's voice
+    and a figure may appear in both places. Two conditions: every figure on
+    paper agrees with the narration and the cards (the arithmetic rule covers
+    the desk too), and the hand is a hand, never Menlo — a typed face on a
+    pencilled sheet reads as a card that has fallen into the picture.
+  - **The marks are already there when the shot starts.** A sheet that draws
+    itself with no hand in frame reads as something writing — the one cause
+    this channel never shows.
+  - **The sheet grows with the story.** Day one's sheet has day one's work on
+    it; an empty desk late in the record is a statement, so leave it empty
+    when it means something (record 09's 8.3).
+- **An in-frame screen that changes during a shot is rendered, not
+  generated.** A monitor whose trace climbs, a readout that steps — a machine
+  updating is the machine working, unlike paper writing itself. Build the
+  screen content as its own clip and composite it onto the plate, the way
+  `build_screens.py` put record 01's readout on its CRT. The tool to try first
+  is HyperFrames (HeyGen, open source, Apache-2.0: HTML/CSS and seekable
+  animation rendered frame by frame in headless Chrome to MP4), because a
+  plotted trace or a stepping counter is a few lines of HTML/SVG and comes out
+  deterministic. Not yet used on a record: the first use is a test on one
+  shot, like the model bake-off. Any character on such a screen is still Menlo
+  — and no green card goes over a screen that is already green.
 - **Characters appear one at a time**, left to right, as if arriving on a
   monitor over a slow link — not fading in, not sliding, not typewriter-
   bouncing. A line resolves and then holds.
@@ -525,6 +591,31 @@ ffmpeg handles everything after generation. No models involved.
   in-point. This is the one place where the channel's patience with silence
   does not apply: the long record earns silence, a vertical has not earned
   anything yet.
+- **No pause between the lines of a vertical, and keep it short — from record
+  09.** The first Analytics pull (2026-10-26, `scripts/fetch_stats.py`) put
+  the steepest drop of almost every Short at 4–6 s, which is exactly where the
+  first line ended and the cut left 0.5–1.5 s before the second: the viewer
+  heard one sentence, got silence, and moved. So the second line starts within
+  **0.3 s** of the first one's last word, every later gap is at most
+  **0.6 s**, and the picture before the closing card runs **15–25 s** —
+  20–23 s cuts held best, and the two 46–51 s cuts of record 01 had lost
+  half and 85% of their viewers by the first quarter. `validate.py` fails all
+  three. The teaser keeps its 30 s but obeys the gaps.
+- **The first line of a vertical is its strangest figure, and so is its
+  title.** The Shorts that travelled state one fact about the world with a
+  number in it — "This Animal Walks 878,000 km and Never Goes Anywhere", "There
+  Is A Depth Where The Ocean Stops Having Fish" (1,133 and 754 views, relative
+  retention 0.57 and 0.55). Operator cuts held when the opening carried a
+  figure ("The Cabin Rose 1.6 Degrees and Stopped", 0.68) and sank when it
+  carried plot ("The breaker was inside gallery three", 0.12). Plot is what the
+  record is for; a cut opens on the number.
+- **Every vertical links its record as Related video.** Nearly all of the
+  channel's views come from the Shorts feed, and as of the first pull not one
+  of them had reached a long record — the cuts were not linked to anything.
+  Set Related video in Studio on publishing each cut. The teaser goes out
+  before the record exists, so it is linked the day the record goes public:
+  that edit is a step in `publish.md`, not something to remember. Linking is
+  metadata, not a re-cut, so it applies to published records too.
 - **A caption carries a scrim, and the scrim is part of the caption.** The
   halo is the shape of the glyphs and it holds type over most plates, not all:
   record 03's verticals run over lit grating, a white sheet under a work lamp
@@ -737,6 +828,41 @@ not the anchor.** `ref_shot:` in `shots.yaml`. An anchor makes them the same
 kind of thing; the approved still makes them the same thing, down to the
 scratch in the glass. The catch: the reference resists intended change too, so
 use it where nothing should change, and do the change in post.
+
+**When a later shot shows an object after a take has moved it, its still is a
+frame of that take, not a new generation.** Record 09's hatch closes in 2.1;
+3.3, 5.4 and 7.2 show it closed and were generated as `ref_shot: "2.1"`, and
+each came back drawn a little differently — the door rounder, the wheel
+sliding towards the hinge, so the hatch that opens in 7.2 is visibly not the
+one that closed. The last frame of `takes/2.1.mp4` is the hatch in exactly the
+position the record left it. The same goes for a reading: 5.5 shows the gauge
+on day five, and the right still was the frame of a take where the needle sat
+on the ticks, not 4.1's opening still. Write it as `still_from: {take, at}` in
+`shots.yaml`, crop the frame to 1920x1080 before `build_static.py` sees it (a
+1904x1088 take is otherwise stretched 1.5%), and never take a still from
+footage a model has already redrawn.
+
+Two limits, both found the same day on record 09's coda:
+
+- **A frame where the subject is moving is not a start frame.** 8.2 started
+  from the last frame of the pencil take and 8.4 from the last frame of the
+  fan take; both frames carry motion blur, and Kling "finished" the blur — 8.2
+  grew panel seams and a pale band in its background, 8.4 drifted 10 px and
+  darkened. A take frame is a good still only where the thing has come to
+  rest: the closed hatch, the needle on its tick.
+- **A repeat of the same motion is the same footage, not a new roll.** The
+  coda's fan is the fan of 2.4 turning exactly as it did, and the right 8.4
+  was five seconds cut out of `takes/2.4.mp4` — free, and the same fan by
+  construction. Write it as `reuse_take: {take, from}` in `shots.yaml`. Roll
+  a repeat only when the object has to do something it did not do before.
+
+**Kling 3.0 does not stop a motion.** Asked to "turn a quarter turn and stop",
+record 09's lever (7.1) kept spinning and grew a second arm; asked to "ease
+down and stop", the gauge needle (5.5) swept for all ten seconds. A door
+seating in its frame did stop, because the frame stops it. So write a model
+shot as a motion that runs for the whole clip, and get "it stopped" either from
+a clean head of the take (7.1: 4 s of it, slowed 1.25x) or from a still that
+does not move (5.5 became a push on a take frame with the needle at rest).
 
 **Prompt enhancers cannot always be turned off.** Seedream rewrites every
 prompt before generating and offers no way to disable it. Anything vague gets

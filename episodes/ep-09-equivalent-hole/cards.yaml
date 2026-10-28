@@ -1,0 +1,121 @@
+# Data cards — record 9.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script. `with:` names the paragraph the card answers to; validate.py
+# measures the gap once narration exists. Times are seconds from the start of
+# the card's own shot. Every card sits on a static plate. The slug and the
+# channel closer live in titles.yaml.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: decay
+    with: s1p3
+    shot: "1.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "DECAY TEST         4 H"
+      - "CABIN        -1.96 kPa"
+      - "EQUIV HOLE      1.4 mm"
+      - "RESERVE        15 DAYS"
+
+  # --- Scene 2 -------------------------------------------------------------
+  - id: modules
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "MODULE A   0.00 kPa/h"
+      - "MODULE B   0.00 kPa/h"
+      - "MODULE C  -2.31 kPa/h"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: rule
+    with: s3p2
+    shot: "3.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "HATCH 3    CLOSED"
+      - "INSPECTION DAY 40"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: day3
+    with: s4p2
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "DAY 3 / MODULE C"
+      - "PRESSURE    42.3 kPa"
+      - "HALF-LIFE       49 H"
+      - "EQUIV HOLE    1.1 mm"
+
+  # --- Scene 5 -------------------------------------------------------------
+  # Drawn as three labelled bars to scale at the card stage (script.md, Open
+  # production decisions); the lines below are the labels the bars carry.
+  - id: holes
+    with: s5p1
+    shot: "5.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "EQUIV HOLE, MODULE C"
+      - "DAY 1          1.4 mm"
+      - "DAY 3          1.1 mm"
+      - "DAY 5          0.6 mm"
+
+  - id: oxygen
+    with: s5p4
+    shot: "5.3"
+    pos: lower-left
+    build: line
+    at: 3.2   # 0.5 typed it 5.6 s ahead of s5p4 (stage 7); title shortened to fit the plate
+    lines:
+      - "O2, MODULE C"
+      - "DAY 1          20.9 %"
+      - "DAY 5          19.8 %"
+
+  # --- Scene 6 -------------------------------------------------------------
+  - id: day6
+    with: s6p1
+    shot: "6.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "DAY 6 / 21:00 / MODULE C"
+      - "PRESSURE      27.7 kPa"
+      - "UNCHANGED         31 H"
+      - "LEAK RATE   BELOW RES."
+
+  # --- Coda ----------------------------------------------------------------
+  - id: log-ends
+    shot: "8.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "PROSVET-4"
+      - "NO ENTRIES AFTER DAY 7"
+
+  - id: not-performed
+    shot: "8.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "INSPECTION, DAY 40"
+      - "NOT PERFORMED"

@@ -33,6 +33,14 @@ VERT_MAX_LINES = 2   # a caption block deeper than this eats the picture
 # shipped two verticals that way and this file passed them, because it was
 # reading the same timestamps. A cut needs real silence after it.
 VERT_TAIL = 0.20
+# From record 09. The first YouTube Analytics pull (2026-10-26) showed the
+# steepest drop in almost every Short at 4-6 s — exactly where the first line
+# ends and the old cuts left 0.5-1.5 s before the second. A pause is where the
+# thumb moves, so lines run back to back, and the piece stays short: 20-23 s
+# cuts held best, 46-51 s cuts lost most of their audience by the first quarter.
+VERT_GAP_FIRST = 0.30   # s from the first line's last word to the second's first
+VERT_GAP = 0.60         # any later gap between lines
+VERT_BODY = (15.0, 25.0)  # picture with voice, closing card excluded
 
 def dur_of(path):
     import subprocess
@@ -57,6 +65,8 @@ def narration_words(block):
 
 def main(ep):
     ep = pathlib.Path(ep)
+    _m = re.match(r"ep-(\d+)", ep.name)
+    rec = int(_m.group(1)) if _m else 0
     cfg = yaml.safe_load((pathlib.Path("config/models.yaml")).read_text())
     doc = yaml.safe_load((ep / "shots.yaml").read_text())
     script = (ep / "script.md").read_text()
@@ -112,7 +122,13 @@ def main(ep):
         if s.get("source", "").startswith("ffmpeg"): continue
         tier = cfg["video"][s["model"]]
         g, d = s["generate_seconds"], tier["duration_seconds"]
-        if tier.get("has_seed") is False or s["model"] == "workhorse":
+        # has_seed was standing in for "durations are an enum", which held
+        # until kling3 (record 09): no seed, any whole second from 3 to 15.
+        # A tier that bills by the second says so with duration_kind: range.
+        if tier.get("duration_kind") == "range":
+            if not (d[0] <= g <= d[1]) or g != int(g):
+                fail.append(f"{s['id']}: {g}s outside range {d} for {s['model']}")
+        elif tier.get("has_seed") is False or s["model"] == "workhorse":
             if g not in d:
                 fail.append(f"{s['id']}: {g}s not in allowed {d} for {s['model']}")
         elif not (d[0] <= g <= d[1]):
@@ -469,6 +485,31 @@ def main(ep):
             if not ok:
                 fail.append(f"{pid_}: first word at {first:.2f}s — a {kind} has "
                             f"{VERT_OPEN}s before the thumb moves")
+
+        # From record 09: no pause between lines and a short piece (see
+        # VERT_GAP_FIRST). Records up to 08 are published and frozen.
+        if rec >= 9:
+            spans = []
+            for ln in sorted(lines_, key=lambda l: float(l["at"])):
+                ws = Vmod.line_words(ep, ln, pk_seed)
+                if ws:
+                    end = float(ln["trim"]) if ln.get("trim") else ws[-1][1]
+                    spans.append((ln["pid"], float(ln["at"]) + ws[0][0],
+                                  float(ln["at"]) + end))
+            for i, (a, b) in enumerate(zip(spans, spans[1:])):
+                gap, cap_ = b[1] - a[2], VERT_GAP_FIRST if i == 0 else VERT_GAP
+                ok = gap <= cap_
+                print(f"  {pid_:<28} gap {a[0]}->{b[0]} {gap:4.2f}s  "
+                      f"{'ok' if ok else 'FAIL'}")
+                if not ok:
+                    fail.append(f"{pid_}: {gap:.2f}s of silence between {a[0]} "
+                                f"and {b[0]}, limit {cap_}s — the thumb moves "
+                                f"in a pause")
+            lo, hi = VERT_BODY
+            pic = body - card_s
+            if kind == "vertical" and not lo <= pic <= hi:
+                fail.append(f"{pid_}: {pic:.1f}s before the card, want "
+                            f"{lo:.0f}-{hi:.0f}s")
 
         # Every line finishes inside the picture, or the mix truncates it.
         for ln in lines_:

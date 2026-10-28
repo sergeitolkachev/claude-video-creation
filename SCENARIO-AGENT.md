@@ -240,7 +240,7 @@ So if a shot's only movement is something soft, give the shot a different
 motion and let the soft thing hang still.
 
 **Ask a `model` shot for motion an eye sees in the first second.** A model
-shot costs $0.35–0.70 because something in it moves. Record 07 asked a
+shot costs $0.35–1.12 because something in it moves. Record 07 asked a
 phosphor trace to "jitter by a hair and hold" — the story said the load had
 not changed — and the model did exactly that: a $0.70 still. "Holds",
 "settles", "barely", "a fraction" ask the model to do nothing. When the
@@ -328,6 +328,22 @@ episode and it is not A/B tested.
   fades, slides or bounces. Numbers that count tick per digit change.
 - **A graphic says what it is measuring.** Every bar carries its own label
   inside it. An unlabelled rectangle reads as a progress bar for nothing.
+- **Paper in frame carries the work — from record 09.** When a plate shows a
+  sheet, logbook page or chart, say in the shot what is pencilled on it: a
+  curve, a schematic, ringed points, a pressed underline. It is drawn onto the
+  approved still afterwards (the still prompt stays a plain ruled sheet), so
+  write it as a note under the shot, not into the prompt. **Handwritten
+  labels and figures are allowed** (Serge, 2026-10-27): axis labels, a
+  figure worked in the margin, a date. Every figure on paper must agree with
+  the narration and the cards, and it may repeat what a card says. The image
+  models still never draw it — the still prompt asks for a plain ruled sheet
+  and the hand is added after. The marks are already there when the shot
+  starts; a sheet that draws itself reads as something writing. Let the
+  sheets follow the story: day one's work on day one's sheet.
+- **A screen in frame may change during a shot** (a trace climbing, a readout
+  stepping) when the scene wants it: it is rendered and composited, not asked
+  of a video model. Name what the screen shows and when it changes. Characters
+  on it are Menlo; no card goes over it.
 
 **A card plate must be long enough for its card.** Text types on at 18
 characters a second, with a 0.35 s pause between lines, and a card never
@@ -419,6 +435,47 @@ Two voices exist: the channel **narrator** (unhurried, third person, present
 tense) and a **character** voice for records told by their own operator. Pick
 one per episode and say which in the header. They are never mixed.
 
+### The three formats
+
+All records are found recordings from one shared world: orbital stations,
+ships, undersea and ice stations, other planets. Formats alternate — a
+documentary turn, then an operator turn (see `CLAUDE.md`, The Scripting
+Contract).
+
+1. **The Last Operator** — first person, character voice. Ship's logs, drone
+   logs, suit recorders. One record, one story. The recovery frame ("recovered
+   from…") is a text card, never a second voice. The viewer's question is what
+   happened to him.
+2. **Recovered documents** — narrator voice. Something frightening and
+   unexplained happened somewhere; the narrator retells the found files in his
+   own words. A character is heard only as playback of a recovered recording.
+3. **Field documentary** — narrator voice, in the register of a serious
+   natural-history film, about an animal, plant or world that does not exist.
+   A grave voice, an absurd subject, exact figures.
+
+### The Weir principle
+
+Take a real physical constraint, compute it exactly, and put the operator or
+the creature exactly on its edge or just past it. All the tension comes from
+the number. Everything is real and checkable except **one invented thing per
+record**.
+
+### How fear is built — no monsters
+
+- Consequences first, cause later: the empty bunks before the finding.
+- A safety measure with no explanation: a second lock on the helmet, "nobody
+  stays alone in section D".
+- A rule that is set up and later broken.
+- People did something inexplicable, and it shows only in logs and timecodes.
+- Exact physics instead of adjectives.
+- A number running toward zero: oxygen, charge, days.
+- One figure that does not agree with the others.
+- The most frightening line is the flattest one.
+
+The cause is never named and never explained. No curses, no possession, no
+closing effect — the recording simply stops. Data on screen — monitors and
+animated cards with figures — wherever the subject allows.
+
 ---
 
 ## 7. Writing shot prompts
@@ -457,9 +514,10 @@ Hard rules:
 - **Never write "shot on 35mm".** It makes one of the models return nothing at
   all.
 - Default shot length **6–10 seconds**. Nothing longer than 10 s exists.
-- The workhorse video model bills **5 s or 10 s only**. A 7-second shot is
-  paid for as 10. Prefer durations of 5 or 10 for `model` shots; anything in
-  between is money thrown away.
+- From record 09 the workhorse video model (Kling 3.0 Pro) bills **per whole
+  second, 3 to 15 s**, so a `model` shot takes the length the cut wants, in
+  whole seconds from 3 to 10. (The old workhorse billed 5 or 10 only, which is
+  why records 01–08 are built from 5 and 10 s clips.)
 
 ### Anchors and the style spine
 
@@ -648,6 +706,26 @@ Constraints that change how the script is written:
   no title, no atmosphere first. The long record earns its silences; a vertical
   is scrolled past and has earned nothing yet, so the first second has to
   contain a sentence. `validate.py` enforces this.
+- **The lines of a cut run back to back, and the cut is short — from record
+  09.** The first YouTube Analytics pull (2026-10-26) put the steepest drop in
+  almost every Short at 4–6 s: exactly where the first line ended and the cut
+  left a second of silence before the second. The viewer heard one sentence,
+  got a pause, and scrolled. So the second line follows the first within
+  0.3 s, every later gap is at most 0.6 s, and a cut runs **15–25 s** of
+  picture before the closing card (20–23 s held best; record 01's 46–51 s cuts
+  had lost half and more of their viewers by the first quarter).
+  `validate.py` fails all three. What this means for you: nominate lines that
+  still make sense butted directly against each other, with no breath of
+  context between them — and pick two or three of them, not five.
+- **A cut opens on its strangest figure, and its title states that figure.**
+  The Shorts that travelled state one fact about the world with a number in it
+  ("This Animal Walks 878,000 km and Never Goes Anywhere", 1,133 views); the
+  ones that sank opened on plot ("The breaker was inside gallery three",
+  relative retention 0.12, against 0.68 for "The Cabin Rose 1.6 Degrees and
+  Stopped"). So when you write the record, give at least three paragraphs a
+  first sentence that is a figure strange enough to stand alone — those are
+  your cuts' first lines. Plot belongs to the record; a cut opens on the
+  number.
 - **Captions stay out of the dead zones.** The bottom of a vertical frame
   belongs to the platform — caption, handle, sound name, buttons — and so does
   the right edge, where the action column sits. Nothing you write has to
@@ -714,7 +792,8 @@ the production side and each failure costs a rewrite.
 - [ ] No `static` or `local` prompt contains dust in the air, vapour, mist,
       smoke, a hanging or swinging part, or a lit lamp. Those frames are never
       animated and a frozen photograph of them reads as a stalled player.
-- [ ] Every `model` shot is 5 s or 10 s. No shot exceeds 10 s.
+- [ ] Every `model` shot is a whole number of seconds from 3 to 10. No shot
+      exceeds 10 s.
 - [ ] Every `model` shot names a motion visible in its first second — no
       "holds", "settles" or "barely" as the whole of it — and no instrument or
       chart in it carries a pattern the model could continue.
@@ -750,6 +829,8 @@ the production side and each failure costs a rewrite.
       or pull is fine, and so are two `local` moves in a row.
 - [ ] Three verticals nominated, each as a line list and a shot list, each
       with its figures spoken aloud, each working on hard cuts alone.
+- [ ] Each vertical opens on a strange figure, runs 15–25 s before the card,
+      and its lines make sense butted together with no pause between them.
 - [ ] Four or five teaser lines nominated, in order, each one strange without
       context and none of them explaining another.
 

@@ -1,0 +1,129 @@
+# Record 09's mix (CLAUDE.md, Audio Rules): the synthesised floor and one
+# music cue under the whole record, ducked 7 dB under the voice by
+# config/sound.yaml, and seven spot effects in the pauses.
+#
+# Stage 7 checks the pause table against the real takes and sets the levels,
+# measured against the generated cue and effects.
+
+runtime_seconds: 270
+lead_in: 2.0
+tail: 3.0
+min_gap: 1.2
+card_pull: 1.5
+
+# Extra air before specific lines, from script.md's Pacing section, on top of
+# the 1.2 s gap. Every one falls on a paragraph boundary.
+hold:
+  s3p4: 0.8    # 2.0 s before "I logged it as contained…" — the last comfortable moment
+  s4p4: 1.3    # 2.5 s before "One point one. Holes in a hull do not get smaller."
+  s5p5: 1.3    # 2.5 s before "A leak takes air as it finds it."
+  s7p3: 1.8    # 3.0 s before "Hatch three open at oh-six-hundred." — the rule breaks here
+
+# --- Layers -----------------------------------------------------------------
+# floor  — synthesised, config/sound.yaml. Never gated, under every card.
+# music  — the record's cue, ducked under every paragraph.
+# clicks — mixed by build_cards.py, never by hand. +20 from record 08 on.
+# events — spot effects in the pauses, below. Not a layer.
+#
+# Levels are trims on measured files. Measured 2026-10-27: the cue sits at
+# -14 to -16 dBFS through the body, 88% of its energy at 200 Hz-3 kHz and none
+# above 3 kHz; it thins from ~240 s and is silent through the coda. That is
+# ~9 dB above record 08's cue at trim 0 (-24 to -31), so music -9 lands it on
+# the chosen demo. Effects: valve -21 rms / +2.8 peak, hatch -18 / +2.6,
+# latch -27 / +2.5 (all three clip as files — the -6 event trim brings them
+# under 0); creak -40, knock -42, air -51 rms, lifted per event below.
+levels: {floor: 0, music: -9, clicks: 20, events: -6}
+layers:
+  floor:
+    synth: floor
+  music:
+    file: sfx/score.mp3
+    duck: true
+
+sfx:
+  score:
+    kind: music
+    file: sfx/score.mp3
+    seconds: 270
+    prompt: >
+      Slow ambient cue for a sealed orbital station. Sustained mid-register
+      strings and soft glassy pads, roughly 200 Hz to 3 kHz, cold and even.
+      No melody anyone could hum, no beat, no drums, no vocals, no swell, no
+      resolution. Quiet enough to sit under a calm speaking voice throughout.
+      One long shape: a faint pressure that thins very slowly towards the end
+      and never resolves.
+  valve:
+    file: sfx/valve.mp3
+    seconds: 2
+    prompt: >
+      A heavy aluminium valve handwheel seating home, one dull solid clunk
+      with a short metallic body, recorded close in a small quiet room. Dry,
+      no echo, no ringing, no squeak, nothing electronic.
+  hatch_close:
+    file: sfx/hatch-close.mp3
+    seconds: 3
+    prompt: >
+      A thick metal pressure hatch door swinging shut against a rubber seal:
+      one deep soft thud, then a heavy latch dropping into place, recorded
+      close. Dry, no echo, no ringing, no high tones, nothing electronic.
+  creak:
+    file: sfx/creak.mp3
+    seconds: 2
+    prompt: >
+      A single low creak of a thin aluminium wall flexing under air pressure,
+      recorded close in a small sealed room. Low and short, with a soft
+      settle at the end. Dry, no echo, no squeal, no high pitch, nothing
+      electronic.
+  knock:
+    file: sfx/knock.mp3
+    seconds: 2
+    prompt: >
+      One soft muffled knock of a metal hull panel settling as it cools,
+      recorded close through the wall. Low, with body, no ring, no echo,
+      nothing electronic.
+  air:
+    file: sfx/air.mp3
+    seconds: 3
+    prompt: >
+      A low muffled rush of air through a small valve between two rooms,
+      settling away to nothing over two seconds, recorded close. Soft and
+      dull, no hiss, no whistle, no high tones, nothing electronic.
+  latch:
+    file: sfx/latch.mp3
+    seconds: 3
+    prompt: >
+      A heavy hatch latch releasing with one deep clunk, then a thick rubber
+      seal parting with a low soft thump, recorded close. Dry, no echo, no
+      squeak, no ringing, nothing electronic.
+
+# Spot effects — script.md, Sound design. Anchored to a shot so a retimed
+# shot list carries them; validate.py checks each sits 0.3 s clear of any
+# word. Offsets are provisional until the takes are placed.
+events:
+  # Placed in the real pauses of the approved takes (2026-10-27), each at
+  # least 0.3 s clear of a word.
+  - {sfx: valve,       shot: "1.2", at: 2.2}                # 7.2 s, between s1p1 and s1p2
+  - {sfx: hatch_close, shot: "2.1", at: 8.0, seconds: 2.2}  # 42.0 s, after s2p1; cut to the 3 s pause
+  - {sfx: creak,       shot: "3.4", at: 2.3, level: 14}     # 97.3 s, after "slept for six hours"; file -40 rms
+  - {sfx: creak,       shot: "5.4", at: 3.3, level: 11}     # 172.3 s, after the oxygen line
+  - {sfx: knock,       shot: "6.3", at: 7.3, level: 16}     # 211.3 s, after "day forty"; file -42 rms
+  - {sfx: latch,       shot: "7.2", at: 3.4, seconds: 1.2}  # 222.4 s, the door starts to move; 2.1 s gap
+  - {sfx: air,         shot: "7.3", at: 0.1, level: 20}     # 229.1 s, the makeup refilling after "twenty-six kilograms"
+
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser -----------------------------------------------------------------
+# The teaser's own cue: thirty seconds, composed with a build, never the
+# record's cue and never under the record.
+teaser_sfx:
+  teaser_music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, cold ambient music for a trailer about a sealed orbital station.
+      Sustained mid-register strings and a glassy pad over a faint low pulse,
+      roughly 200 Hz to 3 kHz, and one gradual tightening across the whole
+      piece that never resolves. No melody, no drums, no vocals, no swell at
+      the end. Quiet enough to sit under a calm speaking voice the whole way
+      through.

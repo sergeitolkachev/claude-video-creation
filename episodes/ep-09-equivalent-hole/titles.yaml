@@ -1,0 +1,16 @@
+cards:
+  - id: slug
+    at: 0.5
+    hold: 2.0
+    lines: ["FC9-009 // THE EQUIVALENT HOLE"]
+
+  # Shot 8.5 starts at 264.0 s.
+  - id: closer
+    at: 264.5
+    hold: 2.0
+    size: 40
+    pos: centre
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-009 // THE EQUIVALENT HOLE"

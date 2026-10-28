@@ -1,0 +1,50 @@
+# Record 09 vertical cuts. Built by scripts/vertical.py out of takes/, never
+# generated. From record 09 (CLAUDE.md, verticals): open on the strangest
+# figure, lines back to back (<=0.3 s after the first, <=0.6 s after that),
+# 15-25 s of picture before the closing card. `at:` values are computed from
+# audio/alignment/, not estimated. 7.1 is used only inside its clean head
+# (0-4 s): after that the lever spins and grows a second arm.
+# `runtime_seconds` is the whole piece, closing card included.
+
+slug: "FC9-009 // THE EQUIVALENT HOLE"
+
+cuts:
+  - id: fc9-009-a-holes-do-not-shrink
+    runtime_seconds: 17.43
+    shots:
+      - {id: "4.1", at:  0.00, from: 0.0, seconds: 4.06, crop_x: 0.45}
+      - {id: "2.3", at:  4.06, from: 0.0, seconds: 3.55, crop_x: 0.50}
+      - {id: "5.5", at:  7.61, from: 0.0, seconds: 4.06, crop_x: 0.45}
+      - {id: "2.4", at: 11.67, from: 1.0, seconds: 3.76, crop_x: 0.50}
+    lines:
+      - {pid: s1p3, at:  0.00}                       # "The equivalent hole is one point four millimetres across."
+      - {pid: s4p4, at:  3.39}                       # "One point one. Holes in a hull do not get smaller. They get larger, or they stay."
+      - {pid: s5p1, at:  8.81}                       # "Day five. Module C, twenty-seven point nine kilopascals. The hole is point six millimetres."
+    ends_on: "Day five. Module C, twenty-seven point nine kilopascals. The hole is point six millimetres."
+
+  - id: fc9-009-b-a-leak-cannot-do-that
+    runtime_seconds: 20.87
+    shots:
+      - {id: "5.2", at:  0.00, from: 0.0, seconds: 5.10, crop_x: 0.50}
+      - {id: "3.3", at:  5.10, from: 0.0, seconds: 4.08, crop_x: 0.48}
+      - {id: "4.4", at:  9.18, from: 0.0, seconds: 4.59, crop_x: 0.55}
+      - {id: "2.1", at: 13.77, from: 2.0, seconds: 5.10, crop_x: 0.47}
+    lines:
+      - {pid: s5p4, at:  0.10}                       # "Oxygen fraction in C, nineteen point eight percent. On day one it was twenty point nine."
+      - {pid: s5p5, at:  5.87}                       # "A leak takes air as it finds it."
+      - {pid: s5p2, at:  8.25}                       # "Ground calls it good news. Debris, they think, caught in the hole from outside and plugged it."
+      - {pid: s5p3, at: 13.59}                       # "The flow runs outward. Anything in the hole is pushed out, not in."
+    ends_on: "The flow runs outward. Anything in the hole is pushed out, not in."
+
+  - id: fc9-009-c-problem-resolved
+    runtime_seconds: 17.00
+    shots:
+      - {id: "6.3", at:  0.00, from: 0.0, seconds: 5.50, crop_x: 0.45, crop_to: 0.60}
+      - {id: "7.1", at:  5.50, from: 0.0, seconds: 3.50, crop_x: 0.36}
+      - {id: "7.2", at:  9.00, from: 1.5, seconds: 6.00, crop_x: 0.45}
+    lines:
+      - {pid: s6p1, at:  0.16}                       # "Day six, twenty-one hundred. Module C, twenty-seven point seven. Unchanged for thirty-one hours."
+      - {pid: s6p2, at:  5.89}                       # "The leak rate is below what the transducer can resolve. Zero, as far as anything here can measure."
+      - {pid: s7p3, at: 11.69, trim: 2.98}           # "Hatch three open at oh-six-hundred. Problem resolved." — hard cut
+    ends_on: "Hatch three open at oh-six-hundred. Problem resolved."
+

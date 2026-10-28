@@ -201,6 +201,24 @@ def main():
                            if s.get("negative_extra") else "")}
             price = tier["price_10s_usd"] if gen == 10 else \
                     tier["price_base_usd"] + max(0, gen - 5) * tier["price_per_extra_second_usd"]
+        elif s["model"] in ("kling3", "seedance2"):
+            # Record 09 on. Kling 3 takes the still as start_image_url and has
+            # a real negative_prompt and a real generate_audio defaulting to
+            # true; Seedance 2 has no negative_prompt at all, so the failures
+            # this channel names have nowhere to go on that tier but the
+            # positive prompt. Both bill per second, so gen is what is paid.
+            neg = " ".join((doc.get("negative_base") or "").split()) + (
+                ", " + " ".join(s["negative_extra"].split())
+                if s.get("negative_extra") else "")
+            if s["model"] == "kling3":
+                body = {"start_image_url": img, "prompt": prompt,
+                        "duration": str(gen), "generate_audio": False,
+                        "negative_prompt": neg.strip(", ")}
+            else:
+                body = {"image_url": img, "prompt": prompt, "duration": str(gen),
+                        "resolution": "720p", "aspect_ratio": "16:9",
+                        "generate_audio": False}
+            price = gen * tier["price_per_second_usd"]
         elif s["model"] == "test_o3":
             # Kling O3 has no negative_prompt and a real generate_audio whose
             # default fal does not document. Audio off on every call, or the

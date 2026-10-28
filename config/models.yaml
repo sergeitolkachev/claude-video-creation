@@ -110,6 +110,41 @@ video:
       # audio cannot silently turn it on.
       generate_audio: false        # no-op here; insurance against a tier swap
 
+  # The workhorse from record 09. Chosen on the bake-off of 2026-10-26
+  # (research/model-bakeoff/README.md): the three shots Kling 2.5 had failed —
+  # a fabric strap re-drawn onto another hook, an ice core slid 60 px along a
+  # bench, a meltwater film returned as a still — all came back clean, camera
+  # held to 0-2 px. $0.112/s with audio off, billed per whole second from 3 to
+  # 15 s, so a 7 s shot costs 7 s. Records 01-08 keep `workhorse` above and are
+  # frozen. Price checked on fal's model page 2026-10-26.
+  kling3:
+    id: fal-ai/kling-video/v3/pro/image-to-video
+    price_per_second_usd: 0.112    # audio off; $0.168 with audio on
+    duration_seconds: [3, 15]      # integer seconds, sent as a string
+    duration_kind: range
+    resolution: 1904x1088          # measured, same as the 2.5 workhorse
+    has_seed: false
+    image_param: start_image_url   # not image_url, unlike every other tier
+    required_params:
+      generate_audio: false        # real parameter here, default true
+
+  # Hero tier from record 09: shots where behaviour matters more than pixels.
+  # Best behaved in the bake-off (the ice core stayed put, the pool spread and
+  # dripped exactly as asked) but the fast tier tops out at 720p and the price
+  # includes audio whether or not it is wanted. 1080p is the standard tier at
+  # $0.682/s, which is not used. A 720p take is scaled to 1080 in assembly and
+  # sits under grain; record 01's ban was on Seedance 1, a different model.
+  seedance2:
+    id: bytedance/seedance-2.0/fast/image-to-video
+    price_per_second_usd: 0.2419   # 720p
+    duration_seconds: [4, 15]
+    duration_kind: range
+    resolution: 1280x720
+    has_seed: false
+    negative_prompt: false         # the schema has none; failures go in the prompt
+    required_params:
+      generate_audio: false
+
   # Priced per second by resolution. The $0.05/s figure on fal's pricing page
   # is the 480p tier — at 1080p it is $0.15/s, three times the filler above.
   # Kept here as a documented alternative, not used in episode 01.

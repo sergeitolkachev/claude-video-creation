@@ -1,0 +1,848 @@
+episode: ep-09-equivalent-hole
+runtime_seconds: 270
+aspect: "16:9"
+
+# Told by the operator, first person.
+voice: character
+
+scene_runtime: {1: 34, 2: 36, 3: 30, 4: 40, 5: 44, 6: 30, 7: 26, 8: 30}
+
+# Scene 8 is cards and two running shots, no voice (script.md, Scene 8).
+coda: [8]
+
+# Prompt hygiene, checked by validate.py. Same intent as record 08's list,
+# re-cut for a weightless station: a frame that is never animated may contain
+# nothing that would be moving, floating or lit.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(drift\w*|float\w*|motes?|dust|suspended|vapou?r|mist|steam|smoke|condensation|drips?|dripping|beads?|particles?|specks?|moving|moves|turning|turns|swings?|swinging|blinks?|blinking|slides?|sliding|travel\w*|rotat\w*|sinks?|sinking|eases?)\b'
+      except: ["1.1", "1.2", "2.1", "2.4", "3.1", "3.4", "4.1", "4.4",
+               "5.2", "5.5", "6.3", "7.1", "7.2", "8.2", "8.4"]
+      why: >
+        A shot built from one still must contain nothing the eye expects to
+        see move (record 04's twelve plates; record 05's rule). Only the
+        model shots name motion. "Nothing loose, floating or hanging" in the
+        static plates is a negation the hygiene would also catch, so those
+        plates say it as "every strap flat and buckled" instead.
+
+    - pattern: '\b(text|lettering|writing|written|label\w*|plaque|placard|nameplate|stencil\w*|serial|legible|numerals?|digits?|figures?|readout|markings?|scale|counter|display|screen|monitor)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py. The
+        noun alone summons lettering.
+
+    - pattern: '\b(gauge|dial|needle)\b'
+      except: ["4.1", "5.5"]
+      why: >
+        The one instrument face in the record is the module C gauge: five
+        plain ticks, a short arc, no numerals. Anywhere else a gauge is an
+        invitation to invent a scale.
+
+    - pattern: '\b(lamp|lantern|bulb|torch|flashlight|spotlight|headlamp|indicator)\b'
+      except: ["1.1", "4.4"]
+      why: >
+        A lamp named in a spine reaches eight anchors of fifteen (record 03).
+        Two shots carry a small status lamp that blinks, and nowhere else.
+
+    - pattern: '\b(warm|amber|orange|yellow|gold\w*|tungsten|sodium|candle\w*|fire|green|red)\b'
+      except: []
+      why: >
+        Bone, aluminium grey, cold blue. Green belongs to the cards alone.
+        The pencil is grey for the same reason.
+
+    - pattern: '\b(person|human|figure|hands?|fingers?|gloves?|astronaut|crew|suit)\b'
+      except: []
+      why: >
+        One operator, never seen. "No people" ends prompts and is not
+        matched here.
+
+    - pattern: '\b(card|plate|caption|title|overlay)\b'
+      except: []
+      why: >
+        Which shots carry a card is cards.yaml's business.
+
+
+# --- Spines -----------------------------------------------------------------
+# Material, light and palette only. "Panelling", not "module" or "interior",
+# so the macro anchor is not dragged into a room (record 03).
+
+spine: &spine >
+  Bone-coloured fabric-covered panelling and brushed aluminium, worn soft and
+  greyed along every edge that gets touched, faint scuffs and old adhesive
+  marks, matte, nothing polished and nothing new. One palette throughout:
+  bone, aluminium grey, cold blue. The light is flat, cool and diffuse with no
+  visible source. Contrast is low, shadows soft and shallow, blacks lifted and
+  never crushed. No lettering, no markings, no numerals, no people.
+
+macro_spine: &macro_spine >
+  A macro photograph of brushed aluminium and bone-coloured fabric, worn soft
+  at every edge, matte, nothing polished and nothing new. One palette: bone,
+  aluminium grey, cold blue. Flat cool diffuse light, low contrast, the
+  background falling off to soft grey-blue. No lettering, no markings, no
+  numerals, no people.
+
+exterior_spine: &exterior_spine >
+  Open space. Aluminium and thermal blanket weathered to a dull ivory, seams
+  and fastener rows catching hard sunlight from one side, the shadow side
+  falling to near black. Black sky, the Earth below in blue and pale cloud.
+  One palette: ivory, aluminium grey, cold blue, black. No lettering, no
+  markings, no numerals, no flags, no people.
+
+# "flicker" is not in this list: 1.1 and 4.4 are lamps asked to blink, and a
+# negative that forbids the motion argues with the shot (dry run, 2026-10-26).
+negative_base: >
+  fast motion, camera shake, dolly, push in, pull back, pan, tilt, zoom,
+  morphing geometry, objects changing shape, new objects appearing,
+  the whole frame brightening or darkening, blur, distortion, low quality,
+  people, hands, faces, text, lettering, numerals, watermark
+
+
+# --- Motion tails -----------------------------------------------------------
+
+motion_tail_event: &motion_tail_event >
+  The one movement named above happens at a steady unhurried speed, starting
+  in the first second. Everything else in the frame is still and rigid and
+  keeps exactly its shape. The camera does not move at all: no dolly, no push
+  in, no pull back, no pan, no tilt, no zoom. No cuts, no speed changes.
+  Nothing enters the frame.
+
+motion_tail_steady: &motion_tail_steady >
+  The movement named above runs steadily for the whole shot, starting in the
+  first second. Everything else in the frame is still and rigid. The camera
+  does not move at all: no dolly, no push in, no pull back, no pan, no tilt,
+  no zoom. No cuts, no speed changes. Nothing enters the frame.
+
+motion_tail_earth: &motion_tail_earth >
+  Only the Earth's surface moves, sliding slowly and steadily beneath, clouds
+  keeping their shapes as they travel. The station and everything attached to
+  it are completely still. The camera does not move. No cuts, no speed
+  changes. Nothing enters the frame.
+
+
+# --- Anchors ----------------------------------------------------------------
+# One per camera distance that recurs. A5 is an exterior and is generated
+# from text with the exterior spine; no interior anchor is passed to 3.1/6.2.
+
+anchors:
+  - id: A1-module
+    model: anchor
+    approved_seed: 11         # approved by Serge 2026-10-26, pass 1
+    approved_file: anchors/A1-module.jpg
+    covers: ["1.3", "2.2", "3.4", "4.2", "5.3", "6.1", "7.3", "8.1", "8.5"]
+    spine: *spine
+    subject: >
+      Camera: 24mm lens at chest height inside a long cylindrical pressurised
+      module, looking along its full length, the vanishing point near the
+      centre of the frame. Bone-coloured fabric-covered panels line the curved
+      walls, brushed aluminium handrails run along them, every stowage strap
+      is pulled flat and buckled, a round closed hatch at the far end. The air
+      is completely clear. The lower left quarter of the frame is a plain
+      empty wall panel.
+
+  - id: A2-macro
+    model: anchor
+    approved_seed: 11         # approved by Serge 2026-10-26, pass 1
+    approved_file: anchors/A2-macro.jpg
+    covers: ["1.1", "2.4", "4.1", "4.4", "7.1"]
+    spine: *macro_spine
+    subject: >
+      Camera: long lens, extreme close view of a small round brushed
+      aluminium fitting set into a bone-coloured fabric panel, the fitting
+      filling the centre of the frame, a braided line leaving it to one side,
+      every surface worn soft at the edges, the background two stops darker
+      and unresolvable.
+
+  - id: A3-headon
+    model: anchor
+    approved_seed: 33         # approved by Serge 2026-10-26, pass 1
+    approved_file: anchors/A3-headon.jpg
+    covers: ["1.2", "2.1", "2.3", "5.1", "5.2"]
+    spine: *spine
+    subject: >
+      Camera: normal lens, flat frontal view of a round pressure hatch set in
+      a bone-coloured panelled bulkhead, the hatch centred, a thick aluminium
+      door on one heavy hinge on the left, a central handwheel with a plain
+      ribbed rim, a dark rubber seal around the frame, a plain panelled
+      surface around it on every side.
+
+  - id: A4-topdown
+    model: anchor
+    approved_seed: 11         # approved by Serge 2026-10-26, pass 2
+    approved_file: anchors/A4-topdown.jpg
+    covers: ["1.4", "3.2", "4.3", "8.3"]
+    spine: *spine
+    note: >
+      Pass 1 (s11/s22/s33, all rejected 2026-10-26): every candidate drew a
+      fold-down table seen from the front at eye height, with the wall behind
+      it — "set into a panel" read as a wall, and the camera followed it.
+      Pass 2 describes a flat lay: the surface fills the frame edge to edge
+      and there is no wall, no edge and no horizon to put a camera in front
+      of.
+    subject: >
+      Flat lay photograph taken from directly above, camera pointing straight
+      down. A sheet of brushed aluminium fills the entire frame edge to edge,
+      its brushing running left to right, worn and lightly scratched, with no
+      edge, wall or horizon visible anywhere. A closed dark logbook lies flat
+      in the upper right of the frame, held under a plain steel clip bar
+      screwed to the aluminium. Even, flat, cool light with no shadows. The
+      lower left half of the frame is bare brushed aluminium.
+
+  - id: A5-exterior
+    model: anchor
+    approved_seed: 33         # approved by Serge 2026-10-26, pass 1
+    approved_file: anchors/A5-exterior.jpg
+    exterior: true
+    covers: ["3.1", "6.2"]
+    spine: *exterior_spine
+    subject: >
+      Camera: wide lens in open space beside an orbital station, a
+      cylindrical module of ivory thermal blanket and aluminium crossing the
+      upper third of the frame lit hard from the left, its right half in
+      deep shadow, the Earth filling the lower half of the frame with bands
+      of pale cloud over blue ocean, black sky above.
+
+
+# --- Shots ------------------------------------------------------------------
+# Model shots are on kling3 (CLAUDE.md, from record 09), billed per second,
+# so generate_seconds equals timeline_seconds. Repeat subjects reference the
+# approved master still with ref_shot.
+
+shots:
+
+  # ---- Scene 1 — Cold open (34 s) -------------------------------------------
+
+  - id: "1.1"
+    scene: 1
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 5
+    model: kling3
+    generate_seconds: 5
+    motion: the indicator lamp blinking
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The small round indicator lamp blinks off and on, steadily, about once
+      a second, three times.
+    negative_extra: >
+      the lamp changing colour, more lamps appearing, the panel changing
+    anchors: [A2-macro]
+    prompt: >
+      Extreme close view of a small round indicator lamp set into a brushed
+      aluminium valve panel beside a gas line union, the lamp lit a cold pale
+      blue, flat cool light, background unresolvable, no people
+
+  - id: "1.2"
+    scene: 1
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the handwheel turning a quarter turn
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The aluminium handwheel turns a quarter turn clockwise as one rigid
+      piece and stops.
+    negative_extra: >
+      the wheel bending, spokes multiplying, the wheel spinning fast, a hand
+    anchors: [A3-headon]
+    prompt: >
+      A gas valve head-on on a bone-coloured panelled wall, a heavy aluminium
+      handwheel with a plain ribbed rim and three spokes, a short braided line
+      running from it into the panel, flat cool light from no visible source,
+      no people
+
+  - id: "1.3"
+    scene: 1
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: decay
+    anchors: [A1-module]
+    prompt: >
+      A cylindrical station module seen wide at chest height down its full
+      length, bone-coloured fabric panelling and brushed aluminium handrails,
+      every stowage strap pulled flat and buckled, flat cool diffuse light,
+      the air completely clear, the lower left of the frame a plain empty
+      panel, no people
+
+  - id: "1.4"
+    scene: 1
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: local
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A4-topdown]
+    prompt: >
+      Directly overhead view of a small aluminium work surface with a closed
+      logbook held flat under a steel clip bar and a plain grey pencil seated
+      in a clip beside it, the cover worn pale at the corners, flat even cool
+      light, the air above the surface completely clear, everything held in
+      place by clips, no people
+
+  # ---- Scene 2 — Hatch by hatch (36 s) --------------------------------------
+
+  - id: "2.1"
+    scene: 2
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the hatch door swinging closed on its hinge
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The thick round hatch door swings slowly closed on its hinge as one
+      rigid piece and seats in its frame.
+    negative_extra: >
+      the door bending, the door changing shape, a second door, a person,
+      a hand on the wheel, the hinge moving to the other side
+    anchors: [A3-headon]
+    note: master still for hatch three — 3.3, 5.4 and 7.2 reference it
+    prompt: >
+      A round pressure hatch head-on in a bone-coloured panelled bulkhead, a
+      thick aluminium door on one heavy hinge on the left, a central
+      handwheel with a plain ribbed rim, a dark rubber seal around the frame,
+      the door standing half open into a dim aluminium module beyond, flat
+      cool light, no people
+
+  - id: "2.2"
+    scene: 2
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: modules
+    anchors: [A1-module]
+    prompt: >
+      A second cylindrical module seen wide at chest height, aluminium
+      equipment racks along both sides with every latch closed and every
+      handle in the same position, the metal around them dark, flat cool
+      light, the air completely clear, every strap flat and buckled, the
+      lower left of the frame a plain empty panel, no people
+
+  - id: "2.3"
+    scene: 2
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-headon]
+    prompt: >
+      A bone-coloured fabric-covered wall panel head-on, a square of panel
+      framed by a neat row of flush aluminium fasteners on each side, the
+      fabric scuffed grey along its lower edge, flat cool light, the air
+      completely clear, nothing attached to the panel, no people
+
+  - id: "2.4"
+    scene: 2
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the fan turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The small five-bladed fan behind the grille turns steadily at an even
+      speed for the whole shot.
+    negative_extra: >
+      blades multiplying, blades bending, the grille moving, the fan speeding
+      up or stopping
+    anchors: [A2-macro]
+    note: master still for the fan — 8.4 references it
+    prompt: >
+      Macro view through a round aluminium grille of a small five-bladed
+      ventilation fan set into a duct, plain grey blades, flat cool light
+      across the grille, background unresolvable, no people
+
+  # ---- Scene 3 — The rule (30 s) --------------------------------------------
+
+  - id: "3.1"
+    scene: 3
+    approved_seed: 22  # selected by Serge 2026-10-26; flag decals removed by a Nano Banana edit (stills/3.1_s22-deflag.jpg)
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the Earth sliding beneath the station
+    motion_tail: motion_tail_earth
+    video_prompt: >
+      The Earth's surface slides slowly and steadily beneath the station,
+      the clouds travelling left to right.
+    negative_extra: >
+      the boom moving, the camera housing turning, stars appearing, the
+      station rotating, lens flare
+    exterior: true
+    spine_key: exterior_spine
+    anchors: [A5-exterior]
+    prompt: >
+      Exterior of an orbital station in hard sunlight, a short aluminium boom
+      in the foreground carrying a boxy camera housing pointed away from the
+      viewer towards a round docking port, the Earth filling the lower half
+      of the frame with bands of pale cloud over blue ocean, black sky above,
+      no people
+
+  - id: "3.2"
+    scene: 3
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: rule
+    anchors: [A4-topdown]
+    prompt: >
+      Directly overhead view of the same small aluminium work surface, a
+      single sheet of ruled paper held flat under a steel clip bar, a plain
+      grey pencil seated in a clip beside it, flat even cool light, the air
+      above completely clear, everything held in place by clips, the lower
+      left of the frame plain aluminium, no people
+
+  - id: "3.3"
+    scene: 3
+    # Still is the LAST FRAME of takes/2.1.mp4 (Serge, 2026-10-26): the
+    # generated ref_shot drew the door slightly differently and the wheel
+    # wandered between shots. The take's own closed position is the hatch.
+    still_from: {take: "2.1", at: last}
+    motion_tier: local
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "2.1"
+    prompt: >
+      The same round pressure hatch, now fully closed and seated in its
+      frame, the handwheel at rest, flat cool light, everything around it
+      still, no people
+
+  - id: "3.4"
+    scene: 3
+    approved_seed: 22    # selected by Serge 2026-10-26, pass 3 (plain panel)
+    motion_tier: model
+    timeline_seconds: 5
+    model: kling3
+    generate_seconds: 5
+    motion: the pencil turning end over end
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The grey pencil turns slowly end over end in the air as it drifts a
+      few centimetres to the right, one rigid object.
+    negative_extra: >
+      the pencil bending, a second pencil, the pencil falling, the pencil sharpened at both ends, a hand, the handwheel turning, the hatch wheel rotating, the hatch door moving, the hatch opening
+    anchors: [A2-macro]
+    note: >
+      Roll 1 (rejected 2026-10-26, takes/rejected/3.4-roll1.mp4): the pencil
+      drifted, and hatch three's handwheel behind it turned ~45° on its own —
+      read as someone turning it from inside module C, which names the cause.
+      The hatch is locked in the prompt and the negative from roll 2, here and
+      in 6.3 and 8.2, which share the background.
+      Roll 2 (rejected, takes/rejected/3.4-roll2.mp4): the pencil tumbles as
+      asked, but the wheel still re-draws between + and x behind it and the
+      pencil grows a second sharpened end. Two failures — stopped.
+      Pass 3 (2026-10-26, Serge): the hatch is taken out of the frame. A
+      handwheel is a thing on an axle, the model knows it turns, and no
+      wording held it. The pencil now floats in front of a plain panel on the
+      macro anchor, so there is nothing behind it to animate.
+      Master still for the pencil — 6.3 and 8.2 reference it. Pass 1 on
+      A1-module (rejected 2026-10-26): the wide anchor put the pencil at the
+      far hatch, a sliver forty metres away. Pass 2 is on the head-on anchor,
+      so the pencil sits at the distance the shot is about.
+    prompt: >
+      A single plain grey pencil floating free in the air across the middle
+      of the frame, seen close and sharp, tilted at a slight angle, in front
+      of one flat bone-coloured fabric panel that fills the whole background
+      evenly from edge to edge and is soft with distance, its weave faintly
+      visible, flat cool light, no people
+
+  # ---- Scene 4 — Day three (40 s) -------------------------------------------
+
+  - id: "4.1"
+    scene: 4
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the needle sinking across the ticks
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The long black needle turns slowly clockwise on its centre pivot,
+      sweeping steadily down towards the arc of ticks, one rigid needle.
+    negative_extra: >
+      more ticks appearing, numerals appearing, a second needle, the needle
+      spinning, the face becoming a clock
+    anchors: [A2-macro]
+    note: master still for the gauge — 5.5 references it
+    note: >
+      Pass 1 (rejected 2026-10-26): s11 drew the five ticks and no needle at
+      all; s22 drew a full numbered scale. Pass 2 makes the needle the
+      subject of the sentence.
+    prompt: >
+      Extreme close view of a round pressure gauge in a brushed aluminium
+      bezel. A long fine black needle runs from a small black pivot in the
+      centre of the face out to the fourth of five plain engraved ticks set
+      in a short arc across the lower half of the face; nothing else is on
+      the pale face. Scratched glass, flat cool light raking from the left,
+      background unresolvable, no people
+
+  - id: "4.2"
+    scene: 4
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: day3
+    anchors: [A1-module]
+    prompt: >
+      The first module seen wide from its far end at chest height, looking
+      back towards a closed round hatch, bone-coloured panelling, aluminium
+      handrails, every strap flat and buckled, flat cool light, the air
+      completely clear, the lower left of the frame a plain empty panel, no
+      people
+
+  - id: "4.3"
+    scene: 4
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A4-topdown]
+    prompt: >
+      Directly overhead view of the small aluminium work surface, three
+      sheets of ruled paper overlapping under one steel clip bar, a plain
+      grey pencil seated in a clip beside them, flat even cool light, the air
+      completely clear, everything held in place by clips, no people
+
+  - id: "4.4"
+    scene: 4
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the status lamp blinking
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The tiny round status lamp on the transducer blinks steadily, once a
+      second, for the whole shot.
+    negative_extra: >
+      the lamp changing colour, more lamps appearing, the line moving
+    anchors: [A2-macro]
+    prompt: >
+      Macro view of a small cylindrical pressure transducer threaded into an
+      aluminium manifold, a braided line leaving it, one tiny round status
+      lamp on its body lit cold pale blue, flat cool light, background
+      unresolvable, no people
+
+  # ---- Scene 5 — Day five (44 s) --------------------------------------------
+
+  - id: "5.1"
+    scene: 5
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: holes
+    anchors: [A3-headon]
+    prompt: >
+      A round porthole head-on in a bone-coloured panelled wall, the glass
+      seen at an angle so it shows only a dim cold reflection of the module
+      and no view through it, a plain aluminium ring around it, flat cool
+      light, everything around it still, the lower left of the frame plain
+      panel, no people
+
+  - id: "5.2"
+    scene: 5
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the Earth sliding past the window
+    motion_tail: motion_tail_earth
+    video_prompt: >
+      The Earth slides slowly and steadily past the window, the clouds
+      travelling left to right.
+    negative_extra: >
+      the window frame moving, reflections changing, stars, lens flare
+    anchors: [A3-headon]
+    prompt: >
+      A round porthole head-on in a bone-coloured panelled wall, through it
+      the Earth's surface far below with bands of pale cloud over blue ocean,
+      a plain aluminium ring around the glass, flat cool light in the module,
+      no people
+
+  - id: "5.3"
+    scene: 5
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    card: oxygen
+    anchors: [A1-module]
+    prompt: >
+      The second module seen wide from the hatch end, aluminium equipment
+      racks with every latch closed and every handle in the same position,
+      the metal around them dark, flat cool light, the air completely clear,
+      every strap flat and buckled, the lower left of the frame a plain empty
+      panel, no people
+
+  - id: "5.4"
+    scene: 5
+    # Still is the last frame of takes/2.1.mp4, as 3.3.
+    still_from: {take: "2.1", at: last}
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "2.1"
+    prompt: >
+      The same round pressure hatch, fully closed and seated, the handwheel
+      at rest, flat cool light, everything around it still, no people
+
+  - id: "5.5"
+    scene: 5
+    # Still is takes/rejected/5.5-kling.mp4 at 6.0 s (Serge, 2026-10-26):
+    # the needle on the ticks, lower than 4.1's opening position — the
+    # day-five reading — instead of 4.1's own still.
+    still_from: {take: "5.5-kling (rejected)", at: 6.0}
+    # Kling roll 1 (rejected 2026-10-26, takes/rejected/5.5-kling.mp4, $1.12):
+    # asked to ease down and stop, the needle swept for all ten seconds, past
+    # the last tick — the same move as 4.1 forty seconds earlier. By day five
+    # the fall has almost stopped, so a needle that does not move is the
+    # reading; the frame moves by a push instead (Serge, 2026-10-26).
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "4.1"
+    prompt: >
+      The same round pressure gauge, the same five plain ticks and the same
+      fine black needle, flat cool light, no people
+
+  # ---- Scene 6 — Day six (30 s) ---------------------------------------------
+
+  - id: "6.1"
+    scene: 6
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: day6
+    anchors: [A1-module]
+    prompt: >
+      The first module seen wide at chest height down its full length, the
+      round hatch at the far end closed, bone-coloured panelling, every strap
+      flat and buckled, flat cool light, the air completely clear, the lower
+      left of the frame a plain empty panel, no people
+
+  - id: "6.2"
+    scene: 6
+    approved_seed: 44  # selected by Serge 2026-10-26; flag decals removed by a Nano Banana edit (stills/6.2_s44-deflag.jpg)
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    exterior: true
+    spine_key: exterior_spine
+    anchors: [A5-exterior]
+    prompt: >
+      Exterior of one cylindrical station module seen from slightly above,
+      its ivory thermal blanket and seam lines lit hard from one side and its
+      far half in deep shadow, the Earth's limb a thin blue curve below,
+      black sky, everything on the hull fixed and still, no people
+
+  - id: "6.3"
+    scene: 6
+    approved_seed: 11    # selected by Serge 2026-10-26 — the 8.2 s11 frame, shared (both 6.3 candidates were faulty)
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the pencil turning end over end
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The grey pencil turns slowly end over end and drifts gently across the
+      frame to the right, one rigid object.
+    negative_extra: >
+      the pencil bending, a second pencil, the pencil falling, the pencil sharpened at both ends, a hand, the handwheel turning, the hatch wheel rotating, the hatch door moving, the hatch opening
+    ref_shot: "3.4"
+    prompt: >
+      The same floating plain grey pencil in front of the same plain
+      bone-coloured panel, flat cool light, no people
+
+  # ---- Scene 7 — Resolved (26 s) --------------------------------------------
+
+  - id: "7.1"
+    scene: 7
+    approved_seed: 11    # selected by Serge 2026-10-26
+    # Roll 1 (2026-10-26): the lever reaches vertical at ~3.8 s, then keeps
+    # spinning and grows a second arm. The clean head is kept — 4 s of take
+    # slowed 1.25x into 5 s — and 7.3 takes the 5 s back (Serge, 2026-10-26).
+    motion_tier: model
+    timeline_seconds: 5
+    retime: 1.25
+    retime_mode: interpolate
+    model: kling3
+    generate_seconds: 10
+    motion: the valve lever rotating a quarter turn
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The flat aluminium lever rotates a quarter turn on its round boss, from
+      horizontal to vertical, as one rigid piece, and stops.
+    negative_extra: >
+      the lever bending, a second lever, the boss turning, a hand
+    anchors: [A2-macro]
+    prompt: >
+      Macro view of a small equalisation valve set into the rim of a hatch
+      frame, a flat aluminium lever on a round boss, the bone-coloured
+      panelling around it scuffed grey, flat cool light, background
+      unresolvable, no people
+
+  - id: "7.2"
+    scene: 7
+    # Start frame is the last frame of takes/2.1.mp4, as 3.3 — the door
+    # opens from exactly where it closed. Roll 1 from the generated still
+    # had the wheel shifted towards the hinge (takes/rejected/).
+    still_from: {take: "2.1", at: last}
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the hatch door swinging open on its hinge
+    motion_tail: motion_tail_event
+    video_prompt: >
+      The thick round hatch door swings slowly open on its hinge as one rigid
+      piece, into the dim aluminium module beyond.
+    negative_extra: >
+      the door bending, the door changing shape, a person in the doorway, a
+      hand on the wheel, light pouring out, anything inside the module moving
+    ref_shot: "2.1"
+    prompt: >
+      The same round pressure hatch, fully closed, flat cool light, no people
+
+  - id: "7.3"
+    scene: 7
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: local
+    timeline_seconds: 11   # was 6; takes 7.1's five seconds
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-module]
+    prompt: >
+      Looking through an open round hatch into a dim cylindrical module,
+      bone-coloured panelling and aluminium racks beyond, the far end in
+      shadow, flat cool light falling off with depth, the air completely
+      clear, every rack latch closed and every handle in the same position,
+      the metal around them dark, no people
+
+  # ---- Scene 8 — Coda (30 s) ------------------------------------------------
+
+  - id: "8.1"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    card: log-ends
+    anchors: [A1-module]
+    prompt: >
+      The first module seen wide at chest height, empty, every strap flat and
+      buckled, bone-coloured panelling, flat cool light, the air completely
+      clear, the lower left of the frame a plain empty panel, no people
+
+  - id: "8.2"
+    scene: 8
+    # Start frame is the last frame of takes/6.3.mp4 (CLAUDE.md, still_from).
+    still_from: {take: "6.3", at: last}
+    # Kept as rolled (Serge, 2026-10-26): the pencil tumbles cleanly, but the
+    # background grows panel seams and a pale band low in frame — the start
+    # frame was a mid-motion frame of 6.3. Not critical in a 5 s coda shot.
+    motion_tier: model
+    timeline_seconds: 5
+    model: kling3
+    generate_seconds: 5
+    motion: the pencil turning end over end
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The grey pencil turns slowly end over end, one rigid object.
+    negative_extra: >
+      the pencil bending, a second pencil, the pencil falling, the pencil sharpened at both ends, a hand, the handwheel turning, the hatch wheel rotating, the hatch door moving, the hatch opening
+    ref_shot: "3.4"
+    prompt: >
+      The same floating plain grey pencil in front of the same plain
+      bone-coloured panel, flat cool light, no people
+
+  - id: "8.3"
+    scene: 8
+    approved_seed: 22    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    card: not-performed
+    anchors: [A4-topdown]
+    prompt: >
+      Directly overhead view of the small aluminium work surface, empty, the
+      steel clip bar closed on nothing, an empty pencil clip, flat even cool
+      light, the air completely clear, the lower left of the frame plain
+      aluminium, no people
+
+  - id: "8.4"
+    scene: 8
+    approved_seed: 22    # selected by Serge 2026-10-26
+    # The take is NOT generated: takes/8.4.mp4 is takes/2.4.mp4 from 5.0 s to
+    # 10.0 s (Serge, 2026-10-26). It is the same fan doing the same thing, so
+    # a new roll could only make it a different fan. A roll from 2.4's last
+    # frame (takes/rejected/8.4-from-frame.mp4, $0.56) drifted 10 px and
+    # darkened — that frame has motion-blurred blades.
+    reuse_take: {take: "2.4", from: 5.0}
+    motion_tier: model
+    timeline_seconds: 5
+    model: kling3
+    generate_seconds: 5
+    motion: the fan turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The fan behind the grille turns steadily at an even speed.
+    negative_extra: >
+      blades multiplying, blades bending, the grille moving
+    ref_shot: "2.4"
+    prompt: >
+      The same fan behind the same grille, flat cool light, no people
+
+  - id: "8.5"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-10-26
+    motion_tier: static
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    card: closer
+    anchors: [A1-module]
+    prompt: >
+      A cylindrical module seen wide at chest height, bone-coloured
+      panelling, every strap flat and buckled, flat cool light, the air
+      completely clear, the lower left of the frame a plain empty panel, no
+      people

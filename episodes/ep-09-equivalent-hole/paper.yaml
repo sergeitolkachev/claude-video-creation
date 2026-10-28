@@ -1,0 +1,42 @@
+# Pencil marks on the desk sheets (scripts/build_paper.py). No letters, no
+# numerals — every character on screen is a Menlo card. The marks are already
+# on the paper when the shot starts. Boxes are the sheet's own edges, measured
+# on the approved still (1344x768); marks are fractions of that box.
+#
+# The sheets grow with the story: 3.2 is day one — the station map with module
+# C shut off and the first four-hour decay; 4.3 is day three — the same decay
+# worked three times. 8.3, the empty desk in the coda, stays empty.
+
+sheets:
+  "3.2":
+    box: [763, 80, 1105, 565]
+    seed: 32
+    marks:
+      # The station: A, B, C in a row, hatches as the gaps between them.
+      - {kind: box, a: [0.10, 0.10], b: [0.46, 0.25]}
+      - {kind: box, a: [0.50, 0.12], b: [0.71, 0.23]}
+      - {kind: box, a: [0.75, 0.13], b: [0.90, 0.22]}
+      # Hatch three: the gap to C pressed shut with two hard strokes.
+      - {kind: line, a: [0.725, 0.11], b: [0.725, 0.24], w: 1.8, tone: 70}
+      - {kind: line, a: [0.735, 0.11], b: [0.735, 0.24], w: 1.8, tone: 70}
+      # C shaded off; one arrow out through its wall where the leak is.
+      - {kind: hatch, a: [0.76, 0.14], b: [0.89, 0.21], step: 0.025}
+      - {kind: arrow, a: [0.86, 0.13], b: [0.93, 0.05]}
+      # The first test: four hours, a shallow fall, the end of it ringed.
+      - {kind: axes, origin: [0.12, 0.66], end: [0.88, 0.36], xticks: 3, yticks: 3}
+      - {kind: decay, u: [0.15, 0.84], v: [0.40, 0.50], tau: 3.0, rings: [1.0], ring_px: 5}
+
+  "4.3":
+    box: [786, 82, 1082, 495]
+    seed: 9
+    marks:
+      - {kind: axes, origin: [0.108, 0.903], end: [0.926, 0.165], xticks: 5, yticks: 4, tone: 110}
+      # "I ran it three times": the same decay, three runs a hair apart.
+      - kind: decay
+        u: [0.135, 0.885]
+        v: [0.208, 0.874]
+        tau: 0.35
+        runs: [[0, 0, 95], [0.0068, -0.006, 125], [-0.005, 0.0073, 140]]
+        rings: [0.0, 0.33, 0.66]
+      - {kind: line, a: [0.486, 0.959], b: [0.892, 0.954], w: 1.6, tone: 75}
+      - {kind: line, a: [0.500, 0.966], b: [0.878, 0.964], w: 1.2, tone: 105}

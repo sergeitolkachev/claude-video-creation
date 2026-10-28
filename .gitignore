@@ -1,6 +1,9 @@
 # Secrets
 .env
 
+# keys
+.keys
+
 # Editors
 .idea
 .DS_Store
@@ -29,3 +32,12 @@ brand/approved/*
 !brand/out/
 brand/out/*
 !brand/**/.gitkeep
+
+# Channel statistics pulled by scripts/fetch_stats.py. Reproducible from the API.
+analytics/
+
+# Model bake-off takes. Findings live in research/*/README.md.
+research/*/takes/
+research/*/pending.json
+research/*/compare-*.mp4
+research/*/sheets/

@@ -1,0 +1,75 @@
+# Record 09 thumbnails (scripts/build_thumbs.py). Plates are approved stills,
+# never new generations. Three variants, each selling a different thing, for
+# swapping in Studio a week at a time; ids are what a CTR figure attaches to,
+# so they are not renamed. Judge them as a row of 210 px tiles.
+#
+#   a — the number: a hole that shrinks (matches the record's title)
+#   b — the object: hatch three, half open
+#   c — the anomaly: the oxygen a leak cannot take
+
+episode: ep-09-equivalent-hole
+slug: "FC9-009 // The Equivalent Hole"
+export: {width: 1280, height: 720}
+variants:
+  - id: a-the-hole
+    plate: "4.1"
+    crop: {zoom: 0.92, bias_y: 0.45}
+    blocks:
+      - lines: ["1.4 → 0.6 mm"]
+        size: 104
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["THE HOLE GOT SMALLER"]
+        size: 40
+        tracking: 8
+        x: 0.04
+        y: 0.33
+        anchor: left
+        scrim: true
+
+  - id: b-hatch-three
+    plate: "2.1"
+    # First build: white type over the pale panel and across the wheel; at
+    # 210 px "DAY 40" was lost in the metal. The hatch moves right, the corner
+    # under the type is dimmed.
+    crop: {zoom: 0.80, bias_x: 0.02, bias_y: 0.50}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.62, y1: 0.52, strength: 0.55, feather: 0.22}
+    blocks:
+      - lines: ["HATCH 3"]
+        size: 120
+        tracking: 6
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["SHUT UNTIL DAY 40"]
+        size: 36
+        tracking: 6
+        x: 0.04
+        y: 0.36
+        anchor: left
+        scrim: true
+
+  - id: c-the-oxygen
+    plate: "5.2"
+    # As b: the porthole moves right, the corner under the type is dimmed.
+    crop: {zoom: 0.80, bias_x: 0.02, bias_y: 0.50}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.62, y1: 0.52, strength: 0.55, feather: 0.22}
+    blocks:
+      - lines: ["O2 19.8%"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["A LEAK CANNOT DO THIS"]
+        size: 40
+        tracking: 8
+        x: 0.04
+        y: 0.36
+        anchor: left
+        scrim: true

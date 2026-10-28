@@ -1,0 +1,26 @@
+# Record 09 teaser: thirty seconds, its own cue, closes on SOON. Lines back
+# to back from the real word timings; every line is already in the record.
+runtime_seconds: 30.0
+aspect: "9:16"
+slug: "FC9-009 // THE EQUIVALENT HOLE"
+end_card:
+  at: 26.0
+  seconds: 4.0
+  lines: ["SOON", "ON THE CHANNEL"]
+shots:
+  - {id: "1.1", at:  0.00, from: 0.0, seconds: 4.80, crop_x: 0.40}
+  - {id: "1.2", at:  4.80, from: 1.0, seconds: 4.20, crop_x: 0.50}
+  - {id: "4.1", at:  9.00, from: 0.0, seconds: 4.00, crop_x: 0.45}
+  - {id: "5.2", at: 13.00, from: 0.0, seconds: 5.50, crop_x: 0.50}
+  - {id: "3.1", at: 18.50, from: 0.0, seconds: 7.50, crop_x: 0.35}
+lines:
+  - {pid: s1p1, at:  0.10}                       # "Day one. Oh-three-forty. The makeup valve has opened eleven times since midnight."
+  - {pid: s1p3, at:  4.85}                       # "The equivalent hole is one point four millimetres across."
+  - {pid: s4p4, at:  8.49, trim: 3.26}           # "One point one. Holes in a hull do not get smaller."
+  - {pid: s5p4, at: 12.15}                       # "Oxygen fraction in C, nineteen point eight percent. On day one it was twenty point nine."
+  - {pid: s6p1, at: 18.25}                       # "Day six, twenty-one hundred. Module C, twenty-seven point seven. Unchanged for thirty-one hours."
+levels:
+  music: -8    # cue measured -21 dBFS (-19 at its peak); voice sits near -17
+  floor: 0
+  voice: 0
+music: sfx/teaser-music.mp3
