@@ -1,0 +1,110 @@
+# Record 10's mix (CLAUDE.md, Audio Rules): the synthesised floor and one
+# music cue under the whole record, ducked 7 dB under the voice by
+# config/sound.yaml, and seven spot effects in the pauses.
+#
+# Levels below are placeholders until the cue and the effects exist and are
+# measured — a level here is a trim on a measured file, not a target
+# (CLAUDE.md). Event offsets are provisional until the takes are placed.
+
+runtime_seconds: 270
+lead_in: 2.5          # script.md Pacing: the wings lower once before anyone speaks
+tail: 3.0
+min_gap: 1.2
+card_pull: 1.5
+
+# Extra air before specific lines, from script.md's Pacing section, on top of
+# the 1.2 s gap. Every one falls on a paragraph boundary.
+hold:
+  s2p3: 0.6    # 1.8 s before "This one spans sixty-eight, in air of twenty-one."
+  # s3p3: was 0.6 (1.8 s); dropped at stage 7 so the line lands within 3 s of its card
+  s6p3: 0.8    # 2.0 s before "No cyclone in that record has entered the basin."
+  s7p3: 1.3    # 2.5 s before "At that pressure the ceiling is about twenty metres below…"
+
+# --- Layers -----------------------------------------------------------------
+# floor  — synthesised, config/sound.yaml. Never gated, under every card.
+# music  — the record's cue, ducked under every paragraph.
+# clicks — mixed by build_cards.py, never by hand. +20 from record 08 on.
+# events — spot effects in the pauses, below. Not a layer.
+# Measured 2026-11-05: the cue sits at -23 to -27 dBFS through the body, 81%
+# of its energy at 200 Hz-3 kHz, none above 3 kHz; it came back 255 s, not
+# 270, thins from ~240 s and is silent by ~250 — the coda runs on the floor,
+# as record 09's did. That is record 08's level at trim 0, so music 0.
+# Effects (rms / peak): wings -38.5 / -9.5, crack -39.7 / -4.5, gust -21.4 /
+# -9.7, gust_heavy -17.3 / -5.6, creak -25.7 / +2.4 (clips as a file; the -6
+# event trim brings it under 0).
+levels: {floor: 0, music: 0, clicks: 20, events: -6}
+layers:
+  floor:
+    synth: floor
+  music:
+    file: sfx/score.mp3
+    duck: true
+
+# Dropped at stage 7 (Serge, 2026-11-05), two passes each: `wings` came back
+# 98% above 3 kHz, then 78% below 200 Hz and 2% in the mids; `gust` came back
+# 100% below 200 Hz both times — a rumble a phone does not play. Both passes
+# are in audio/sfx/rejected/. gust_heavy pass 2 carries both wind events.
+sfx:
+  score:
+    kind: music
+    file: sfx/score.mp3
+    seconds: 270
+    prompt: >
+      Slow, dry, sparse ambient music for a documentary about a salt lake
+      below sea level under a hard white sun. Sustained mid-register strings
+      and a pale airy pad, faint glassy harmonics, very little bass. No
+      melody, no beat, no drums, no vocals, no swell. One gradual tightening
+      across the whole piece that never resolves, thinning near the end.
+      Quiet enough to sit under a calm speaking voice the whole way through.
+  crack:
+    file: sfx/crack.mp3
+    seconds: 2
+    prompt: >
+      A single soft crack of a thick salt crust contracting in the heat, one
+      dull dry snap with a short gritty settle after it, recorded close at
+      ground level. Dry, no echo, no ring, nothing electronic.
+  gust_heavy:
+    file: sfx/gust-heavy.mp3
+    seconds: 3
+    # Pass 2: pass 1 was 100% below 200 Hz — a rumble a phone cannot play.
+    prompt: >
+      One heavier rush of dry wind sweeping over rocks and open salt ground,
+      heard clearly in the mid range with body, building and falling away
+      over three seconds, recorded close. No deep rumble, no microphone
+      buffeting, no whistle, no howl, no hiss, no rain, nothing tonal,
+      nothing electronic.
+  creak:
+    file: sfx/creak.mp3
+    seconds: 2
+    prompt: >
+      A single slow creak of a thick dry dead branch flexing under a small
+      weight, low and woody with a soft settle at the end, recorded close
+      outdoors. Dry, no squeal, no high pitch, no echo, nothing electronic.
+
+# Spot effects — script.md, Sound design. Anchored to a shot so a retimed
+# shot list carries them; validate.py checks each sits 0.3 s clear of any
+# word once narration is placed. Offsets provisional.
+events:
+  - {sfx: crack,      shot: "1.4", at: 1.0}                # under the radar sweep, after the card's line
+  - {sfx: gust_heavy, shot: "2.3", at: 5.0, seconds: 2.0, level: -4}  # the anemometer's reason; the wind, early and lighter
+  - {sfx: creak,      shot: "6.4", at: 3.5}                # the branch, as the animal turns
+  - {sfx: gust_heavy, shot: "7.3", at: 7.4, seconds: 2.5}  # after s7p3 ends at 237.0 s; the weather has arrived
+  - {sfx: creak,      shot: "8.3", at: 1.0}                # the bare branch
+
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser -----------------------------------------------------------------
+# The teaser's own cue: thirty seconds, composed with a build, never the
+# record's cue and never under the record. Generated at stage 9, not now.
+teaser_sfx:
+  teaser_music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow, dry ambient music for a trailer about a salt lake below sea level
+      under a hard sun. Sustained mid-register strings and a pale airy pad
+      over a faint low pulse, roughly 200 Hz to 3 kHz, and one gradual
+      tightening across the whole piece that never resolves. No melody, no
+      drums, no vocals, no swell at the end. Quiet enough to sit under a calm
+      speaking voice the whole way through.

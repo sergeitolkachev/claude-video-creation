@@ -1,0 +1,117 @@
+# Data cards — record 10.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script. `with:` names the paragraph the card answers to; validate.py
+# measures the gap once narration exists. Times are seconds from the start of
+# the card's own shot. Every card sits on a static plate. The slug and the
+# channel closer live in titles.yaml.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: tracks
+    with: s1p3
+    shot: "1.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "LAKE SURFACE    -155 m"
+      - "WINGSPAN         68 cm"
+      - "RADAR TRACKS     2,300"
+      - "HIGHEST TRACK    -26 m"
+
+  # --- Scene 2 -------------------------------------------------------------
+  - id: odonates
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "LARGEST LIVING ODONATE    19 cm"
+      - "MEGANEUROPSIS, PERMIAN   ~70 cm"
+      - "O2 THEN ~30%      O2 NOW 20.95%"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: pump
+    with: s3p3
+    shot: "3.3"
+    pos: lower-left
+    build: line
+    at: 3.5   # 0.5 typed it 5.4 s ahead of s3p3 (stage 7); LIMIT folded into the flight line to fit the plate
+    lines:
+      - "AT REST     40 STROKES/MIN"
+      - "IN FLIGHT   3 STROKES/S, MAX"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: ceiling
+    with: s4p3
+    shot: "4.3"
+    pos: lower-left
+    build: line
+    at: 1.0   # 0.5 typed it 3.2 s ahead of s4p3 (stage 7); padding cut to fit the plate
+    lines:
+      - "FLIGHT NEEDS 1,014.5 hPa"
+      - "AT THE WATER 1,027.6 hPa"
+      - "AT SEA LEVEL 1,010.0 hPa"
+      - "CEILING            -40 m"
+
+  # --- Scene 5 -------------------------------------------------------------
+  - id: tide
+    with: s5p2
+    shot: "5.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "PRESSURE TIDE   +/-1.2 hPa"
+      - "10:00, 22:00         -29 m"
+      - "04:00, 16:00         -51 m"
+
+  # --- Scene 6 -------------------------------------------------------------
+  - id: record
+    with: s6p2
+    shot: "6.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "STATION RECORD        61 YEARS"
+      - "LOWEST             1,002.0 hPa"
+      - "CEILING THAT DAY        -112 m"
+
+  # --- Scene 7 -------------------------------------------------------------
+  - id: forecast
+    with: s7p2
+    shot: "7.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "CYCLONE, GULF OF ADEN"
+      - "FORECAST MIN, THURSDAY"
+      - "BASIN          995.0 hPa"
+
+  # --- Coda ----------------------------------------------------------------
+  - id: thursday
+    shot: "8.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "CEILING, THURSDAY    -175 m"
+      - "LAKE SURFACE         -155 m"
+
+  - id: survey
+    shot: "8.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "SURVEY RESUMES FRIDAY"

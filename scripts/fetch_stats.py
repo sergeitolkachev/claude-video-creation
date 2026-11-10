@@ -20,6 +20,7 @@ import sys, json, csv, glob, datetime, pathlib
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+from google.auth.exceptions import RefreshError
 from googleapiclient.discovery import build
 
 print = __import__('functools').partial(print, flush=True)
@@ -38,8 +39,13 @@ def creds():
     if c and c.valid:
         return c
     if c and c.expired and c.refresh_token:
-        c.refresh(Request())
-    else:
+        try:
+            c.refresh(Request())
+        except RefreshError:
+            # A token issued while the consent screen was in Testing dies
+            # after 7 days with invalid_grant; fall through to a new consent.
+            c = None
+    if not (c and c.valid):
         # A "Web application" client has no localhost redirect and Google
         # answers redirect_uri_mismatch; only a "Desktop app" client works here.
         secret = [f for f in glob.glob(str(KEYS / "client_secret*.json"))
@@ -75,7 +81,7 @@ def main():
     yt = build("youtube", "v3", credentials=c)
     ya = build("youtubeAnalytics", "v2", credentials=c)
 
-    ch = yt.channels().list(part="snippet,contentDetails,statistics", mine=True).execute()["items"][0]
+    ch = yt.channels().list(part="snippet,contentDetails,statistics", mine=True).execute(num_retries=5)["items"][0]
     print(f"channel: {ch['snippet']['title']}  subs={ch['statistics'].get('subscriberCount')}  "
           f"views={ch['statistics'].get('viewCount')}")
     uploads = ch["contentDetails"]["relatedPlaylists"]["uploads"]
@@ -83,7 +89,7 @@ def main():
     ids, tok = [], None
     while True:
         r = yt.playlistItems().list(part="contentDetails", playlistId=uploads,
-                                    maxResults=50, pageToken=tok).execute()
+                                    maxResults=50, pageToken=tok).execute(num_retries=5)
         ids += [i["contentDetails"]["videoId"] for i in r["items"]]
         tok = r.get("nextPageToken")
         if not tok:
@@ -93,15 +99,15 @@ def main():
     (out / "retention").mkdir(parents=True, exist_ok=True)
     videos = []
     for i in range(0, len(ids), 50):
-        r = yt.videos().list(part="snippet,contentDetails,statistics", id=",".join(ids[i:i + 50])).execute()
+        r = yt.videos().list(part="snippet,contentDetails,statistics", id=",".join(ids[i:i + 50])).execute(num_retries=5)
         for v in r["items"]:
             vid = v["id"]
             q = dict(ids="channel==MINE", startDate=since, endDate=today, filters=f"video=={vid}")
-            m = rows(ya.reports().query(metrics=METRICS, **q).execute())
+            m = rows(ya.reports().query(metrics=METRICS, **q).execute(num_retries=5))
             src = rows(ya.reports().query(metrics="views", dimensions="insightTrafficSourceType",
-                                          sort="-views", **q).execute())
+                                          sort="-views", **q).execute(num_retries=5))
             ret = rows(ya.reports().query(metrics="audienceWatchRatio,relativeRetentionPerformance",
-                                          dimensions="elapsedVideoTimeRatio", **q).execute())
+                                          dimensions="elapsedVideoTimeRatio", **q).execute(num_retries=5))
             if ret:
                 with open(out / "retention" / f"{vid}.csv", "w", newline="") as f:
                     w = csv.DictWriter(f, fieldnames=list(ret[0]))

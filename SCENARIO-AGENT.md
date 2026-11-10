@@ -39,6 +39,12 @@ invented" appendix you already write for the script is what the description's
 verifiable section is built from, so write that appendix knowing it will be
 read by the audience and not only by the producer.
 
+**Write every pasted paragraph on one line.** Inside the code blocks of
+`publish.md` a paragraph has no hard wraps and paragraphs are separated by one
+blank line; only the chapter list, the section headings and the hashtags are
+one item per line. YouTube keeps every newline, so a wrapped description lands
+in Studio broken mid-sentence (Serge, 2026-11-06).
+
 **Titles state what the narrator did, never ask a question.** "He switched off
 the scrubber to find out" is this channel. "What was in section D?" is a
 different one.
@@ -414,6 +420,12 @@ Two things the writer decides:
 ## 6. Writing the narration
 
 The voice is a recording device, not a storyteller.
+
+- **American spelling, from record 11.** meters, centimeters, kilometers,
+  liters, percent, color, gray, center, modeled, aluminum. The narration text
+  is also what the captions and `publish.md` are built from, so one spelling
+  goes everywhere a viewer reads it (Serge, 2026-11-06; records 01–10 were
+  British and stay so).
 
 - Dry, procedural, first person. The narrator is doing a job and filling in a
   form.

@@ -1,0 +1,79 @@
+# Record 10 thumbnails (scripts/build_thumbs.py). Plates are approved stills,
+# never new generations. Three variants, each selling a different thing, for
+# swapping in Studio a week at a time; ids are what a CTR figure attaches to,
+# so they are not renamed. Judge them as a row of 210 px tiles.
+#
+#   a — the animal and the limit (matches the record's title)
+#   b — the place: a lake 155 m below the sea
+#   c — the forecast: the weather coming
+
+episode: ep-10-the-ceiling
+slug: "FC9-010 // The Ceiling"
+export: {width: 1280, height: 720}
+variants:
+  - id: a-never-above-the-sea
+    plate: "1.1"
+    # The animal hangs right of centre; the type goes in the pale glare to
+    # its left, dimmed so the halo holds on white.
+    # First build: bias_x 0.62 moved the window right and so the animal left,
+    # under "SEA LEVEL" and across the slug. bias 0.25 puts it in the right
+    # half, clear of both.
+    crop: {zoom: 0.85, bias_x: 0.25, bias_y: 0.40}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.55, y1: 0.50, strength: 0.50, feather: 0.30}
+    blocks:
+      - lines: ["NEVER ABOVE"]
+        size: 84
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["SEA LEVEL"]
+        size: 84
+        tracking: 4
+        x: 0.04
+        y: 0.24
+        anchor: left
+        scrim: true
+
+  - id: b-minus-155
+    plate: "1.2"
+    crop: {zoom: 0.90, bias_x: 0.50, bias_y: 0.55}
+    # First build: the dim's right edge showed as a hard grey box on the white
+    # sky. Narrower and feathered further.
+    dim: {x0: 0.0, y0: 0.0, x1: 0.52, y1: 0.42, strength: 0.45, feather: 0.40}
+    blocks:
+      - lines: ["-155 m"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["IT CANNOT FLY HIGHER THAN -40"]
+        size: 34
+        tracking: 6
+        x: 0.04
+        y: 0.33
+        anchor: left
+        scrim: true
+
+  - id: c-thursday
+    plate: "7.1"
+    crop: {zoom: 0.90, bias_x: 0.50, bias_y: 0.45}
+    dim: {x0: 0.0, y0: 0.45, x1: 0.62, y1: 1.0, strength: 0.55, feather: 0.22}
+    blocks:
+      - lines: ["995 hPa"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.56
+        anchor: left
+        scrim: true
+      - lines: ["FORECAST, THURSDAY"]
+        size: 40
+        tracking: 8
+        x: 0.04
+        y: 0.80
+        anchor: left
+        scrim: true

@@ -134,6 +134,14 @@ def anchor_xy(pos, spec, box_w, box_h):
         return W // 2 + mx // 2, my + 120
     if pos == "centre":
         return int((W - box_w) // 2), int((H - box_h) // 2)
+    if pos == "centre-high":
+        # The channel closer from record 11 (Serge, 2026-11-06): YouTube's
+        # end screen lays its video tile over the lower left and the channel
+        # avatar over the lower right of the last seconds, and on record 10
+        # the centred closer sat right on their top edge. Lifted ~150 px —
+        # about two and a half card lines — so it clears both. Records 01-10
+        # keep "centre" and are not rebuilt.
+        return int((W - box_w) // 2), int((H - box_h) // 2) - 150
     return mx, my
 
 

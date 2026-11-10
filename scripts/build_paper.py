@@ -155,8 +155,48 @@ def draw(sh, el):
             mask = g.point(lambda v: v * ink // 255)
             sh.layer.paste(255 - ink, (int(cx - px // 2), int(y * S - px // 4 + dy)), mask)
             cx += font.getlength(ch) * sh.rng.uniform(0.95, 1.08)
+    elif kind in ("dots", "dots_under_curve"):
+        # A scatter of pencil dots: record 10's radar tracks. Each is a short
+        # pressed stroke, not a perfect disc, so the cloud reads as hand-made.
+        # `dots` fills a box; `dots_under_curve` hangs each dot a little below
+        # a `curve` with the same parameters — the tracks under the ceiling.
+        rng = np.random.default_rng(el.get("seed", 1))
+        n = el["n"]
+        if kind == "dots":
+            us = rng.uniform(*el["u"], n)
+            vs = rng.uniform(*el["v"], n)
+        else:
+            x = rng.uniform(0, 1, n)
+            us = el["u"][0] + x * (el["u"][1] - el["u"][0])
+            vs = curve_v(x, el) + np.abs(rng.normal(0, el.get("depth", 0.03), n)) + 0.012
+        pts = [(u, v) for u, v in zip(us, vs)] + [tuple(p) for p in el.get("extra", [])]
+        r = el.get("r_px", 1.6)
+        for u, v in pts:
+            cx, cy = sh.xy(u, v)
+            a = sh.rng.uniform(0, np.pi)
+            sh.stroke([(cx - r * np.cos(a), cy - r * np.sin(a)),
+                       (cx + r * np.cos(a), cy + r * np.sin(a))],
+                      w=el.get("w", 1.6), tone=tone, amp=0.15)
+    elif kind == "curve":
+        # A pencilled periodic curve: record 10's pressure tide. x runs 0..1
+        # across `u`; v = v_mid - amp * cos(2 pi (cycles * x - phase)), so a
+        # crest (smallest v, highest on the page) sits where cycles*x = phase.
+        x = np.linspace(0, 1, 240)
+        u = el["u"][0] + x * (el["u"][1] - el["u"][0])
+        sh.stroke([sh.xy(a, b) for a, b in zip(u, curve_v(x, el))],
+                  w=el.get("w", 1.3), tone=tone)
+    elif kind == "ring":
+        cx, cy = sh.xy(*el["at"])
+        a = np.linspace(0, 2 * np.pi, 40)
+        r = el.get("r_px", 6)
+        sh.stroke(np.column_stack([cx + r * np.cos(a), cy + r * np.sin(a)]),
+                  w=1.0, tone=tone, amp=0.4)
     else:
         raise SystemExit(f"unknown mark '{kind}'")
+
+
+def curve_v(x, el):
+    return el["v_mid"] - el["amp"] * np.cos(2 * np.pi * (el["cycles"] * x - el["phase"]))
 
 
 def main():

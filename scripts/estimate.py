@@ -22,6 +22,10 @@ for s in shots:
     if s.get("source", "").startswith("ffmpeg"):
         by[s["source"]][0] += 1
         continue
+    if s.get("reuse_take"):
+        # Cut out of an existing take by gen_takes.py, never generated.
+        by["reuse_take"][0] += 1
+        continue
     t, g = s["model"], s["generate_seconds"]
     tier = cfg["video"][t]
     if t == "workhorse":
@@ -34,7 +38,8 @@ for s in shots:
 
 print(f"{'tier':<12}{'shots':>7}{'sec':>7}{'usd':>9}   endpoint")
 for t, (n, sec, c) in by.items():
-    eid = "— built locally, no model" if t.startswith("ffmpeg") else cfg["video"][t]["id"]
+    eid = ("— built locally, no model" if t.startswith("ffmpeg") or t == "reuse_take"
+           else cfg["video"][t]["id"])
     print(f"{t:<12}{n:>7}{sec:>7}{c:>9.2f}   {eid}")
     tot += c
 video = tot

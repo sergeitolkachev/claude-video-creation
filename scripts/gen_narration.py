@@ -7,9 +7,11 @@ everything in one sitting does not help, because every paragraph is still its
 own request. The seed does: the same seed reproduces the same delivery to four
 decimal places.
 
-So this generates several seeded candidates per paragraph and reports the pace
-of each. A human picks the take whose pace sits with its neighbours, and the
-winning seed goes into narration.yaml — after which the episode's audio is
+From record 10 it generates one seeded take per paragraph (Serge,
+2026-11-05: three candidates tripled the character spend for a choice that
+almost never changed anything) and reports its pace. A paragraph that comes
+back off-pace is regenerated alone with --seeds 22 --scene N. The seed of each
+kept take goes into narration.yaml, after which the episode's audio is
 reproducible from the repository.
 
 Which voice is an episode fact, not a channel one. Records 1 and 2 are told by
@@ -17,7 +19,7 @@ the channel narrator; record 3 is told by its own operator and uses the
 character voice. The episode names it in shots.yaml under `voice:`, and the
 default stays narrator.
 
-Usage: gen_narration.py [--scene N] [--seeds 11,22,33] [episode dir]
+Usage: gen_narration.py [--scene N] [--seeds 11] [episode dir]
 """
 import os, sys, re, json, subprocess, pathlib, urllib.request, yaml
 
@@ -42,7 +44,7 @@ def paragraphs(script):
 def main():
     env()
     args = sys.argv[1:]
-    seeds = [11, 22, 33]
+    seeds = [11]          # one take per paragraph from record 10
     scene = None
     if "--scene" in args:
         i = args.index("--scene"); scene = int(args[i+1]); del args[i:i+2]
@@ -116,7 +118,7 @@ def main():
             print(f"  {pid}_s{seed:<3}  {len(text.split()):3d} words  "
                   f"{dur:6.2f}s  {len(text.split())/dur*60:6.1f} wpm")
         prev = text
-    print("\nPick one take per paragraph, then record its seed in narration.yaml.")
+    print("\nCheck each pace against its neighbours; regenerate only an outlier, then record the seeds in narration.yaml.")
     return 0
 
 if __name__ == "__main__":

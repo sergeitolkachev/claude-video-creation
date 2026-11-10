@@ -1,0 +1,61 @@
+# Pencil marks on the notebook pages (scripts/build_paper.py). The marks are
+# already on the paper when the shot starts. Handwritten figures are allowed
+# (CLAUDE.md, Serge 2026-10-27) and every one agrees with the cards.
+#
+# Boxes are the open spread (both pages) measured on the approved stills,
+# 1344x768: the gutter sits at u = 0.50 (4.4) and 0.51 (5.3), and the steel
+# clip covers the top of both pages to about v = 0.12. In 5.3 the pencil lies
+# along the gutter, u 0.50-0.54; nothing is drawn there.
+#
+# The sheets grow with the story: 4.4 is the ceiling found — the tracks under
+# one line, a few just over it at the morning crest; 5.3 is a day of tracks
+# under the tide.
+
+sheets:
+  "4.4":
+    box: [390, 170, 968, 607]
+    seed: 44
+    marks:
+      # Left page. Height axis: -155 at v 0.90, 0 at v 0.16, so
+      # v(h) = 0.90 - (h + 155) / 155 * 0.74.
+      - {kind: axes, origin: [0.10, 0.90], end: [0.45, 0.16], xticks: 0, yticks: 3}
+      - {kind: text, at: [0.02, 0.875], text: "-155", size: 0.034}
+      - {kind: text, at: [0.06, 0.145], text: "0", size: 0.034}
+      # The tracks: almost all below the ordinary-day ceiling...
+      - kind: dots
+        u: [0.13, 0.44]
+        v: [0.37, 0.87]
+        n: 230
+        seed: 4
+        # ...and a few over it, at the 10:00 crest. The highest is -26 m.
+        extra: [[0.21, 0.335], [0.29, 0.325], [0.37, 0.340], [0.25, 0.310], [0.33, 0.284]]
+      # The ceiling, -40 m (v 0.351), ruled hard and labelled.
+      - {kind: line, a: [0.10, 0.351], b: [0.46, 0.351], w: 1.8, tone: 70}
+      - {kind: text, at: [0.03, 0.330], text: "-40", size: 0.034}
+      # The highest track ringed and labelled.
+      - {kind: ring, at: [0.33, 0.284], r_px: 9}
+      - {kind: text, at: [0.355, 0.235], text: "-26", size: 0.032}
+      # Right page: the ceiling sum, worked once, underlined twice.
+      - {kind: text, at: [0.56, 0.28], text: "1010.0 x e^(40/8991)", size: 0.036}
+      - {kind: text, at: [0.62, 0.37], text: "= 1014.5", size: 0.046}
+      - {kind: line, a: [0.61, 0.455], b: [0.82, 0.455], w: 1.6, tone: 75}
+      - {kind: line, a: [0.62, 0.470], b: [0.81, 0.470], w: 1.2, tone: 105}
+
+  "5.3":
+    box: [395, 170, 970, 607]
+    seed: 53
+    marks:
+      # Left page: one day, 0 to 24 h along the bottom (ticks every 4 h).
+      # Height: -60 at v 0.86, -20 at v 0.16, v(h) = 0.86 - (h + 60) / 40 * 0.70.
+      - {kind: axes, origin: [0.10, 0.86], end: [0.46, 0.16], xticks: 5, yticks: 0}
+      - {kind: text, at: [0.085, 0.885], text: "0", size: 0.032}
+      - {kind: text, at: [0.435, 0.885], text: "24", size: 0.032}
+      # The tide: crests at 10 and 22 h (-29 m, v 0.3175), troughs at 4 and
+      # 16 h (-51 m, v 0.7025). cycles 2 over the day, crest at x = 10/24.
+      - {kind: curve, u: [0.10, 0.46], v_mid: 0.51, amp: 0.1925, cycles: 2, phase: 0.8333}
+      - {kind: text, at: [0.225, 0.245], text: "-29", size: 0.032}
+      - {kind: text, at: [0.385, 0.705], text: "-51", size: 0.032}
+      # The tracks, a few metres under the curve and following it.
+      - {kind: dots_under_curve, u: [0.10, 0.46], v_mid: 0.51, amp: 0.1925, cycles: 2, phase: 0.8333,
+         n: 170, depth: 0.03, seed: 5}
+      # Right page left blank.

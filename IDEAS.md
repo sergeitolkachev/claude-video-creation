@@ -5,7 +5,7 @@ discussed and agreed in chat before any script is written (`CLAUDE.md`, The
 Scripting Contract). When an idea is made, move it to "Made" with its record
 number.
 
-**Next: record 10 — documentary.** Pick from the documentary backlog and agree it in chat before any script.
+**Next: record 11 — operator.** Record 10 (documentary) is in production. Pick from the operator backlog and agree it in chat before any script.
 
 ## Operator backlog
 
@@ -32,15 +32,13 @@ number.
   eutectic near 199 K (−74 °C); perchlorate-respiring bacteria exist on Earth.
   Invented: a subsurface organism breathing perchlorate whose "season" is not
   a year but a temperature window a few hours long.
-- **The Carboniferous oxygen ceiling.** Real: insect size is limited by
-  diffusion through the tracheae; Palaeozoic giants (Meganeura, ~70 cm span)
-  are tied to 30–35 % atmospheric oxygen and vanished when it fell. Invented:
-  a lineage that evolved active ventilation instead of diffusion and survived
-  the collapse. Told as a palaeontological investigation from impressions.
 
 ## Made
 
 - 01 Tishina-9 · 02 The Sunrise Line · 03 Carbon Balance (operator) ·
   04 The Line · 05 Gallery Three (operator) · 06 The Cheap Sky ·
   07 The Ninety-Nine Watts (operator) · 08 The Rind ·
-  09 The Equivalent Hole (operator, 2026-10-27 — the hole that heals)
+  09 The Equivalent Hole (operator, 2026-10-27 — the hole that heals) ·
+  10 The Ceiling (documentary, 2026-11-04 — from the Carboniferous oxygen
+  ceiling idea, rebuilt as a living insect whose flight ceiling is set by air
+  pressure; agreed in chat)

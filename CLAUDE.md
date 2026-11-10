@@ -9,6 +9,15 @@ Language rule: everything in this repository is written in English —
 scripts, prompts, commit messages, notes. Never translate from another
 language into the narration; write it in English from the start.
 
+**American spelling, from record 11 (Serge, 2026-11-06).** The audience is
+American-first, and records 01–10 were written in British spelling (metres,
+per cent, modelled, grey). From record 11 every word a viewer reads or hears
+is American: meters, centimeters, kilometers, liters, percent, color, gray,
+center, modeled, analyze, defense, aluminum. That covers `script.md`
+narration, cards and titles, captions (they come from the narration text),
+`publish.md` and thumbnails. Prompts and notes follow it too, so the two
+spellings do not mix in one file. Records 01–10 are not respelled.
+
 Channel URL: https://www.youtube.com/@fileclassnine
 
 ## Core Constraints
@@ -85,6 +94,16 @@ which means the "what is real" list, the one place this channel writes its
 credibility down, is not recoverable from the repository. Chapter timestamps in
 it are scene boundaries summed from `shots.yaml` and are checked against it,
 never copied from an older record.
+
+**Everything that gets pasted is written one paragraph per line — Serge,
+2026-11-06.** Inside every code block of `publish.md` (the description, each
+vertical's description, the pinned comment) a paragraph is a single line with
+no hard wraps, and paragraphs are separated by one blank line. YouTube keeps
+every newline it is given, so a description wrapped at 80 columns in the file
+arrives in Studio broken mid-sentence and had to be re-joined by hand. Lines
+that are meant to be lines stay lines: the chapter list (one timestamp per
+line), section headings and the hashtag line. The rest of `publish.md` —
+notes, in/out points — is ordinary Markdown and may wrap.
 
 ## Pipeline Stages
 
@@ -674,6 +693,14 @@ than taken from the record's.
   seen for a benefit only the maker can perceive. Report the finding as
   evidence the rule is real, then stop. New rules take effect with the next
   episode.
+- **The record's closer sits above the end screen — from record 11 (Serge,
+  2026-11-06).** YouTube lays its end-screen elements over the last seconds of
+  a long record: a video tile in the lower left, the channel avatar in the
+  lower right. Record 10's centred `FILE CLASS NINE / FC9-010 // THE CEILING`
+  sat right on their top edge. From record 11 the closer in `titles.yaml` is
+  `pos: centre-high` — centred and lifted ~150 px, about two and a half card
+  lines — and `validate.py` fails a closer that is not. Records 01–10 keep
+  `centre` and are not rebuilt.
 - **A vertical closes on a card: `WATCH THE FULL RECORD ON THE CHANNEL`.** Two
   seconds, after the last frame of picture, in the channel's own Menlo and
   phosphor green, typed on like every other character on this channel. It is
@@ -987,10 +1014,18 @@ changes, not the stage where the change was noticed.
 **ElevenLabs varies wildly between requests.** The same paragraph at the same
 settings came back anywhere from 123 to 203 wpm. Generating everything in one
 sitting does not help — every paragraph is its own request. A `seed` pins the
-delivery exactly and reproducibly, so generate several seeded takes, keep the
-one whose pace sits with its neighbours, and record the seed. The `speed`
-parameter is not a control: its range is 0.7-1.2, the response is not
-monotonic, and per-request noise swamps the whole parameter.
+delivery exactly and reproducibly, so every take is seeded and the seed is
+recorded. The `speed` parameter is not a control: its range is 0.7-1.2, the
+response is not monotonic, and per-request noise swamps the whole parameter.
+
+**One take per paragraph — from record 10 (Serge, 2026-11-05).** Records 01–09
+generated three seeds per paragraph and picked the one whose pace sat with its
+neighbours, which tripled the character spend for a choice that almost never
+changed the record. Now `gen_narration.py` generates one take per paragraph
+on seed 11, and only a paragraph that comes back off-pace or wrong is
+regenerated on another seed (`--seeds 22 --scene N`, then delete the bad take).
+If after a few records the single take keeps needing a second roll, go back
+to three.
 
 **Any script that polls an API needs a timeout and unbuffered output.** An
 hour was lost to a poll hung on a socket with no timeout, while a

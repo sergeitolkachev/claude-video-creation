@@ -33,7 +33,16 @@ def post(url, body, key):
     return json.load(urllib.request.urlopen(r, timeout=60))
 
 def get(url, key):
+    # A dropped read retries instead of killing the run: record 10's first
+    # anchor pass died on one TimeoutError after 13 of 18, with five paid
+    # requests still in the queue and their ids gone with the traceback.
     r = urllib.request.Request(url, headers={"Authorization": f"Key {key}"})
+    for attempt in range(5):
+        try:
+            return json.load(urllib.request.urlopen(r, timeout=60))
+        except (TimeoutError, urllib.error.URLError) as e:
+            print(f"  retry  {attempt + 1}/5 after {type(e).__name__}")
+            time.sleep(5)
     return json.load(urllib.request.urlopen(r, timeout=60))
 
 def main():

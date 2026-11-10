@@ -367,6 +367,12 @@ def main(ep):
                 fail.append(f"title {c['id']}: at {t0}s is off the timeline")
                 continue
             plate_check(f"title {c['id']} ({host})", c, 0, bounds[host][1], rel=False)
+            # From record 11 the closer sits above YouTube's end-screen tiles
+            # (Serge, 2026-11-06: on record 10 the centred closer was covered
+            # by the video tile and the avatar). Records 01-10 are frozen.
+            if c["id"] == "closer" and rec >= 11 and c.get("pos") != "centre-high":
+                fail.append(f"title closer: pos is {c.get('pos')!r}, from record 11 "
+                            f"it is 'centre-high' — clear of the end screen")
 
     # 7c. Two paragraphs never speak at once.
     #

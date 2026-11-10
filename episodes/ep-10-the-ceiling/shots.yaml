@@ -1,0 +1,906 @@
+episode: ep-10-the-ceiling
+runtime_seconds: 270
+aspect: "16:9"
+
+# The channel narrator, third person (script.md header).
+voice: narrator
+
+scene_runtime: {1: 34, 2: 36, 3: 40, 4: 36, 5: 32, 6: 32, 7: 30, 8: 30}
+
+# Scene 8 is cards, the radar sweeping and a pull back. No voice
+# (script.md, Scene 8 — declared coda).
+coda: [8]
+
+# Prompt hygiene, checked by validate.py. Re-cut for a dry salt basin under a
+# hard sun: no water moves anywhere in this record, nothing is lit but the
+# sun, and the only things that move are the animal, the radar, the
+# anemometer and the barograph drum.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(drift\w*|float\w*|motes?|dust\w*|suspended|vapou?r|mist|steam|smoke|haze|shimmer\w*|drips?|dripping|beads?|particles?|specks?|moving|moves|turning|turns|swings?|swinging|blinks?|blinking|slides?|sliding|travel\w*|rotat\w*|spin\w*|sinks?|sinking|eases?|glid\w*|flight|flying|pumps?|pumping|lowers|lowering|lift\w*)\b'
+      except: ["1.1", "1.4", "2.3", "3.4", "4.1", "5.1", "5.4",
+               "6.1", "6.4", "7.3"]
+      why: >
+        A shot built from one still must contain nothing the eye expects to
+        see move (record 04's twelve plates; record 05's rule). Heat haze is
+        in the list because a basin under a hard sun invites it and a frozen
+        shimmer reads as a stalled player. Only the model shots name motion;
+        the static and local plates say "everything at rest" instead of
+        "nothing moving", because the negation is caught here too.
+
+    - pattern: '\b(text|lettering|writing|written|label\w*|plaque|placard|nameplate|stencil\w*|serial|legible|numerals?|digits?|figures?|readout|markings?|scale|counter|display|screen|monitor|sign\w*)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py, and on
+        paper out of build_paper.py. The noun alone summons lettering.
+
+    - pattern: '\b(gauge|dial|needle)\b'
+      except: []
+      why: >
+        No instrument face in this record. The barograph is a drum and a pen
+        arm on blank paper, and the radar has no screen in frame.
+
+    - pattern: '\b(lamp|lantern|bulb|torch|flashlight|spotlight|headlamp|indicator|led)\b'
+      except: []
+      why: >
+        The only light in the record is the sun, and later a grey sky.
+
+    - pattern: '\b(amber|orange|yellow|gold\w*|tungsten|sodium|candle\w*|fire|sunset|sunrise|dusk|dawn|green|red|blue)\b'
+      except: []
+      why: >
+        Salt white, bone, basalt black, a pale milky turquoise, dull bronze.
+        Green belongs to the cards alone. Record 02 walked a salt pan under a
+        low sun; this one is high noon, so no low-sun words at all.
+
+    - pattern: '\b(water\w* (ripples?|waves?)|ripples?|waves?|splash\w*|film|sheen|wet)\b'
+      except: []
+      why: >
+        Water in this record is a still, glassy lake and nothing else. A
+        sheen is not a thing a model can move (record 08), and here nothing
+        asks it to.
+
+    - pattern: '\b(person|people walking|human|figure|hands?|fingers?|gloves?|boots?|footprints?|tracks in the salt|vehicle|tent|camp)\b'
+      except: []
+      why: >
+        The survey team is never seen, nor anything they leave on the ground.
+        "No people" ends prompts and is not matched here.
+
+    - pattern: '\b(card|plate|plates|caption|title|overlay)\b'
+      except: []
+      why: >
+        Which shots carry a card is cards.yaml's business. Salt crust is
+        "polygons", not "plates", for the same reason.
+
+
+# --- Spines -----------------------------------------------------------------
+# Material, light and palette only (script.md, Basin spine / Macro spine).
+# Neither names the lake, the animal or any instrument, and neither carries a
+# camera word. gen_stills.py reads the top-level exterior_spine for text-only
+# shots, so it is the basin spine under that key.
+
+# Pass 2 (2026-11-04): pass 1 put a dead log in 11 of 12 basin, kit and
+# ground candidates — "sun-bleached grey dead wood" is a noun, and a spine
+# may not name an object (CLAUDE.md). And "dull bronze" came back as a rust
+# band along the lake shore; bronze belongs to the animal, so it is in the
+# macro spine only. A1 s22 also drew a person on the shore.
+spine: &spine >
+  Crusted white salt and broken black basalt under a hard white sun high
+  overhead in a pale white sky, the air completely clear and dry so that
+  distance does not soften anything, shadows short and black. Everything
+  matte, dry and bleached, the salt pure white right to the water. One
+  palette throughout: salt white, bone, basalt black, a pale milky turquoise.
+  No people, no vehicles, no buildings, no lettering, no markings.
+
+exterior_spine: *spine
+
+# For the grey-sky plates generated text-only (7.2). Same materials and
+# palette as the basin spine; only the light changes.
+overcast_spine: >
+  Crusted white salt and broken black basalt under a low flat grey overcast
+  sky, the light dull, even and shadowless, the air completely clear and dry.
+  Everything matte, dry and bleached. One palette throughout: salt white,
+  bone, basalt black, dull grey. No people, no vehicles, no buildings, no
+  lettering, no markings.
+
+macro_spine: &macro_spine >
+  Hard white sunlight from high and to one side, deep black shadow on the far
+  side of every form, a background of pale salt glare falling far out of
+  focus. Every surface matte and dry: salt crystals, bleached grey wood grain,
+  dull lacquered bronze worn to black at the edges. One palette throughout:
+  salt white, bone, basalt black, dull bronze. No people, no lettering, no
+  markings.
+
+negative_base: >
+  fast motion, camera shake, dolly, push in, pull back, pan, tilt, zoom,
+  morphing geometry, objects changing shape, new objects appearing,
+  the whole frame brightening or darkening, heat haze, shimmer, blur,
+  distortion, low quality, people, hands, faces, text, lettering, numerals,
+  watermark
+
+# Every model shot of the animal adds this (record 04: Kling completes an
+# animal and invents what the still withholds).
+animal_negative: &animal_negative >
+  the head turning towards camera, eyes, a face, extra legs, a second pair of
+  wings, wings beating fast, wings flapping, a blur of wingbeats, the insect
+  taking off, the insect flying away, the body growing, the body morphing,
+  the abdomen bending or curling, the branch bending, a second insect
+  appearing
+
+
+# --- Motion tails -----------------------------------------------------------
+# Kling 3.0 does not stop a motion (CLAUDE.md): every model shot is a motion
+# that runs for the whole clip.
+
+motion_tail_steady: &motion_tail_steady >
+  The movement named above runs steadily for the whole shot, starting in the
+  first second. Everything else in the frame is still and rigid and keeps
+  exactly its shape. The camera does not move at all: no dolly, no push in,
+  no pull back, no pan, no tilt, no zoom. No cuts, no speed changes. Nothing
+  enters the frame.
+
+motion_tail_glide: &motion_tail_glide >
+  Only the one insect moves, gliding at a slow even speed with its wings held
+  flat and rigid; the landscape is completely still. The camera does not
+  move. No cuts, no speed changes. Nothing else enters the frame.
+
+
+# --- Anchors ----------------------------------------------------------------
+# One per camera distance that recurs. Six, not five: the card plates are
+# salt ground seen from standing height, a distance the basin wide (A1) would
+# drag out to a landscape and the macro (A3) would drag in to a crystal.
+
+anchors:
+  - id: A1-basin
+    model: anchor
+    approved_seed: 11         # approved by Serge 2026-11-04, pass 2
+    approved_file: anchors/A1-basin.jpg
+    covers: ["1.2", "4.1", "4.2", "6.3", "7.1", "8.4", "8.5"]
+    spine: *spine
+    subject: >
+      Camera: 28mm lens at standing height high on a black basalt slope,
+      looking down across white salt to a flat lake of pale milky turquoise
+      edged with a broad white crust, the far wall of broken black basalt
+      rising to a straight level rim against a white sky. The lake surface is
+      flat and glassy. Hard sun overhead, short black shadows.
+
+  - id: A2-animal
+    model: anchor
+    approved_seed: 22         # approved by Serge 2026-11-04, pass 2
+    approved_file: anchors/A2-animal.jpg
+    covers: ["1.1", "3.4"]
+    spine: *macro_spine
+    # Pass 2: pass 1 hung all three candidates from a metal hook on a short
+    # wire, like a pinned specimen — "hooked forelegs" was read as a hook.
+    # Now the legs grip the bark, and the branch gives the scale.
+    subject: >
+      Camera: 85mm lens, slightly below and in front, a single very large
+      dragonfly-like insect clinging to the underside of a thick split grey
+      dead branch, its six thin legs gripping the bark directly, its body
+      hanging vertically below the branch, its whole length in frame, each
+      of its four broad wings about four times longer than the branch is
+      thick, the wings of smoked glass with a fine black lattice of veins
+      spread flat and level to both sides, the long abdomen dull lacquered
+      bronze worn black at the joints, the head tucked up against the branch
+      in deep shadow, pale salt glare far out of focus behind.
+
+  - id: A3-macro
+    model: anchor
+    approved_seed: 22         # approved by Serge 2026-11-04, pass 1
+    approved_file: anchors/A3-macro.jpg
+    covers: ["2.1", "2.4", "3.1", "5.4"]
+    spine: *macro_spine
+    subject: >
+      Camera: 100mm macro lens, one wing panel of a large insect filling the
+      frame edge to edge, a membrane like smoked glass divided by a dense
+      black lattice of veins into hundreds of small cells, hard sun from
+      behind so the membrane glows pale bronze, the background unresolvable
+      pale glare.
+
+  - id: A4-kit
+    model: anchor
+    approved_seed: 33         # approved by Serge 2026-11-04, pass 2
+    approved_file: anchors/A4-kit.jpg
+    covers: ["1.4", "2.3", "6.1"]
+    spine: *spine
+    subject: >
+      Camera: 50mm lens, head-on at waist height, a small field radar head on
+      a steel tripod standing on white salt crust, a shallow matte grey dish
+      on a short vertical mast, its casing plain grey and scuffed bare at the
+      corners, centred in frame, the pale turquoise lake and the black far
+      wall soft behind.
+
+  - id: A5-notebook
+    model: anchor
+    approved_seed: 22         # approved by Serge 2026-11-04, pass 1
+    approved_file: anchors/A5-notebook.jpg
+    covers: ["4.4"]
+    spine: *macro_spine
+    subject: >
+      Flat lay photograph taken from directly above, camera pointing straight
+      down. A board crusted with white salt fills the entire frame edge to
+      edge, with no edge, horizon or ground beyond it visible anywhere. A
+      field notebook lies open flat on it, two plain ruled pages held down by
+      a plain steel clip bar across the top, a plain grey pencil lying in the
+      gutter. Hard even sunlight, very short shadows.
+
+  - id: A6-ground
+    model: anchor
+    approved_seed: 33         # approved by Serge 2026-11-04, pass 2
+    approved_file: anchors/A6-ground.jpg
+    covers: ["1.3", "2.2", "3.3", "4.3", "5.2", "6.2", "7.2", "8.1", "8.3"]
+    spine: *spine
+    subject: >
+      Camera: 35mm lens at standing height, tilted down at the ground a few
+      metres ahead, white salt crust broken into flat polygons with raised
+      ridged edges filling the lower two thirds of the frame, a line of black
+      basalt blocks across the upper right. Hard sun overhead, short black
+      shadows. The lower left quarter of the frame is plain flat salt.
+
+
+# --- Shots ------------------------------------------------------------------
+# Model shots are on kling3 (CLAUDE.md, from record 09), billed per whole
+# second, so generate_seconds equals timeline_seconds. Repeat subjects
+# reference the approved master still with ref_shot (script.md,
+# Repeat-subject rule).
+
+shots:
+
+  # ---- Scene 1 — Below the sea (34 s) ---------------------------------------
+
+  - id: "1.1"
+    scene: 1
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the wings lowering and lifting on their hinges
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      All four wings lower slowly on their hinges and lift again, as rigid
+      flat panels, steadily through the whole shot. The body stays still on
+      its branch.
+    negative_extra: *animal_negative
+    anchors: [A2-animal]
+    note: master still for the animal — 3.2 and 6.4 reference it
+    prompt: >
+      A single large dragonfly-like insect hanging by its hooked forelegs
+      from a split grey dead branch, seen side-on with its whole length in
+      frame, the long abdomen hanging straight down, four broad wings of
+      smoked glass with a fine black lattice held flat and level, the body
+      dull lacquered bronze worn black at the joints, the head turned away
+      into deep shadow, hard white sun from high left, pale salt glare far
+      out of focus behind, no people
+
+  - id: "1.2"
+    scene: 1
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-basin]
+    prompt: >
+      A closed salt basin seen from high on a black basalt slope: below, a
+      flat lake of pale milky turquoise edged with a broad white crust of
+      salt, the far wall of broken black basalt rising to a straight level
+      rim against a white sky, hard sun overhead, short black shadows, the
+      air completely clear, an empty white sky, the surface of the lake flat
+      and glassy, no people
+
+  - id: "1.3"
+    scene: 1
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: tracks
+    anchors: [A6-ground]
+    prompt: >
+      White salt crust seen from standing height on a gentle slope, broken
+      into flat polygons with raised ridged edges, a line of black basalt
+      blocks crossing the upper right of frame, hard sun overhead, the air
+      completely clear, everything in the frame at rest, the lower left of
+      the frame plain flat salt, no people
+
+  - id: "1.4"
+    scene: 1
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 6
+    model: kling3
+    generate_seconds: 6
+    motion: the radar dish rotating about its mast
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The shallow grey dish rotates steadily about its vertical mast at an
+      even slow speed through the whole shot. The tripod stays still.
+    negative_extra: >
+      the dish changing shape, a second dish, the tripod moving, the dish
+      spinning fast, the dish stopping, cables appearing
+    anchors: [A4-kit]
+    note: master still for the radar — 5.1 references it; 8.2 reuses the take
+    prompt: >
+      A small field radar head on a steel tripod standing on white salt crust
+      at the edge of the basin, a shallow matte grey dish on a short vertical
+      mast, its casing plain grey and scuffed bare at the corners, the pale
+      turquoise lake and black far wall soft behind, hard sun from high
+      right, no people
+
+  # ---- Scene 2 — Too large (36 s) -------------------------------------------
+
+  - id: "2.1"
+    scene: 2
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-macro]
+    prompt: >
+      Macro on one wing panel of a large insect filling the frame edge to
+      edge, a membrane like smoked glass divided by a dense black lattice of
+      veins into hundreds of small cells, hard sun from behind so the
+      membrane glows pale bronze and the veins stand out black, the
+      background pale salt glare far out of focus, the air in front of it
+      completely clear, no people
+
+  - id: "2.2"
+    scene: 2
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: odonates
+    anchors: [A6-ground]
+    prompt: >
+      A slope of broken black basalt blocks running down towards white salt,
+      seen from standing height, the blocks matte and sharp-edged, short
+      black shadows under each, hard sun overhead, the air completely clear,
+      everything at rest, the lower left of the frame flat black basalt in
+      shadow, no people
+
+  - id: "2.3"
+    scene: 2
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the anemometer cups spinning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The three cups spin steadily about the top of the mast at an even
+      speed through the whole shot. The mast stays still.
+    negative_extra: >
+      cups multiplying, cups bending, the arms changing length, the mast
+      bending, the cups stopping, the cups spinning very fast into a blur
+    anchors: [A4-kit]
+    prompt: >
+      A cup anemometer on a thin steel mast standing on white salt crust,
+      three small matte grey cups on short arms at the top, the mast scuffed
+      bare, plain grey all over, the black basalt wall of the basin soft
+      behind, hard sun from high left, no people
+
+  - id: "2.4"
+    scene: 2
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A3-macro]
+    # Pass 2: "armour segments" and "round openings ringed with a raised lip"
+    # came back as a beetle or a riveted machine on both seeds.
+    prompt: >
+      Macro on the side of a large dragonfly's thorax where its wings join
+      it, the thorax short and thick, dull bronze with fine black seams, the
+      roots of two smoked-glass wings with black veins leaving it across the
+      top of the frame, a few tiny dark breathing pores along its lower side,
+      hard sun from high left, deep black shadow below, background pale salt
+      glare far out of focus, the air completely clear, no people
+
+  # ---- Scene 3 — The pump (40 s) --------------------------------------------
+
+  - id: "3.1"
+    scene: 3
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: drift
+    anchors: [A3-macro]
+    prompt: >
+      Macro on the hooked end of an insect's foreleg gripping a split grey
+      dead branch, the leg thin, dull bronze, jointed in long straight
+      segments ending in two curved black claws sunk into the grain, hard sun
+      from high left, deep shadow under the branch, background pale salt
+      glare far out of focus, the air completely clear, no people
+
+  - id: "3.2"
+    scene: 3
+    approved_seed: 22    # selected by Serge 2026-11-04
+    # Stage 6 (Serge, 2026-11-05): a push, not a model shot. The Kling take
+    # (takes/rejected/3.2-kling.mp4, $1.12) held the abdomen straight for
+    # 1.5 s, then swung it sideways and up like a tail, the segments
+    # splaying into spiked flaps — with "the abdomen bending or curling" in
+    # the negative list. A segmented abdomen is soft to the model: as many
+    # degrees of freedom as it likes (record 05's strap). Wings are rigid
+    # panels on a hinge and held in 1.1 and 3.4.
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.1"
+    prompt: >
+      The same large insect hanging from the same split grey branch, seen
+      side-on with its whole length in frame, wings held flat and level, the
+      head turned away into deep shadow, the long abdomen of overlapping dull
+      bronze segments hanging straight down, hard sun from high left, no
+      people
+
+  - id: "3.3"
+    scene: 3
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: pump
+    anchors: [A6-ground]
+    prompt: >
+      A flat sheet of white salt crust at the lake's edge seen from standing
+      height, the crust broken into polygons, a narrow band of flat pale
+      turquoise lake along the top of frame, glassy and perfectly still, hard
+      sun overhead, everything at rest, the lower left of the frame plain
+      flat salt, no people
+
+  - id: "3.4"
+    scene: 3
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: three animals' wings lowering and lifting, out of step
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The wings of all three insects lower slowly on their hinges and lift
+      again, as rigid flat panels, out of step with each other, steadily
+      through the whole shot. Their bodies stay still on the branch.
+    negative_extra: *animal_negative
+    anchors: [A2-animal]
+    note: master still for the branch of three — 7.3 references it, 8.3 is it bare
+    prompt: >
+      Three large dragonfly-like insects hanging a little apart along one
+      long split grey dead branch, seen side-on from a few metres, each with
+      its whole length in frame, each with its head turned away into shadow,
+      wings of smoked glass held level, bodies dull lacquered bronze, hard
+      sun from high left, the white salt slope out of focus below, no people
+
+  # ---- Scene 4 — The ceiling (36 s) -----------------------------------------
+
+  - id: "4.1"
+    scene: 4
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: one animal gliding across the basin, wings flat
+    motion_tail: motion_tail_glide
+    video_prompt: >
+      The insect glides slowly and steadily from left to right across the
+      frame, low over the salt, its four wings held out flat and rigid,
+      through the whole shot.
+    negative_extra: >
+      wings beating, wings flapping, a blur of wingbeats, a bird, a second
+      insect, the insect growing, the insect climbing towards the rim, the
+      lake surface rippling, the far wall changing
+    anchors: [A1-basin]
+    prompt: >
+      A closed salt basin seen wide from a black basalt slope, a flat pale
+      turquoise lake below edged in white salt crust, and low over the salt,
+      small in frame and well below the far rim, one large dragonfly-like
+      insect in flight seen side-on as a dark silhouette, its four wings held
+      out flat and level, hard sun overhead, no people
+
+  - id: "4.2"
+    scene: 4
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-basin]
+    note: >
+      The script asked for a drift upward, foot of the wall to the rim.
+      build_static.py has push, pull and a sideways drift only, and an
+      unknown local_motion silently falls back to breathing — so a push.
+    prompt: >
+      The far wall of the basin seen from the salt flat, broken black basalt
+      rising in steps from a white crust at its foot to a straight level rim
+      against a white sky, hard sun overhead, short black shadows, the air
+      completely clear, an empty white sky, everything at rest, no people
+
+  - id: "4.3"
+    scene: 4
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: ceiling
+    anchors: [A6-ground]
+    prompt: >
+      A slope of white salt crust and scattered black basalt blocks seen from
+      standing height, a split grey dead branch lying flat on the salt across
+      the upper right of frame, hard sun overhead, the air completely clear,
+      everything at rest, the lower left of the frame plain flat salt, no
+      people
+
+  - id: "4.4"
+    scene: 4
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    paper: true          # paper.yaml — track heights and the ceiling sum
+    anchors: [A5-notebook]
+    note: master still for the notebook — 5.3 references it
+    prompt: >
+      Directly overhead view of a field notebook lying open flat on a board
+      crusted with white salt, two plain ruled pages held down by a plain
+      steel clip bar, a plain grey pencil lying in the gutter, both ruled
+      pages blank and clean apart from their faint printed rules, nothing
+      drawn on them, hard even sunlight, the air above the pages completely
+      clear, everything at rest, no people
+
+  # ---- Scene 5 — Twice a day (32 s) -----------------------------------------
+
+  - id: "5.1"
+    scene: 5
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the radar dish rotating about its mast
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The shallow grey dish rotates steadily about its vertical mast at an
+      even slow speed through the whole shot. The tripod stays still.
+    negative_extra: >
+      the dish changing shape, a second dish, the tripod moving, the dish
+      spinning fast, the dish stopping, cables appearing
+    ref_shot: "1.4"
+    prompt: >
+      The same small field radar head on the same steel tripod on the white
+      salt crust, the shallow matte grey dish on its short mast, seen from
+      lower and closer than before, the black far wall and white sky soft
+      behind, hard sun from high right, no people
+
+  - id: "5.2"
+    scene: 5
+    approved_seed: 33    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: tide
+    # Pass 2: on A6 both seeds were copies of the anchor — the same pool
+    # among salt polygons as 6.2, 7.2 and 8.1. Text-only, as record 02 did
+    # where an anchor was doing the damage.
+    exterior: true
+    spine_key: exterior_spine
+    prompt: >
+      Camera at standing height on a dry white salt slope, a long low ridge
+      of broken black basalt blocks running diagonally from the upper left
+      of the frame towards the upper right, smooth dry white salt crust below
+      it with no water anywhere in the frame, hard sun overhead, short black
+      shadows, everything at rest, the lower left of the frame plain smooth
+      dry salt, no people
+
+  - id: "5.3"
+    scene: 5
+    approved_seed: 22    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    paper: true          # paper.yaml — one day of tracks under the tide
+    ref_shot: "4.4"
+    prompt: >
+      Directly overhead view of the same field notebook open flat on the
+      same salt-crusted board, a fresh pair of plain ruled pages under the
+      steel clip bar, the plain grey pencil in the gutter, hard even
+      sunlight, the air completely clear, everything at rest, no people
+
+  - id: "5.4"
+    scene: 5
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 6
+    model: kling3
+    generate_seconds: 6
+    motion: the abdomen pumping, close
+    motion_tail: motion_tail_steady
+    # Second attempt at the pump, the first being 3.2. The abdomen is told
+    # to stay straight and rigid and to move only along its own length, and
+    # 3.2's failures are named. If this fails too, 5.4 becomes a pull and
+    # the pump is never seen moving (two-failures rule).
+    # Result (2026-11-05): held. The abdomen stayed straight and telescoped
+    # to about 60% of its length and back, shape and colour unchanged. The
+    # wording that works for the pump is "moves only along its own length".
+    video_prompt: >
+      The abdomen stays perfectly straight and rigid, pointing straight
+      down, and moves only along its own length: it shortens a little and
+      lengthens again in a slow even rhythm, like a telescope, about once
+      every two seconds, through the whole shot. Its shape, outline and
+      colour never change. The wings and the thorax stay still.
+    negative_extra: >
+      the abdomen bending, curling, swinging sideways or lifting, spikes,
+      flaps or plates growing on it, segments splaying apart, the abdomen
+      changing colour, the head turning towards camera, eyes, extra legs, a
+      second pair of wings, wings beating fast, wings flapping, the body
+      growing, the body morphing, a second insect appearing
+    # Not ref_shot 1.1 as the script first said: a reference locks
+    # composition, and the approved 1.1 is the whole animal at a distance.
+    # This is a close view, so it sits on the macro anchor.
+    anchors: [A3-macro]
+    # Pass 2: the first came back as a bronze plumb weight hanging from the
+    # top edge, with nothing alive about it.
+    prompt: >
+      Close on the rear of a large dragonfly hanging straight down, the top
+      of the frame its thorax with the roots of its smoked-glass wings, then
+      the narrow waist, then the long slender abdomen of overlapping dull
+      bronze segments with fine black rings at each joint running down to
+      its tip inside the frame, hard sun from high left, pale salt glare far
+      out of focus, no people
+
+  # ---- Scene 6 — The record (32 s) ------------------------------------------
+
+  - id: "6.1"
+    scene: 6
+    # Take accepted by Serge as rolled (2026-11-05), with its 24 px push-in
+    # and the marks on the drum strip: read as a camera moving, not a fault.
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the barograph drum turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The brass drum turns slowly and steadily about its upright axis through
+      the whole shot. The pen arm rests still against the blank paper, and
+      the paper stays blank.
+    negative_extra: >
+      a line being drawn, ink appearing on the paper, writing, the pen arm
+      swinging, the case opening, the glass changing, the drum spinning fast
+    anchors: [A4-kit]
+    prompt: >
+      A drum barograph in a small glass-sided case standing on a flat basalt
+      block at the edge of the salt, a brass drum wrapped in a plain blank
+      paper strip, a thin black pen arm resting against it, hard sun from
+      high left, the pale turquoise lake soft behind, no people
+
+  - id: "6.2"
+    scene: 6
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: record
+    anchors: [A6-ground]
+    prompt: >
+      The edge of the lake seen low from the salt crust, a broad white rim of
+      salt running across the frame, the flat pale turquoise lake beyond it
+      glassy and perfectly still, the black far wall above, hard sun
+      overhead, the air completely clear, an empty white sky, the lower left
+      of the frame plain flat salt, no people
+
+  - id: "6.3"
+    scene: 6
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    anchors: [A1-basin]
+    note: master still for the basin from the rim — 8.4 references it
+    prompt: >
+      The whole basin seen from high on the rim, the lake small and pale
+      turquoise far below, salt slopes and black basalt walls around it, the
+      level line of the rim across the foreground, a white sky, hard sun
+      overhead, the air completely clear, everything at rest, no people
+
+  - id: "6.4"
+    scene: 6
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: model
+    timeline_seconds: 6
+    model: kling3
+    generate_seconds: 6
+    motion: the whole body swinging on its hook, rigid
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The whole insect swings slowly from side to side on its hooked
+      forelegs as one rigid body, like a weight on a short cord, through the
+      whole shot. The wings keep exactly their position on the body and the
+      branch stays still.
+    negative_extra: *animal_negative
+    ref_shot: "1.1"
+    prompt: >
+      The same large insect hanging from the same split grey branch, seen
+      side-on with its whole length in frame, wings held flat and level, head
+      turned away into shadow, hard sun from high left, no people
+
+  # ---- Scene 7 — Thursday (30 s) --------------------------------------------
+
+  - id: "7.1"
+    scene: 7
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A1-basin]
+    prompt: >
+      From the rim of the basin, looking out over a low ridge of black basalt
+      towards the open sea, a long low wall of dark grey cloud lying along the
+      whole horizon under a white sky, the sea beneath it flat and dull, hard
+      sun still overhead on the basalt in the foreground, everything at rest,
+      no people
+
+  - id: "7.2"
+    scene: 7
+    approved_seed: 33    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: forecast
+    # Pass 2: on A6 both seeds copied the anchor and kept its hard sun.
+    # Text-only on the overcast spine.
+    exterior: true
+    spine_key: overcast_spine
+    prompt: >
+      Camera at standing height on a dry white salt slope under a low flat
+      grey sky, scattered black basalt blocks across the upper right of the
+      frame, the salt crust smooth and dull with no water anywhere in the
+      frame, no shadows at all, everything at rest, the lower left of the
+      frame plain smooth dry salt, no people
+
+  - id: "7.3"
+    scene: 7
+    approved_seed: 22    # selected by Serge 2026-11-04, pass 3
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: three animals' wings lowering and lifting, out of step, grey light
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The wings of all three insects lower slowly on their hinges and lift
+      again, as rigid flat panels, out of step with each other, steadily
+      through the whole shot. Their bodies stay still on the branch.
+    negative_extra: *animal_negative
+    # Pass 3, text-only on the overcast spine (Serge, 2026-11-04). Passes 1
+    # and 2 referenced the approved 3.4 and kept its hard sun both times —
+    # once as a description, once written as an edit. A reference holds the
+    # light as hard as it holds the composition. These are three insects
+    # like 3.4's, not the same three; it is a scene and a grey card later.
+    exterior: true
+    spine_key: overcast_spine
+    prompt: >
+      Three very large dragonfly-like insects clinging a little apart to the
+      underside of one long thick split grey dead branch, seen from slightly
+      below and in front a few metres away, each with its whole length in
+      frame, each with its six thin legs gripping the bark, its body hanging
+      vertically below the branch and its head tucked up against the branch
+      in shadow, four broad wings of smoked glass with a fine black lattice
+      spread flat and level to both sides, the long abdomens dull bronze worn
+      black at the joints, white salt slope below, no people
+
+  - id: "8.1"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    card: thursday
+    anchors: [A6-ground]
+    prompt: >
+      White salt crust under a flat grey sky, the light dull and shadowless,
+      the polygons of crust broken and level, the air completely clear,
+      everything at rest, the lower left of the frame plain flat salt, no
+      people
+
+  - id: "8.2"
+    scene: 8
+    approved_seed: 22    # selected by Serge 2026-11-05
+    # Stage 6 (2026-11-05): was reuse_take of 1.4, which is a hard-sun take
+    # sitting between two grey coda plates (8.1, 8.3) — the light break 7.3
+    # was rebuilt to avoid. Now a text-only still on the overcast spine,
+    # the dish at rest, and a push. A different radar head from 1.4, a
+    # record later; the stopped dish says nothing and is not explained.
+    motion_tier: local
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    exterior: true
+    spine_key: overcast_spine
+    prompt: >
+      Camera at waist height, head-on, a small field radar head on a steel
+      tripod standing on dull white salt crust at the edge of a pale lake
+      under a low flat grey sky, a shallow matte grey dish on a short
+      vertical mast, its casing plain grey and scuffed bare at the corners,
+      scattered black basalt blocks around it, the black far wall of the
+      basin soft behind, the light dull, even and shadowless, everything at
+      rest, no people
+
+  - id: "8.3"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    card: survey
+    # The branch of 3.4 with nothing on it. A ref_shot would keep the
+    # insects; the right still is an edit of the approved 3.4 that removes
+    # them and greys the sky, done at the stills stage.
+    edit_of: "3.4"
+    anchors: [A6-ground]
+    prompt: >
+      A long split grey dead branch seen side-on from a few metres, bare
+      along its whole length, the white salt slope below under a flat grey
+      sky, the light dull and even, the air completely clear, everything at
+      rest, the lower left of the frame plain flat salt, no people
+
+  - id: "8.4"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: local
+    timeline_seconds: 5
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    ref_shot: "6.3"
+    prompt: >
+      The same whole basin seen from high on the rim under a flat grey sky,
+      the lake small and pale far below, salt and black basalt around it, the
+      light dull and even, everything at rest, no people
+
+  - id: "8.5"
+    scene: 8
+    approved_seed: 11    # selected by Serge 2026-11-04
+    motion_tier: static
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    card: closer
+    anchors: [A1-basin]
+    prompt: >
+      The far basalt wall of the basin under a flat grey sky, dark and even,
+      the lower half of the frame black rock in shadow, the air completely
+      clear, everything at rest, no people

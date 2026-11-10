@@ -38,6 +38,21 @@ def post(url, body, key):
         raise
 
 def get(url, key):
+    # A dropped read on a status poll retries instead of killing the batch.
+    # Record 10 lost two scenes' worth of paid requests to one TimeoutError
+    # here (5.4, 7.3), the same day the same fault was fixed in
+    # gen_anchors.py and not looked for anywhere else.
+    for attempt in range(4):
+        try:
+            return _get(url, key)
+        except (TimeoutError, urllib.error.URLError) as e:
+            if isinstance(e, urllib.error.HTTPError):
+                raise
+            print(f"  retry  poll {attempt + 1}/4 after {type(e).__name__}")
+            time.sleep(5)
+    return _get(url, key)
+
+def _get(url, key):
     try:
         return json.load(urllib.request.urlopen(
             urllib.request.Request(url, headers={"Authorization": f"Key {key}"}),

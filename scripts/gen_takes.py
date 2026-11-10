@@ -146,6 +146,30 @@ def main():
 
     pend, pend_f = pending_load(ep)
 
+    # A `reuse_take` shot is never generated: it is seconds cut out of a take
+    # that already exists (CLAUDE.md — the same motion is the same footage).
+    # Nothing read the field until record 10, so a scene run would have sent
+    # record 10's 8.2 to Kling as a fresh $0.67 roll from a plate that does
+    # not exist, and record 09's 8.4 was cut by hand. The cut lives here now.
+    ff = "/usr/local/opt/ffmpeg-full/bin/ffmpeg"
+    for s in [s for s in shots if s.get("reuse_take")]:
+        shots.remove(s)
+        dest = out / f"{s['id']}.mp4"
+        rt = s["reuse_take"]
+        src = out / f"{rt['take']}.mp4"
+        if dest.exists():
+            print(f"  skip   {dest.name} (already there)"); continue
+        if not src.exists():
+            print(f"  hold   {s['id']}: reuse of takes/{src.name}, not generated yet"); continue
+        if dry:
+            print(f"  reuse  {s['id']}: takes/{src.name} from {rt.get('from', 0)} s, "
+                  f"{s['timeline_seconds']} s — cut locally, $0.00"); continue
+        subprocess.run([ff, "-y", "-v", "error", "-ss", str(rt.get("from", 0)),
+                        "-i", str(src), "-t", str(s["timeline_seconds"]), "-an",
+                        "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p",
+                        str(dest)], check=True)
+        print(f"  reuse  {s['id']}: cut from takes/{src.name} -> {dest.name}, $0.00")
+
     jobs = []
     for s in shots:
         if tier_override:
