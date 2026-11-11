@@ -1,0 +1,17 @@
+cards:
+  - id: slug
+    at: 0.5
+    hold: 2.0
+    lines: ["FC9-011 // THE MANIFEST"]
+
+  # Shot 8.5 starts at 294.0 s. From record 11 the closer sits above
+  # YouTube's end-screen tiles (CLAUDE.md, Serge 2026-11-06).
+  - id: closer
+    at: 294.5
+    hold: 2.0
+    size: 40
+    pos: centre-high
+    alpha: 235
+    lines:
+      - "FILE CLASS NINE"
+      - "FC9-011 // THE MANIFEST"

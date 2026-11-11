@@ -74,13 +74,19 @@ def fetch_ranges(url, dest, parts=8):
 
 def upload(path, key, cache):
     c = json.loads(cache.read_text()) if cache.exists() else {}
-    if path.name in c: return c[path.name]
+    # Keyed by name AND content. Record 11 replaced approved/2.3.jpg after a
+    # failed take and the name-only cache handed Kling the old frame: $0.90
+    # for a take of a still that had been rejected. A changed file is a new
+    # upload; the old entry stays harmless.
+    import hashlib
+    ck = f"{path.name}:{hashlib.md5(path.read_bytes()).hexdigest()[:12]}"
+    if ck in c: return c[ck]
     d = req("https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3",
             key, {"content_type": "image/jpeg", "file_name": path.name})
     urllib.request.urlopen(urllib.request.Request(
         d["upload_url"], data=path.read_bytes(),
         headers={"Content-Type": "image/jpeg"}, method="PUT"), timeout=120)
-    c[path.name] = d["file_url"]; cache.write_text(json.dumps(c, indent=2))
+    c[ck] = d["file_url"]; cache.write_text(json.dumps(c, indent=2))
     return d["file_url"]
 
 def main():

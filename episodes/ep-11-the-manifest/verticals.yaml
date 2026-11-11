@@ -1,0 +1,60 @@
+# Record 11 vertical cuts. Built by scripts/vertical.py out of takes/, never
+# generated. From record 09 (CLAUDE.md, verticals): open on the strangest
+# figure, lines back to back (<=0.3 s after the first, <=0.6 s after that),
+# 15-25 s of picture before the closing card. `at:` values are computed from
+# audio/alignment/ (2026-11-10), not estimated: each line starts 0.25 s (then
+# 0.5 s) after the previous paragraph's last word. Every line is a whole
+# paragraph, so every cut ends on a paragraph's own tail of silence.
+# `runtime_seconds` is the whole piece, closing card included.
+#
+# Crops (608 px window centre as a fraction of the frame): 1.1's clip hangs at
+# ~0.36; 1.4's flow meter at ~0.47; 2.1's nozzle at ~0.48; 3.3's handwheel at
+# ~0.47; 4.1's cylinder at ~0.40; 4.3's sheet at ~0.81; 5.1's open door at
+# ~0.40; 7.3's porthole at ~0.48.
+# 5.1 runs at real speed here, so it stays inside its clean first 4.5 s
+# (shots.yaml retime_exception).
+
+slug: "FC9-011 // THE MANIFEST"
+
+cuts:
+  - id: fc9-011-a-the-airlock
+    runtime_seconds: 22.3
+    shots:
+      - {id: "1.1", at:  0.00, from: 0.0, seconds: 5.00, crop_x: 0.36}
+      - {id: "2.1", at:  5.00, from: 0.0, seconds: 6.00, crop_x: 0.48}
+      - {id: "3.3", at: 11.00, from: 0.0, seconds: 5.00, crop_x: 0.47}
+      - {id: "3.4", at: 16.00, from: 0.0, seconds: 4.30, crop_x: 0.50}
+    lines:
+      - {pid: s1p1, at:  0.10}   # "Day eleven. Trajectory correction one. The ship came out three hundred and twelve kilograms heavier than the manifest."
+      - {pid: s2p1, at:  6.76}   # "Day seventeen. Correction two. Four hundred and eighty-nine kilograms heavy."
+      - {pid: s3p3, at: 11.65}   # "The airlock has not cycled since launch. Nothing has docked."
+      - {pid: s3p4, at: 15.32}   # "Mass in a sealed ship goes one way. Out, through the engine."
+    ends_on: "Mass in a sealed ship goes one way. Out, through the engine."
+
+  - id: fc9-011-b-forward
+    runtime_seconds: 18.4
+    shots:
+      - {id: "4.1", at:  0.00, from: 0.0, seconds: 5.50, crop_x: 0.40}
+      - {id: "2.1", at:  5.50, from: 6.0, seconds: 4.00, crop_x: 0.48}
+      - {id: "4.3", at:  9.50, from: 0.0, seconds: 4.00, crop_x: 0.81}
+      - {id: "5.1", at: 13.50, from: 0.0, seconds: 2.90, crop_x: 0.40}
+    lines:
+      - {pid: s6p1, at:  0.10}   # "Day twenty-three. Correction three. Six hundred and seventy-one kilograms heavy."
+      - {pid: s6p2, at:  5.42}   # "Gimbal trim point seven six degrees. The same place, four and a half meters forward."
+      - {pid: s4p4, at: 10.23}   # "Four and a half meters forward of the center of mass. The habitat module."
+      - {pid: s5p4, at: 14.08}   # "The bunk is in this module."
+    ends_on: "The bunk is in this module."
+
+  - id: fc9-011-c-eighteen-days
+    runtime_seconds: 22.4
+    shots:
+      - {id: "1.4", at:  0.00, from: 0.0, seconds: 5.50, crop_x: 0.47}
+      - {id: "7.3", at:  5.50, from: 0.0, seconds: 5.00, crop_x: 0.48}
+      - {id: "4.1", at: 10.50, from: 0.0, seconds: 5.50, crop_x: 0.40}
+      - {id: "1.1", at: 16.00, from: 0.0, seconds: 4.40, crop_x: 0.36}
+    lines:
+      - {pid: s6p3, at:  0.10}   # "One hundred and eighty-two kilograms in six days. Thirty point three a day. The rate is rising."
+      - {pid: s7p1, at:  5.66}   # "The return burn needs one thousand six hundred and forty-four meters per second."
+      - {pid: s7p3, at: 10.27}   # "The margin is gone at twelve hundred and fifty kilograms. At the rising rate, in eighteen days."
+      - {pid: s7p4, at: 16.22}   # "Day forty-one. The return burn is on day sixty-one."
+    ends_on: "Day forty-one. The return burn is on day sixty-one."

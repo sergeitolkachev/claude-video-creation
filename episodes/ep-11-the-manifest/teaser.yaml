@@ -1,0 +1,32 @@
+# Record 11 teaser: thirty seconds, its own cue, closes on SOON. Lines back
+# to back from the real word timings (audio/alignment/, 2026-11-10); every
+# line is already in the record — the five script.md nominated, whole
+# paragraphs, each starting 0.25 s (then 0.5 s) after the last word before it.
+# Only shots where something moves; 2.3's needle climbs under "Four and a half
+# meters forward" and 5.1 stays inside its clean first 4.5 s.
+runtime_seconds: 30.0
+aspect: "9:16"
+slug: "FC9-011 // THE MANIFEST"
+end_card:
+  at: 27.0
+  seconds: 3.0
+  lines: ["SOON", "ON THE CHANNEL"]
+shots:
+  - {id: "1.1", at:  0.00, from: 0.0, seconds: 5.00, crop_x: 0.36}
+  - {id: "1.4", at:  5.00, from: 0.0, seconds: 3.50, crop_x: 0.47}
+  - {id: "2.1", at:  8.50, from: 0.0, seconds: 4.50, crop_x: 0.48}
+  - {id: "2.3", at: 13.00, from: 0.0, seconds: 4.00, crop_x: 0.45}
+  - {id: "4.1", at: 17.00, from: 0.0, seconds: 4.00, crop_x: 0.40}
+  - {id: "5.1", at: 21.00, from: 0.0, seconds: 3.50, crop_x: 0.40}
+  - {id: "3.4", at: 24.50, from: 0.0, seconds: 2.50, crop_x: 0.50}
+lines:
+  - {pid: s1p1, at:  0.10}   # "Day eleven. Trajectory correction one. The ship came out three hundred and twelve kilograms heavier than the manifest."
+  - {pid: s3p4, at:  6.66}   # "Mass in a sealed ship goes one way. Out, through the engine."
+  - {pid: s2p1, at: 11.19}   # "Day seventeen. Correction two. Four hundred and eighty-nine kilograms heavy."
+  - {pid: s4p4, at: 16.22}   # "Four and a half meters forward of the center of mass. The habitat module."
+  - {pid: s6p1, at: 20.15}   # "Day twenty-three. Correction three. Six hundred and seventy-one kilograms heavy."
+levels:
+  music: -9    # cue measured -20.0 dBFS rms (record 10: -19 at -10); 83% below 250 Hz, as 08-10's teaser cues
+  floor: 0
+  voice: 0
+music: sfx/teaser-music.mp3

@@ -261,6 +261,19 @@ instrument face gets fewer marks than a clock — a short arc of ticks, not a
 full ring — and a chart gets a trace too plain to extend: one straight line,
 or a single step.
 
+**No floating pencil — Serge, 2026-11-10.** A pencil drifting in zero g
+had been the motion in five records (01, 07, 09, 10, 11), and on record 11
+it failed the still stage twice: under a wide anchor it shrank to a speck at
+the far hatch, under a close one it sat on the frame like a sticker. It is
+not an object with an axis, so nothing about it is held, and it has become
+the channel's tic. Do not write a floating or drifting pencil — or any small
+loose object standing for weightlessness — as a shot's subject. A pencil
+seated in its clip beside the paper is set dressing and stays. When a beat
+wants a silent model shot, give it a rigid thing with an axis that the record
+already contains, or a `reuse_take` of one whose motion fits the line:
+record 11 put "the same error on both burns" over the same gauge climbing
+again, and "no scale on this ship but the engine" over the nozzle.
+
 ### Nothing moves in a frame that is never animated
 
 `static` and `local` shots are built in ffmpeg from one approved still. So
@@ -836,6 +849,8 @@ the production side and each failure costs a rewrite.
       pause, each a natural event with a body. Nothing that runs under the
       record: no room tone, hum or machinery.
 - [ ] Every counting readout settles at least 2 s before its shot ends.
+- [ ] No floating pencil, and no small loose object standing in for
+      weightlessness, as a shot's subject.
 - [ ] No two consecutive `static` shots — two locked-off frames in a row is
       twenty seconds where nothing moves. A card plate beside a `local` push
       or pull is fine, and so are two `local` moves in a row.

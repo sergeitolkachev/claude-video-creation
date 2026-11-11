@@ -1,0 +1,82 @@
+# Record 11 thumbnails (scripts/build_thumbs.py). Plates are approved stills,
+# never new generations. Three variants, each selling a different thing, for
+# swapping in Studio a week at a time; ids are what a CTR figure attaches to,
+# so they are not renamed. Judge them as a row of 210 px tiles.
+#
+#   a — the number: the ship is 671 kg heavier (matches the record's title)
+#   b — the seal: an airlock that has not opened since launch
+#   c — the place: the extra mass is 4.5 m forward, in the habitat module
+
+episode: ep-11-the-manifest
+slug: "FC9-011 // The Manifest"
+export: {width: 1280, height: 720}
+variants:
+  - id: a-plus-671
+    plate: "1.2"
+    # The module runs to a vanishing point at the centre; the padded ceiling
+    # in the upper left is the brightest part of the frame, so it is dimmed
+    # for the type.
+    crop: {zoom: 0.90, bias_x: 0.50, bias_y: 0.50}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.50, y1: 0.48, strength: 0.55, feather: 0.35}
+    blocks:
+      - lines: ["+671 kg"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["NOTHING HAS DOCKED"]
+        size: 40
+        tracking: 8
+        x: 0.04
+        y: 0.33
+        anchor: left
+        scrim: true
+
+  - id: b-sealed-since-launch
+    plate: "3.3"
+    # The hatch fills the centre; the type goes over the padding and the
+    # hinge on the left, dimmed.
+    crop: {zoom: 0.90, bias_x: 0.55, bias_y: 0.45}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.48, y1: 0.50, strength: 0.55, feather: 0.30}
+    blocks:
+      - lines: ["SEALED"]
+        size: 104
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["SINCE LAUNCH"]
+        size: 104
+        tracking: 4
+        x: 0.04
+        y: 0.25
+        anchor: left
+        scrim: true
+
+  - id: c-four-point-five-forward
+    plate: "5.1"
+    # The open locker sits left of centre. Second and third builds put the
+    # type on the right: a scrim there starts mid-frame and showed a hard
+    # box, and without one the type vanished into the white doors at 210 px.
+    # The type is at the left edge now, where the scrim runs off the frame,
+    # and the crop moves the open door right of the type.
+    crop: {zoom: 0.90, bias_x: 0.30, bias_y: 0.50}
+    dim: {x0: 0.0, y0: 0.0, x1: 0.45, y1: 0.50, strength: 0.55, feather: 0.35}
+    blocks:
+      - lines: ["4.5 m"]
+        size: 120
+        tracking: 4
+        x: 0.04
+        y: 0.08
+        anchor: left
+        scrim: true
+      - lines: ["FORWARD"]
+        size: 64
+        tracking: 6
+        x: 0.04
+        y: 0.30
+        anchor: left
+        scrim: true

@@ -1,0 +1,796 @@
+episode: ep-11-the-manifest
+runtime_seconds: 300
+aspect: "16:9"
+
+# Told by the operator, first person.
+voice: character
+
+scene_runtime: {1: 36, 2: 38, 3: 40, 4: 44, 5: 36, 6: 40, 7: 36, 8: 30}
+
+# Scene 8 is cards and two repeat takes, no voice (script.md, Scene 8 —
+# declared coda: the ship flying its return burn with nobody logging it).
+coda: [8]
+
+# Prompt hygiene, checked by validate.py. Record 09's list re-cut for a
+# transfer ship: warm gray and dull brass replace bone and cold aluminum, and
+# the frames that are never animated may contain nothing that would be
+# moving, floating, hanging or lit.
+hygiene:
+  allow_grainy: []
+  allow_hand: []
+  forbid:
+    - pattern: '\b(drift\w*|float\w*|motes?|dust|suspended|vapou?r|mist|steam|smoke|condensation|drips?|dripping|beads?|particles?|specks?|moving|moves|turning|turns|swings?|swinging|blinks?|blinking|slides?|sliding|travel\w*|rotat\w*|sinks?|sinking|eases?|tilt\w*|climbs?|climbing|hang\w*)\b'
+      except: ["1.1", "1.4", "2.1", "2.3", "3.1", "3.4", "4.1", "5.1",
+               "5.3", "6.1", "6.4", "7.3", "8.2", "8.4"]
+      why: >
+        A shot built from one still must contain nothing the eye expects to
+        see move (record 04's twelve plates; record 05's rule). Only the
+        model shots name motion. The static and local plates say "everything
+        clipped in place" instead of "nothing floating or hanging", because
+        the negation is caught here too — and never name a strap, which
+        summoned straps onto every module plate on the first pass.
+
+    - pattern: '\b(text|lettering|writing|written|label\w*|plaque|placard|nameplate|stencil\w*|serial|legible|numerals?|digits?|figures?|readout|markings?|scale|counter|display|screen|monitor)\b'
+      except: []
+      why: >
+        Every character on this channel comes out of build_cards.py, and on
+        paper out of build_paper.py. The noun alone summons lettering.
+
+    - pattern: '\b(gauge|dial|needle)\b'
+      except: ["2.3", "3.1"]  # 3.1 is reuse_take of 2.3, never generated
+      why: >
+        One instrument face in the record, the chamber-pressure gauge: five
+        plain ticks on a short arc, no numerals. Anywhere else a gauge is an
+        invitation to invent a scale.
+
+    - pattern: '\b(lamp|lantern|bulb|torch|flashlight|spotlight|headlamp|indicator|led)\b'
+      except: []
+      why: >
+        No lamp anywhere in this record. A lamp named in one prompt reaches
+        the anchors (record 03); the bunk alcove is written without its
+        reading lamp for that reason.
+
+    - pattern: '\b(amber|orange|yellow|gold\w*|tungsten|sodium|candle\w*|fire|flame\w*|plume|green|red)\b'
+      except: ["2.1"]
+      why: >
+        Warm gray, off-white, dull brass, cold blue. Green belongs to the
+        cards alone. The one exception is the exterior, whose thermal blanket
+        is gold-brown and whose prompt has to say "no flame and no plume".
+
+    - pattern: '\b(person|human|figure|hands?|fingers?|gloves?|astronaut|crew|suit)\b'
+      except: []
+      why: >
+        One operator, never seen. "No people" ends prompts and is not
+        matched here.
+
+    - pattern: '\b(card|plate|caption|title|overlay)\b'
+      except: []
+      why: >
+        Which shots carry a card is cards.yaml's business.
+
+
+# --- Spines -----------------------------------------------------------------
+# Material, light and palette only (script.md, Style spine). "Paneling", not
+# "module" or "cabin", so the macro anchor is not dragged into a room.
+
+spine: &spine >
+  Matte warm-gray painted aluminum and off-white padded paneling, worn soft
+  and dull along every edge that gets touched, faint scuffs and old adhesive
+  marks, nothing polished and nothing new. One palette throughout: warm gray,
+  off-white, dull brass, cold blue. The light is flat, cool and diffuse with
+  no visible source. Contrast is low, shadows soft and shallow, blacks lifted
+  and never crushed. No lettering, no markings, no numerals, no people.
+
+macro_spine: &macro_spine >
+  A macro photograph of matte warm-gray painted aluminum, dull brass and
+  off-white padding, worn soft at every edge, nothing polished and nothing
+  new. One palette: warm gray, off-white, dull brass, cold blue. Flat cool
+  diffuse light, low contrast, the background falling off to soft gray. No
+  lettering, no markings, no numerals, no people.
+
+exterior_spine: &exterior_spine >
+  Open space. Dull gray aluminum and gold-brown thermal blanket weathered and
+  creased, seams and fastener rows catching hard sunlight from one side, the
+  shadow side falling to near black. Black sky with no planet in it. One
+  palette: warm gray, gold-brown, black. No lettering, no markings, no
+  numerals, no flags, no people.
+
+negative_base: >
+  fast motion, camera shake, dolly, push in, pull back, pan, tilt, zoom,
+  morphing geometry, objects changing shape, new objects appearing,
+  the whole frame brightening or darkening, flicker, blur, distortion, low
+  quality, people, hands, faces, text, lettering, numerals, watermark
+
+
+# --- Motion tails -----------------------------------------------------------
+# Kling 3.0 does not stop a motion (record 09), so every model shot is
+# written as a motion that runs the whole clip: there is no event tail.
+
+motion_tail_steady: &motion_tail_steady >
+  The movement named above runs steadily for the whole shot, starting in the
+  first second. Everything else in the frame is still and rigid and keeps
+  exactly its shape. The camera does not move at all: no dolly, no push in,
+  no pull back, no pan, no tilt, no zoom. No cuts, no speed changes. Nothing
+  enters the frame.
+
+motion_tail_stars: &motion_tail_stars >
+  Only the star field beyond the glass moves, turning slowly and steadily as
+  one rigid field, every star keeping its place relative to the others and
+  its size. The window, its ring and the wall are completely still. The
+  camera does not move. No cuts, no speed changes. Nothing enters the frame.
+
+
+# --- Anchors ----------------------------------------------------------------
+# One per camera distance that recurs. A5 is an exterior, generated from text
+# with the exterior spine; no interior anchor is passed to 2.1.
+
+anchors:
+  - id: A1-module
+    model: anchor
+    covers: ["1.2", "2.2", "3.1", "4.2", "4.4", "6.2", "7.2", "8.1", "8.5"]
+    spine: *spine
+    subject: >
+      Camera: 24mm lens at chest height inside a long cylindrical pressurized
+      module, looking along its full length, the vanishing point near the
+      center of the frame. Off-white padded panels line the curved walls,
+      warm-gray aluminum handrails run along them, a row of small closed
+      locker doors along the right wall, every stowage strap pulled flat and
+      buckled, a round closed hatch at the far end. The air is completely
+      clear. The lower left quarter of the frame is a plain empty wall panel.
+
+  - id: A2-macro
+    model: anchor
+    covers: ["1.4", "2.3", "3.4", "4.1"]
+    spine: *macro_spine
+    subject: >
+      Camera: long lens, extreme close view of a small round dull brass
+      fitting with a glass window set into a warm-gray painted aluminum line,
+      the fitting filling the center of the frame, a braided line leaving it
+      to one side, every surface worn soft at the edges, the background two
+      stops darker and unresolvable.
+
+  - id: A3-headon
+    model: anchor
+    covers: ["1.1", "2.4", "3.3", "5.1", "5.2", "5.4", "7.3"]
+    spine: *spine
+    subject: >
+      Camera: normal lens, flat frontal view of a round airlock hatch set in a
+      warm-gray painted bulkhead, the hatch centered, a thick aluminum door
+      on one heavy hinge on the left, a central handwheel with a plain ribbed
+      rim, a dark rubber seal around the frame, plain off-white padded
+      paneling around it on every side.
+
+  - id: A4-topdown
+    model: anchor
+    covers: ["1.3", "3.2", "4.3", "6.3", "7.1", "7.4", "8.3"]
+    spine: *spine
+    note: >
+      Written as a flat lay from the start: record 09's first pass drew a
+      fold-down table from the front at eye height until the prompt left no
+      wall or edge to put a camera in front of.
+    subject: >
+      Flat lay photograph taken from directly above, camera pointing straight
+      down. A sheet of matte warm-gray painted aluminum fills the entire
+      frame edge to edge, worn and lightly scratched, with no edge, wall or
+      horizon visible anywhere. A single sheet of plain ruled paper lies flat
+      in the upper right of the frame, held under a plain steel clip bar
+      screwed to the aluminum, a plain gray pencil seated in a small clip
+      beside it. Even, flat, cool light with no shadows. The lower left half
+      of the frame is bare painted aluminum.
+
+  - id: A5-exterior
+    model: anchor
+    exterior: true
+    covers: ["2.1"]
+    spine: *exterior_spine
+    subject: >
+      Camera: wide lens in open space behind a small spacecraft, its aft end
+      filling the center third of the frame, one dark bell-shaped rocket
+      nozzle on a gimbal mount pointing toward the camera, gold-brown thermal
+      blanket and gray aluminum struts around the base of the nozzle lit hard
+      from the left, the right side in deep shadow, black sky all around.
+
+
+# --- Shots ------------------------------------------------------------------
+# Model shots are on kling3 (CLAUDE.md, from record 09), billed per second,
+# so generate_seconds equals timeline_seconds. Repeat subjects reference the
+# approved master still with ref_shot; a repeat of the same motion is
+# reuse_take, never a new roll (CLAUDE.md, record 09's coda).
+
+shots:
+
+  # ---- Scene 1 — Correction one (36 s) --------------------------------------
+
+  - id: "1.1"
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the clamp swinging on its lanyard under the burn
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The steel spring clamp swings slowly back and forth on its taut
+      lanyard as one rigid piece, steadily, for the whole shot.
+    negative_extra: >
+      the lanyard stretching, the lanyard going slack, a second clamp, the
+      clamp opening, the clamp changing shape, the handrail moving
+    anchors: [A3-headon]
+    note: master take for the clamp — 6.1 and 8.2 are reuse_take of it
+    prompt: >
+      Close view of a plain off-white padded wall panel filling the frame, a
+      warm-gray aluminum handrail running across the top of the frame, a
+      short dark cord tied to the handrail at the top left and running
+      straight down and to the right, and at its lower end, in the middle of
+      the frame and ten centimeters clear of the panel, a small steel spring
+      clamp hanging on it, sharp and fully in frame, flat cool light, no
+      people
+
+  - id: "1.2"
+    scene: 1
+    motion_tier: static
+    timeline_seconds: 11
+    source: ffmpeg_still
+    motion: static
+    card: tcm1
+    anchors: [A1-module]
+    note: master still for the habitat module — 4.4, 6.2, 7.2, 8.1 reference it
+    prompt: >
+      A cylindrical habitat module seen wide at chest height down its full
+      length, off-white padded paneling and warm-gray aluminum handrails, a
+      row of small smooth locker doors along the right side all closed, each
+      with a flush recessed latch and nothing on its face, plain unmarked
+      panels, everything clipped in place, flat cool diffuse light, the air completely clear, the lower
+      left of the frame a plain empty panel, no people
+
+  - id: "1.3"
+    scene: 1
+    motion_tier: local
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A4-topdown]
+    note: master still for the work surface; paper.yaml draws TCM-1's division on it
+    prompt: >
+      Directly overhead view of a small warm-gray aluminum work surface, a
+      single sheet of plain ruled paper held flat under a steel clip bar and
+      a plain gray pencil seated in a clip beside it, flat even cool light,
+      the air above the surface completely clear, everything held in place
+      by clips, no people
+
+  - id: "1.4"
+    scene: 1
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the flow-meter rotor turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The small four-bladed turbine rotor behind the glass turns steadily and
+      quickly for the whole shot.
+    negative_extra: >
+      blades multiplying, blades bending, the glass moving, the fitting
+      turning, liquid splashing
+    anchors: [A2-macro]
+    note: master take for the flow meter — 6.4 is reuse_take of it
+    prompt: >
+      Macro view through the round glass window of a propellant flow meter
+      set into a dull brass line, a stiff braided stainless-steel hose
+      leaving the fitting, a small four-bladed turbine rotor inside it, flat
+      cool light across the glass, background unresolvable, no
+      people
+
+  # ---- Scene 2 — Correction two (38 s) --------------------------------------
+
+  - id: "2.1"
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the nozzle tilting on its gimbal
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The dark rocket nozzle tilts slowly a few degrees to one side on its
+      gimbal and back, as one rigid piece, steadily for the whole shot. The
+      ship around it does not move.
+    negative_extra: >
+      flame, exhaust plume, glow from the nozzle, sparks, the ship rotating,
+      the ship drifting, the nozzle changing shape, a second nozzle, stars
+      streaking, a planet appearing
+    # Routed through the approved A5 as a reference, not text-only: A5 is an
+    # exterior, so there is no bulkhead to leak, and text-only would ignore it.
+    anchors: [A5-exterior]
+    prompt: >
+      Exterior of the aft end of a small spacecraft in open space, a single
+      dark bell-shaped rocket nozzle on a gimbal mount at the center of the
+      frame, gold-brown thermal blanket and gray aluminum struts around its
+      base lit hard from the left, the hull behind it bare weathered gray
+      aluminum of one even tone all over, black sky, no flame and no plume, no people
+
+  - id: "2.2"
+    scene: 2
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: tcm2
+    anchors: [A1-module]
+    note: master still for the access tunnel — 4.2 and 8.5 reference it
+    prompt: >
+      A narrow cylindrical access tunnel seen wide at chest height down its
+      length, warm-gray aluminum ribs and off-white padded paneling, a closed
+      round hatch at the far end, every cable run clipped flat into its tray,
+      every switch in the side panel in the same position and the metal
+      around them dark, flat cool light, the air completely clear, the lower
+      left of the frame a plain empty panel, no people
+
+  - id: "2.3"
+    scene: 2
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the gauge needle climbing
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The long black needle turns slowly clockwise on its central hub as one
+      rigid piece, sweeping steadily from the first tick toward the second
+      for the whole shot.
+    negative_extra: >
+      more ticks appearing, a second needle, numbers appearing, the bezel
+      moving, the needle bending, the needle spinning, the needle growing
+      longer, the needle shrinking, the hub moving
+    # Pass 1 (2026-11-10) had a stub needle pivoted at the edge of the tick
+    # arc; Kling grew it into a full needle that swept through the ticks.
+    # Pass 2 puts the pivot at the center and the needle at full length in
+    # the still, so there is nothing left for the model to finish.
+    anchors: [A2-macro]
+    prompt: >
+      Extreme close view of a round pressure gauge in a dull brass bezel, a
+      small dark hub at the exact center of the face, a short arc of five
+      plain engraved ticks across the upper half of the face, and one long
+      fine black needle running from the hub out to the ticks, as long as
+      the radius of the arc, pointing at the leftmost tick, nothing else on
+      the face, scratched glass, flat cool light from the left, background
+      unresolvable, no people
+
+  - id: "2.4"
+    scene: 2
+    motion_tier: local
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-headon]
+    prompt: >
+      Two identical small gray instrument boxes bolted side by side to one
+      aluminum bracket on a warm-gray paneled wall, a braided cable leaving
+      each into the same conduit, both boxes plain and scuffed at the
+      corners, every surface on them dark and unlit, flat cool light, the
+      air completely clear, everything fixed in place, no people
+
+  # ---- Scene 3 — The difference (40 s) --------------------------------------
+
+  # 3.1 was a floating pencil until 2026-11-10. It failed the still stage
+  # twice and the pencil had been in five records; Serge cut it. The line is
+  # "the same error on both burns" — the same chamber-pressure gauge climbing
+  # the same way is that line in a picture, and costs nothing.
+  - id: "3.1"
+    scene: 3
+    reuse_take: {take: "2.3", from: 0.0}
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the gauge needle climbing, as on correction two
+    ref_shot: "2.3"
+    note: not generated — 8 s of takes/2.3.mp4 from 0.0 s. Fallback if 2.3 fails twice — a local push on approved/2.4.jpg
+    prompt: >
+      The same pressure gauge and needle, flat cool light, no people
+
+  - id: "3.2"
+    scene: 3
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: difference
+    ref_shot: "1.3"
+    prompt: >
+      The same work surface as the reference, two sheets of plain ruled paper
+      overlapping under the steel clip bar, the pencil seated in its clip,
+      flat even cool light, the air above completely clear, the lower left
+      of the frame bare painted aluminum, no people
+
+  - id: "3.3"
+    scene: 3
+    motion_tier: local
+    timeline_seconds: 12
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-headon]
+    prompt: >
+      A round airlock hatch head-on in a warm-gray painted bulkhead, a thick
+      aluminum door seated fully closed in its frame on one heavy hinge on
+      the left, a central handwheel with a plain ribbed rim at rest, a dark
+      rubber seal all the way around, off-white padded paneling around it,
+      flat cool light, everything fixed in place, no people
+
+  - id: "3.4"
+    scene: 3
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the fan turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The fan behind the grille turns steadily at an even speed for the whole
+      shot.
+    negative_extra: >
+      blades multiplying, blades bending, the grille moving
+    anchors: [A2-macro]
+    prompt: >
+      Macro view through a round aluminum grille of a small five-bladed
+      ventilation fan set into a duct, plain gray blades, flat cool light
+      across the grille, background unresolvable, no people
+
+  # ---- Scene 4 — Where (44 s) -----------------------------------------------
+
+  - id: "4.1"
+    scene: 4
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    motion: the actuator rod sliding out of its cylinder
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The polished steel push rod slides slowly and steadily out of its
+      cylinder for the whole shot, as one rigid piece.
+    negative_extra: >
+      the rod bending, the cylinder moving, a second rod, the lines
+      writhing, fluid spraying
+    anchors: [A2-macro]
+    note: master take for the actuator — 8.4 is reuse_take of it
+    prompt: >
+      Macro view of a heavy gimbal actuator in an engine bay, a polished
+      steel push rod emerging from a thick gray hydraulic cylinder, braided
+      lines leaving the cylinder, flat cool light raking along the rod,
+      background unresolvable, no people
+
+  - id: "4.2"
+    scene: 4
+    motion_tier: static
+    timeline_seconds: 11
+    source: ffmpeg_still
+    motion: static
+    card: trim
+    ref_shot: "2.2"
+    prompt: >
+      The same access tunnel as the reference, the far hatch closed, every
+      cable clipped flat, every switch in the same position, flat cool light,
+      the air completely clear, the lower left of the frame a plain empty
+      panel, no people
+
+  - id: "4.3"
+    scene: 4
+    motion_tier: local
+    timeline_seconds: 11
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.3"
+    prompt: >
+      The same work surface as the reference, one fresh sheet of plain ruled
+      paper under the clip bar, the pencil seated in its clip, flat even cool
+      light, the air completely clear, no people
+
+  - id: "4.4"
+    scene: 4
+    motion_tier: local
+    timeline_seconds: 12
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.2"
+    prompt: >
+      The same habitat module as the reference, the same closed lockers,
+      smooth bare padded walls exactly as in the reference with nothing
+      added to them, the same smooth closed locker doors with flush latches, everything clipped in place, flat cool
+      light, the air completely clear, no people
+
+  # ---- Scene 5 — The lockers (36 s) -----------------------------------------
+
+  - id: "5.1"
+    scene: 5
+    motion_tier: model
+    timeline_seconds: 10
+    model: kling3
+    generate_seconds: 10
+    # The take opens the door correctly for 5 s; after that the door vanishes
+    # into its hinge and the blue light on the frames drops. The first 5 s are
+    # slowed 2x by motion interpolation to fill the 10 s shot, the repair that
+    # shipped on record 07's 1.2 and 2.3.
+    retime: 2.0
+    retime_mode: interpolate
+    retime_exception: >
+      Record 11, 2026-11-10: the only clean part of the take is its first
+      5 s. Verticals cut from takes/ at real speed, so any vertical using 5.1
+      (.b does) must stay inside its first 4.5 s.
+    motion: the locker door swinging open on its hinge
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The small square locker door swings slowly open on its hinge as one
+      rigid piece, steadily for the whole shot.
+    negative_extra: >
+      the door bending, a second door opening, objects coming out of the
+      locker, a hand, the hinge moving to the other side
+    anchors: [A3-headon]
+    note: Kling stops a door that meets its frame; this one opens, so it is written to run the whole clip
+    prompt: >
+      A small square locker door head-on in a row of identical closed lockers
+      set into off-white padded paneling, plain aluminum frame, a recessed
+      flat latch, the door slightly ajar on its hinge on the left, a shallow
+      dark compartment behind it, flat cool light, no people
+
+  - id: "5.2"
+    scene: 5
+    motion_tier: static
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    card: lockers
+    anchors: [A3-headon]
+    prompt: >
+      A row of small square locker doors head-on in off-white padded
+      paneling, every one of them closed and latched, every latch in the same
+      position, plain aluminum frames, flat cool light, the air completely
+      clear, the lower left of the frame a plain empty panel, no people
+
+  - id: "5.3"
+    scene: 5
+    reuse_take: {take: "2.1", from: 2.0}
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the nozzle tilting on its gimbal, as in 2.1
+    ref_shot: "2.1"
+    note: not generated — 8 s of takes/2.1.mp4 from 2.0 s. The take swings 30-40 deg between 1 s and 6 s, far past a real gimbal; kept by decision 2026-11-10, no 8 s window avoids it, under "no scale on this ship but the engine"
+    prompt: >
+      The same rocket nozzle on its gimbal, flat cool light, no people
+
+  - id: "5.4"
+    scene: 5
+    motion_tier: local
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    anchors: [A3-headon]
+    prompt: >
+      A sleeping alcove head-on in off-white padded paneling, a closed
+      sleeping bag strapped flat against the back wall under two buckled
+      straps, a plain padded headrest above it, flat cool light, the air
+      completely clear, everything held flat in place, no people
+
+  # ---- Scene 6 — Correction three (40 s) ------------------------------------
+
+  - id: "6.1"
+    scene: 6
+    reuse_take: {take: "1.1", from: 0.0}
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the clamp swinging on its lanyard under the burn
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The steel spring clamp swings slowly back and forth on its lanyard.
+    negative_extra: >
+      the lanyard stretching, a second clamp
+    ref_shot: "1.1"
+    note: not generated — takes/1.1.mp4 whole (the third burn, the same swing)
+    prompt: >
+      The same clamp on the same lanyard and handrail, flat cool light, no
+      people
+
+  - id: "6.2"
+    scene: 6
+    motion_tier: static
+    timeline_seconds: 11
+    source: ffmpeg_still
+    motion: static
+    card: tcm3
+    ref_shot: "1.2"
+    prompt: >
+      The same habitat module as the reference, every locker closed,
+      smooth bare padded walls exactly as in the reference with nothing
+      added to them, the same smooth closed locker doors with flush latches, everything clipped in place, flat cool light,
+      the air completely clear, the lower left of the frame a plain empty
+      panel, no people
+
+  - id: "6.3"
+    scene: 6
+    motion_tier: local
+    timeline_seconds: 13
+    source: ffmpeg_still
+    motion: static
+    local_motion: pull
+    ref_shot: "1.3"
+    prompt: >
+      The same work surface as the reference, three sheets of plain ruled
+      paper overlapping under the clip bar, the pencil seated in its clip,
+      flat even cool light, the air completely clear, no people
+
+  - id: "6.4"
+    scene: 6
+    reuse_take: {take: "1.4", from: 0.0}
+    motion_tier: model
+    timeline_seconds: 8
+    model: kling3
+    generate_seconds: 8
+    motion: the flow-meter rotor turning
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The turbine rotor behind the glass turns steadily.
+    negative_extra: >
+      blades multiplying
+    ref_shot: "1.4"
+    note: not generated — takes/1.4.mp4 whole (the third burn)
+    prompt: >
+      The same flow meter and rotor, flat cool light, no people
+
+  # ---- Scene 7 — The return burn (36 s) -------------------------------------
+
+  - id: "7.1"
+    scene: 7
+    motion_tier: local
+    timeline_seconds: 9
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.3"
+    prompt: >
+      The same work surface as the reference, one fresh sheet of plain ruled
+      paper under the clip bar, the pencil seated in its clip, flat even cool
+      light, the air completely clear, no people
+
+  - id: "7.2"
+    scene: 7
+    motion_tier: static
+    timeline_seconds: 10
+    source: ffmpeg_still
+    motion: static
+    card: return
+    ref_shot: "1.2"
+    prompt: >
+      The same habitat module as the reference, every locker closed,
+      smooth bare padded walls exactly as in the reference with nothing
+      added to them, the same smooth closed locker doors with flush latches, everything clipped in place, flat cool light,
+      the air completely clear, the lower left of the frame a plain empty
+      panel, no people
+
+  - id: "7.3"
+    scene: 7
+    motion_tier: model
+    timeline_seconds: 9
+    model: kling3
+    generate_seconds: 9
+    motion: the star field turning across the window
+    motion_tail: motion_tail_stars
+    video_prompt: >
+      The field of stars beyond the glass turns slowly and steadily across
+      the window as the ship rotates, every star keeping its place relative
+      to the others.
+    negative_extra: >
+      stars streaking, stars multiplying, stars twinkling, a planet
+      appearing, a reflection moving on the glass, the window ring moving,
+      the wall moving, lens flare
+    anchors: [A3-headon]
+    note: new motion on this channel; if the stars smear, it becomes a local push on the approved still
+    prompt: >
+      A round porthole head-on in off-white padded paneling, a plain aluminum
+      ring around the glass, through it black space with a field of small
+      sharp white stars of even brightness, flat cool light inside the
+      module, no people
+
+  - id: "7.4"
+    scene: 7
+    motion_tier: local
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    local_motion: push
+    ref_shot: "1.3"
+    note: same still as 7.1 — paper.yaml adds the last lines to the sheet
+    prompt: >
+      The same work surface as the reference, one sheet of plain ruled paper
+      under the clip bar, the pencil seated in its clip, flat even cool
+      light, the air completely clear, no people
+
+  # ---- Scene 8 — Coda (30 s) ------------------------------------------------
+
+  - id: "8.1"
+    scene: 8
+    motion_tier: static
+    timeline_seconds: 7
+    source: ffmpeg_still
+    motion: static
+    card: no-entries
+    ref_shot: "1.2"
+    prompt: >
+      The same habitat module as the reference, empty,
+      smooth bare padded walls exactly as in the reference with nothing
+      added to them, the same smooth closed locker doors with flush latches, everything clipped in place, flat cool light, the air
+      completely clear, the lower left of the frame a plain empty panel, no
+      people
+
+  - id: "8.2"
+    scene: 8
+    reuse_take: {take: "1.1", from: 2.0}
+    motion_tier: model
+    timeline_seconds: 5
+    model: kling3
+    generate_seconds: 5
+    motion: the clamp swinging on its lanyard under a burn
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The steel spring clamp swings slowly back and forth on its lanyard.
+    negative_extra: >
+      the lanyard stretching, a second clamp
+    ref_shot: "1.1"
+    note: not generated — 5 s of takes/1.1.mp4 from 2.0 s; the return burn
+    prompt: >
+      The same clamp on the same lanyard and handrail, flat cool light, no
+      people
+
+  - id: "8.3"
+    scene: 8
+    motion_tier: static
+    timeline_seconds: 8
+    source: ffmpeg_still
+    motion: static
+    card: return-burn
+    ref_shot: "1.3"
+    prompt: >
+      The same work surface as the reference, empty, the steel clip bar
+      closed on nothing, an empty pencil clip, flat even cool light, the air
+      completely clear, the lower left of the frame bare painted aluminum, no
+      people
+
+  - id: "8.4"
+    scene: 8
+    reuse_take: {take: "4.1", from: 3.0}
+    motion_tier: model
+    timeline_seconds: 4
+    model: kling3
+    generate_seconds: 4
+    motion: the actuator rod sliding
+    motion_tail: motion_tail_steady
+    video_prompt: >
+      The polished steel push rod slides slowly out of its cylinder.
+    negative_extra: >
+      the rod bending
+    ref_shot: "4.1"
+    note: not generated — 4 s of takes/4.1.mp4 from 3.0 s
+    prompt: >
+      The same gimbal actuator and rod, flat cool light, no people
+
+  - id: "8.5"
+    scene: 8
+    motion_tier: static
+    timeline_seconds: 6
+    source: ffmpeg_still
+    motion: static
+    card: closer
+    ref_shot: "2.2"
+    prompt: >
+      The same access tunnel as the reference, the far hatch closed, flat
+      cool light, the air completely clear, the center of the frame a plain
+      empty panel, no people

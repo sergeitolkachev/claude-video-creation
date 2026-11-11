@@ -68,10 +68,15 @@ def _get(url, key):
 
 def upload(path, key, cache):
     """Put an approved still into fal storage so a later shot can reference it.
-    Cached by filename — an approved image never changes."""
+    Cached by filename and content hash."""
     c = json.loads(cache.read_text()) if cache.exists() else {}
-    if path.name in c:
-        return c[path.name]
+    # Keyed by name AND content. Record 11 replaced approved/2.3.jpg after a
+    # failed take and the name-only cache handed Kling the old frame: $0.90
+    # for a take of a still that had been rejected. A changed file is a new
+    # upload; the old entry stays harmless.
+    import hashlib
+    ck = f"{path.name}:{hashlib.md5(path.read_bytes()).hexdigest()[:12]}"
+    if ck in c: return c[ck]
     r = urllib.request.Request(
         "https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3",
         data=json.dumps({"content_type": "image/jpeg",
@@ -81,7 +86,7 @@ def upload(path, key, cache):
     urllib.request.urlopen(urllib.request.Request(
         d["upload_url"], data=path.read_bytes(),
         headers={"Content-Type": "image/jpeg"}, method="PUT"), timeout=120)
-    c[path.name] = d["file_url"]; cache.write_text(json.dumps(c, indent=2))
+    c[ck] = d["file_url"]; cache.write_text(json.dumps(c, indent=2))
     return d["file_url"]
 
 
@@ -123,7 +128,17 @@ def main():
     NO_PLATE = {"ffmpeg", "ffmpeg_cards"}
     shots = [s for s in doc["shots"]
              if s["scene"] == scene and s.get("source") not in NO_PLATE
+             and not s.get("reuse_take")
+             and not (ep / "approved" / f"{s['id']}.jpg").exists()
              and (only is None or s["id"] == only)]
+    # A shot that already has an approved still is done: record 11's 7.3
+    # had one, a candidate seed was missing from stills/, and the scene run
+    # queued it again. Rerolling an approved shot means removing its
+    # approved file first, which is a decision, not a side effect.
+    # A `reuse_take` shot is seconds cut out of an existing take: its picture
+    # already exists, so a still for it is money spent on a frame nothing
+    # reads. Record 11 has five of them, each carrying a ref_shot that would
+    # otherwise have queued two paid stills.
 
     # A shot with `plates:` is not generated as video at all, but it still
     # needs stills — record 2's shot 3.3 is one patch of ground photographed

@@ -1,0 +1,575 @@
+# Pencil marks on the work-surface sheets (scripts/build_paper.py), record 11.
+# Box = the writable part of the sheet on the approved stills (1344x768): the
+# sheet spans x 938-1252, y 114-491; the clip covers it to about y 140 and the
+# pencil lies along x 1221-1240, so marks stay inside [945, 150, 1212, 485].
+# Every figure agrees with the narration, the cards and the appendix:
+#   1.3  24,000 / 0.93834 = 25,577; -25,265 = +312 (rating 1.5%)
+#   3.2  offsets +312, +489; difference 177 over 6 days = 29.5 kg/day
+#   4.3  489 r = 25,448 x 0.086 -> r = 4.48 m forward
+#   6.3  offset(t) = 27.67 t + 0.0665 t^2: 312 / 489 / 671 at days 11/17/23,
+#        dashed back to zero at launch
+#   7.1  3138 ln(m0/m1): 14,000 -> 1,756; 14,671 -> 1,694; 15,250 -> 1,644
+#   7.4  7.1 plus 1,250 - 671 = 579; 579 / 30.3 ~ 19, struck, 18; DAY 41
+# 8.3 is the empty clip bar: no sheet, nothing drawn (the desk is empty on
+# purpose). The sheet grows with the story; marks are there when the shot starts.
+sheets:
+  '1.3':
+    box: &id001
+    - 945
+    - 150
+    - 1212
+    - 485
+    seed: 13
+    marks:
+    - kind: text
+      at:
+      - 0.04
+      - 0.1
+      text: 24,000 ÷ 0.93834
+      size: 0.045
+    - kind: text
+      at:
+      - 0.22
+      - 0.22
+      text: = 25,577
+      size: 0.055
+    - kind: box
+      a:
+      - 0.18
+      - 0.2
+      b:
+      - 0.66
+      - 0.33
+      w: 1.0
+    - kind: text
+      at:
+      - 0.22
+      - 0.38
+      text: − 25,265
+      size: 0.045
+    - kind: line
+      a:
+      - 0.18
+      - 0.49
+      b:
+      - 0.66
+      - 0.49
+      w: 1.4
+    - kind: text
+      at:
+      - 0.3
+      - 0.53
+      text: '+312'
+      size: 0.06
+    - kind: line
+      a:
+      - 0.27
+      - 0.66
+      b:
+      - 0.56
+      - 0.66
+      w: 1.4
+    - kind: text
+      at:
+      - 0.04
+      - 0.78
+      text: ENGINE ±1.5%
+      size: 0.045
+    - kind: line
+      a:
+      - 0.74
+      - 0.84
+      b:
+      - 0.78
+      - 0.89
+    - kind: line
+      a:
+      - 0.78
+      - 0.89
+      b:
+      - 0.88
+      - 0.76
+  '3.2':
+    box: *id001
+    seed: 32
+    marks:
+    - kind: text
+      at:
+      - 0.03
+      - 0.08
+      text: 25,577 − 25,265
+      size: 0.045
+    - kind: text
+      at:
+      - 0.72
+      - 0.08
+      text: '+312'
+      size: 0.045
+    - kind: text
+      at:
+      - 0.03
+      - 0.2
+      text: 25,448 − 24,959
+      size: 0.045
+    - kind: text
+      at:
+      - 0.72
+      - 0.2
+      text: '+489'
+      size: 0.045
+    - kind: line
+      a:
+      - 0.66
+      - 0.31
+      b:
+      - 0.97
+      - 0.31
+      w: 1.4
+    - kind: text
+      at:
+      - 0.71
+      - 0.35
+      text: '177'
+      size: 0.06
+    - kind: box
+      a:
+      - 0.66
+      - 0.33
+      b:
+      - 0.94
+      - 0.47
+      w: 1.0
+    - kind: text
+      at:
+      - 0.4
+      - 0.54
+      text: ÷ 6 = 29.5
+      size: 0.05
+    - kind: text
+      at:
+      - 0.52
+      - 0.66
+      text: kg / day
+      size: 0.04
+  '4.3':
+    box: *id001
+    seed: 43
+    marks:
+    - kind: box
+      a:
+      - 0.14
+      - 0.14
+      b:
+      - 0.94
+      - 0.3
+      w: 1.0
+    - kind: line
+      a:
+      - 0.14
+      - 0.18
+      b:
+      - 0.04
+      - 0.12
+    - kind: line
+      a:
+      - 0.14
+      - 0.26
+      b:
+      - 0.04
+      - 0.32
+    - kind: line
+      a:
+      - 0.04
+      - 0.12
+      b:
+      - 0.04
+      - 0.32
+    - kind: line
+      a:
+      - 0.42
+      - 0.2
+      b:
+      - 0.48
+      - 0.24
+    - kind: line
+      a:
+      - 0.48
+      - 0.2
+      b:
+      - 0.42
+      - 0.24
+    - kind: arrow
+      a:
+      - 0.45
+      - 0.36
+      b:
+      - 0.62
+      - 0.36
+    - kind: text
+      at:
+      - 0.47
+      - 0.39
+      text: 8.6 cm
+      size: 0.04
+    - kind: arrow
+      a:
+      - 0.47
+      - 0.18
+      b:
+      - 0.88
+      - 0.18
+    - kind: text
+      at:
+      - 0.58
+      - 0.04
+      text: 4.48 m
+      size: 0.04
+    - kind: text
+      at:
+      - 0.02
+      - 0.54
+      text: 489 × r = 25,448 × 0.086
+      size: 0.04
+    - kind: text
+      at:
+      - 0.26
+      - 0.68
+      text: r = 4.48 m
+      size: 0.055
+    - kind: box
+      a:
+      - 0.22
+      - 0.66
+      b:
+      - 0.8
+      - 0.8
+      w: 1.0
+  '6.3':
+    box: *id001
+    seed: 63
+    marks:
+    - kind: axes
+      origin:
+      - 0.12
+      - 0.8
+      end:
+      - 0.92
+      - 0.12
+      xticks: 0
+      yticks: 0
+    - kind: text
+      at:
+      - 0.8
+      - 0.84
+      text: DAY
+      size: 0.04
+    - kind: text
+      at:
+      - 0.0
+      - 0.06
+      text: KG
+      size: 0.04
+    - kind: text
+      at:
+      - 0.07
+      - 0.83
+      text: '0'
+      size: 0.04
+    - kind: line
+      a:
+      - 0.4133
+      - 0.5344
+      b:
+      - 0.4667
+      - 0.4847
+      w: 1.3
+    - kind: line
+      a:
+      - 0.4667
+      - 0.4847
+      b:
+      - 0.52
+      - 0.4345
+      w: 1.3
+    - kind: line
+      a:
+      - 0.52
+      - 0.4345
+      b:
+      - 0.5733
+      - 0.3838
+      w: 1.3
+    - kind: line
+      a:
+      - 0.5733
+      - 0.3838
+      b:
+      - 0.6267
+      - 0.3327
+      w: 1.3
+    - kind: line
+      a:
+      - 0.6267
+      - 0.3327
+      b:
+      - 0.68
+      - 0.2812
+      w: 1.3
+    - kind: line
+      a:
+      - 0.68
+      - 0.2812
+      b:
+      - 0.7333
+      - 0.2291
+      w: 1.3
+    - kind: line
+      a:
+      - 0.7333
+      - 0.2291
+      b:
+      - 0.7867
+      - 0.1767
+      w: 1.3
+    - kind: line
+      a:
+      - 0.12
+      - 0.8
+      b:
+      - 0.1467
+      - 0.7764
+      w: 1.1
+      tone: 120
+    - kind: line
+      a:
+      - 0.1733
+      - 0.7527
+      b:
+      - 0.2
+      - 0.7289
+      w: 1.1
+      tone: 120
+    - kind: line
+      a:
+      - 0.2267
+      - 0.705
+      b:
+      - 0.2533
+      - 0.681
+      w: 1.1
+      tone: 120
+    - kind: line
+      a:
+      - 0.28
+      - 0.6568
+      b:
+      - 0.3067
+      - 0.6326
+      w: 1.1
+      tone: 120
+    - kind: line
+      a:
+      - 0.3333
+      - 0.6082
+      b:
+      - 0.36
+      - 0.5837
+      w: 1.1
+      tone: 120
+    - kind: line
+      a:
+      - 0.3867
+      - 0.5592
+      b:
+      - 0.4133
+      - 0.5344
+      w: 1.1
+      tone: 120
+    - kind: ring
+      at:
+      - 0.4133
+      - 0.5348
+      r_px: 6
+    - kind: text
+      at:
+      - 0.4433
+      - 0.5548
+      text: '312'
+      size: 0.04
+    - kind: ring
+      at:
+      - 0.5733
+      - 0.3844
+      r_px: 6
+    - kind: text
+      at:
+      - 0.6033
+      - 0.4044
+      text: '489'
+      size: 0.04
+    - kind: ring
+      at:
+      - 0.7333
+      - 0.2297
+      r_px: 6
+    - kind: text
+      at:
+      - 0.7633
+      - 0.2497
+      text: '671'
+      size: 0.04
+  '7.1':
+    box: *id001
+    seed: 71
+    marks:
+    - &id002
+      kind: text
+      at:
+      - 0.03
+      - 0.06
+      text: Δv = 3138 · ln(m0/m1)
+      size: 0.045
+    - &id003
+      kind: text
+      at:
+      - 0.06
+      - 0.22
+      text: 14,000
+      size: 0.045
+    - &id004
+      kind: arrow
+      a:
+      - 0.4
+      - 0.255
+      b:
+      - 0.54
+      - 0.255
+    - &id005
+      kind: text
+      at:
+      - 0.6
+      - 0.22
+      text: 1,756
+      size: 0.045
+    - &id006
+      kind: text
+      at:
+      - 0.06
+      - 0.34
+      text: 14,671
+      size: 0.045
+    - &id007
+      kind: arrow
+      a:
+      - 0.4
+      - 0.375
+      b:
+      - 0.54
+      - 0.375
+    - &id008
+      kind: text
+      at:
+      - 0.6
+      - 0.34
+      text: 1,694
+      size: 0.045
+    - &id009
+      kind: text
+      at:
+      - 0.06
+      - 0.46
+      text: 15,250
+      size: 0.045
+    - &id010
+      kind: arrow
+      a:
+      - 0.4
+      - 0.495
+      b:
+      - 0.54
+      - 0.495
+    - &id011
+      kind: text
+      at:
+      - 0.6
+      - 0.46
+      text: 1,644
+      size: 0.045
+    - &id012
+      kind: box
+      a:
+      - 0.03
+      - 0.44
+      b:
+      - 0.92
+      - 0.56
+      w: 1.0
+  '7.4':
+    box: *id001
+    seed: 71
+    marks:
+    - *id002
+    - *id003
+    - *id004
+    - *id005
+    - *id006
+    - *id007
+    - *id008
+    - *id009
+    - *id010
+    - *id011
+    - *id012
+    - kind: text
+      at:
+      - 0.03
+      - 0.62
+      text: 1,250 − 671 = 579
+      size: 0.045
+    - kind: text
+      at:
+      - 0.03
+      - 0.73
+      text: 579 ÷ 30.3 ≈
+      size: 0.045
+    - kind: text
+      at:
+      - 0.64
+      - 0.73
+      text: '19'
+      size: 0.045
+    - kind: line
+      a:
+      - 0.62
+      - 0.765
+      b:
+      - 0.76
+      - 0.755
+      w: 1.3
+    - kind: text
+      at:
+      - 0.8
+      - 0.73
+      text: '18'
+      size: 0.045
+    - kind: text
+      at:
+      - 0.24
+      - 0.84
+      text: DAY 41
+      size: 0.055
+    - kind: line
+      a:
+      - 0.2
+      - 0.95
+      b:
+      - 0.66
+      - 0.95
+      w: 1.5
+    - kind: line
+      a:
+      - 0.21
+      - 0.975
+      b:
+      - 0.65
+      - 0.975
+      w: 1.2

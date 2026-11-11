@@ -1,0 +1,113 @@
+# Record 11's mix (CLAUDE.md, Audio Rules): the synthesised floor and one
+# music cue under the whole record, ducked 7 dB under the voice by
+# config/sound.yaml, and eight spot effects in the pauses.
+#
+# Levels below are placeholders until the cue and the effects exist and are
+# measured — a level here is a trim on a measured file, not a target
+# (CLAUDE.md). Event offsets are provisional until the takes are placed.
+
+runtime_seconds: 300
+lead_in: 1.5          # the clamp swings once before anyone speaks
+tail: 3.0
+min_gap: 1.2
+card_pull: 1.5
+
+# Extra air before specific lines, from script.md's Pacing section, on top of
+# the 1.2 s gap. Every one falls on a paragraph boundary.
+hold:
+  s3p4: 0.8    # 2.0 s before "Mass in a sealed ship goes one way."
+  s4p4: 1.3    # 2.5 s before "Four and a half meters forward of the center of mass."
+  s5p4: 1.3    # 2.5 s before "The bunk is in this module."
+  s6p4: 0.8    # 2.0 s before "Run the line back…"
+  s7p4: 1.8    # 3.0 s before "Day forty-one. The return burn is on day sixty-one."
+
+# --- Layers -----------------------------------------------------------------
+# floor  — synthesised, config/sound.yaml. Never gated, under every card.
+# music  — the record's cue, ducked under every paragraph.
+# clicks — mixed by build_cards.py, never by hand. +20 from record 08 on.
+# events — spot effects in the pauses, below. Not a layer.
+levels: {floor: 0, music: -9, clicks: 20, events: -6}   # music: cue measured -15.6 dBFS after the 80 Hz highpass; -9 lands it at -24.6, where 08-10 sat (09 needed the same -9)
+layers:
+  floor:
+    synth: floor
+  music:
+    file: sfx/score.mp3
+    duck: true
+
+sfx:
+  score:
+    kind: music
+    file: sfx/score.mp3
+    seconds: 300
+    prompt: >
+      Slow ambient cue for a small sealed ship in deep space. Sustained
+      mid-register strings and soft glassy pads, roughly 200 Hz to 3 kHz,
+      cold and even. No melody anyone could hum, no beat, no drums, no
+      vocals, no swell, no resolution. Quiet enough to sit under a calm
+      speaking voice throughout. One long shape: a faint weight that thickens
+      very slowly and never resolves.
+  cutoff:
+    file: sfx/cutoff.mp3
+    seconds: 2
+    prompt: >
+      One dull metallic clunk inside a small aluminum cabin as an engine valve
+      closes, a short hard knock with body in the middle of the range, like a
+      heavy steel bolt dropped onto a padded aluminum floor, recorded close.
+      Clearly audible on a small speaker. Dry, no ring, no boom, no deep
+      rumble, nothing electronic.
+  creak:
+    file: sfx/creak.mp3
+    seconds: 2
+    prompt: >
+      A single low creak of an aluminum frame taking load, recorded close
+      inside a small metal cabin. Dry, short, no squeal, no high pitch,
+      nothing electronic.
+  thud:
+    file: sfx/thud.mp3
+    seconds: 2
+    prompt: >
+      A heavy hatch seal settling in its frame, one deep soft thud, recorded
+      close. Dry, no ring, no echo, nothing electronic.
+  # knock — dropped 2026-11-10 (Serge): two generations, both came back as a
+  # 35-80 Hz thump 24 dB under the cue on a phone band. Its two events use
+  # creak. Prompts that failed: "soft muffled knock of a metal hull panel",
+  # "a knuckle rapping once on a hollow metal cabinet".
+  latch:
+    file: sfx/latch.mp3
+    seconds: 1
+    prompt: >
+      A small locker latch releasing, one dull plastic-and-metal clack,
+      recorded close. Dry, no ring, nothing electronic.
+
+# Spot effects — script.md, Sound design. Approved by ear on a phone (Serge, 2026-11-10, out/audio-check/events.mp3). Anchored to a shot so a retimed
+# shot list carries them; validate.py checks each sits 0.3 s clear of any
+# word once narration is placed. Offsets provisional.
+events:
+  # Placed 2026-11-10 against the real narration (seed 11 takes), each in a
+  # window at least 0.3 s clear of any word, inside its own shot.
+  - {sfx: cutoff, shot: "1.4", at: 5.5}   # the first burn ends
+  - {sfx: creak,  shot: "2.1", at: 7.0}
+  - {sfx: thud,   shot: "3.3", at: 9.0}   # after "Nothing has docked."
+  - {sfx: creak,  shot: "4.4", at: 9.5}   # was knock; knock failed twice (35 Hz, inaudible)
+  - {sfx: latch,  shot: "5.1", at: 0.1, level: 8}   # the latch lets go as the door starts; +8 because it sat 6 dB under the cue above 300 Hz
+  - {sfx: creak,  shot: "5.4", at: 6.5, level: -3}
+  - {sfx: cutoff, shot: "6.4", at: 5.5}   # the third burn ends
+  - {sfx: creak,  shot: "7.3", at: 6.8}   # was knock, as above
+
+clicks_bed: cards/clicks-bed.m4a
+
+# --- Teaser -----------------------------------------------------------------
+# The teaser's own cue: thirty seconds, composed with a build, never the
+# record's cue and never under the record. Generated 2026-11-10 with the record's sfx.
+teaser_sfx:
+  teaser_music:
+    kind: music
+    file: sfx/teaser-music.mp3
+    seconds: 30
+    prompt: >
+      Slow ambient music for a trailer about a small sealed ship in deep
+      space. Sustained mid-register strings and soft glassy pads over a faint
+      low pulse, roughly 200 Hz to 3 kHz, and one gradual tightening across
+      the whole piece that never resolves. No melody, no drums, no vocals, no
+      swell at the end. Quiet enough to sit under a calm speaking voice the
+      whole way through.

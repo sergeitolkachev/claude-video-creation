@@ -295,6 +295,13 @@ nothing to move was given dust, and the record looked it. So:
   shot, no.
 - **A push or pull is better than a dust shot.** It is free and it reads as
   a camera; dust over a still subject reads as a still subject with dust.
+- **No floating pencil — Serge, 2026-11-10.** It had been the motion in five
+  records and failed record 11's still stage twice (a speck at the far end,
+  then a sticker on the frame); it has no axis and had become the channel's
+  tic. No small loose object stands in for weightlessness as a shot's
+  subject. A pencil seated in its clip by the paper is set dressing and
+  stays. Give the beat a rigid thing with an axis, or a `reuse_take` whose
+  motion fits the line.
 - Two `local` moves may sit next to each other, and a `static` card plate may
   sit next to a `local` move. What may not happen is two locked-off frames in
   a row: that is the twenty seconds with nothing moving that the old

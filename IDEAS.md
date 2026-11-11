@@ -5,7 +5,7 @@ discussed and agreed in chat before any script is written (`CLAUDE.md`, The
 Scripting Contract). When an idea is made, move it to "Made" with its record
 number.
 
-**Next: record 11 — operator.** Record 10 (documentary) is in production. Pick from the operator backlog and agree it in chat before any script.
+**Next: record 12 — documentary.** Record 11 (operator, The Manifest) is in scripting.
 
 ## Operator backlog
 
@@ -15,11 +15,6 @@ number.
   raises the whole volume evenly and his compartments differ sixfold. He
   solves the system on paper: the source sits, to half a metre, inside a
   container the manifest lists as empty.
-- **Manifest.** F = ma: thrust is known to about a percent, the accelerometer
-  gives a, so the ship can be weighed in flight. After one burn the dry mass
-  is +312 kg; he logs it as error. After the next, +489 kg. Mass grows between
-  burns and the airlock has not cycled. He computes how many days until the
-  growth eats the return Δv. The record stops on that number.
 - **Area.** Drag in low orbit scales with cross-section, so the decay rate
   converts directly into the station's area. Solar activity normal,
   atmospheric density normal; area is up 6.3 m². No panel deployed, no shield
@@ -41,4 +36,7 @@ number.
   09 The Equivalent Hole (operator, 2026-10-27 — the hole that heals) ·
   10 The Ceiling (documentary, 2026-11-04 — from the Carboniferous oxygen
   ceiling idea, rebuilt as a living insect whose flight ceiling is set by air
-  pressure; agreed in chat)
+  pressure; agreed in chat) ·
+  11 The Manifest (operator, 2026-11-09 — mass growing inside a sealed
+  ship, weighed by F = ma on each burn and located by gimbal trim; agreed in
+  chat)

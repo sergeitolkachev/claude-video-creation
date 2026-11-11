@@ -1,0 +1,124 @@
+# Data cards — record 11.
+#
+# Every character comes out of build_cards.py: Menlo, phosphor green, 40 px,
+# halo and glow, under the grain pass, one click per glyph mixed by the
+# script. `with:` names the paragraph the card answers to; validate.py
+# measures the gap once narration exists. Times are seconds from the start of
+# the card's own shot. Every card sits on a static plate. The slug and the
+# channel closer live in titles.yaml.
+
+style:
+  size: 40
+  rule_alpha: 90
+  margin: [96, 72]
+
+cards:
+  # --- Scene 1 -------------------------------------------------------------
+  - id: tcm1
+    with: s1p2
+    shot: "1.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "TCM-1 / DAY 11"
+      - "MASS, MEASURED  25,577 KG"
+      - "MASS, EXPECTED  25,265 KG"
+      - "TOLERANCE         ±379 KG"
+
+  # --- Scene 2 -------------------------------------------------------------
+  - id: tcm2
+    with: s2p2
+    shot: "2.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "TCM-2 / DAY 17"
+      - "MASS, MEASURED  25,448 KG"
+      - "MASS, EXPECTED  24,959 KG"
+      - "OFFSET   +489   ±374 KG"
+
+  # --- Scene 3 -------------------------------------------------------------
+  - id: difference
+    with: s3p2
+    shot: "3.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "DAY 11 TO DAY 17"
+      - "MASS GAINED     177 KG"
+      - "RATE     29.5 KG / DAY"
+
+  # --- Scene 4 -------------------------------------------------------------
+  - id: trim
+    with: s4p2
+    shot: "4.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "TCM-2 / GIMBAL TRIM"
+      - "OFF PREDICTION   0.55°"
+      - "ARM                9 M"
+      - "CG SHIFT    8.6 CM FWD"
+
+  # --- Scene 5 -------------------------------------------------------------
+  - id: lockers
+    with: s5p2
+    shot: "5.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "WATER     81 L   LOGGED"
+      - "FOOD    142 KG   LOGGED"
+      - "WASTE    38 KG   LOGGED"
+      - "ITEMS  206 OF 206"
+
+  # --- Scene 6 -------------------------------------------------------------
+  - id: tcm3
+    with: s6p2
+    shot: "6.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "TCM-3 / DAY 23"
+      - "OFFSET        +671 KG"
+      - "GIMBAL TRIM     0.76°"
+      - "POSITION    4.5 M FWD"
+
+  # --- Scene 7 -------------------------------------------------------------
+  - id: return
+    with: s7p2
+    shot: "7.2"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "RETURN BURN / DAY 61"
+      - "REQUIRED   1,644 M/S"
+      - "MANIFEST   1,756 M/S"
+      - "DAY 23     1,694 M/S"
+
+  # --- Coda ----------------------------------------------------------------
+  - id: no-entries
+    shot: "8.1"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "SEVER-5"
+      - "NO LOG ENTRIES AFTER DAY 23"
+
+  - id: return-burn
+    shot: "8.3"
+    pos: lower-left
+    build: line
+    at: 0.5
+    lines:
+      - "RETURN BURN, DAY 61"
+      - "MASS         +1,936 KG"
+      - "DELTA-V  1,588 OF 1,644"
